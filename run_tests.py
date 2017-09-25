@@ -1,0 +1,71 @@
+import os
+import sys
+import unittest
+from xmlrunner import XMLTestRunner
+import argparse
+
+from tests.configuration_tests import ConfigurationsTests, ConfigurationsSingleTests
+from tests.globals_tests import GlobalsTests
+from tests.scripting_directory_tests import ScriptingDirectoryTests
+from tests.settings import Settings
+
+from util.channel_access import ChannelAccessUtils
+from util.configurations import ConfigurationUtils
+from util.git_wrapper import GitUtils
+
+
+def run_tests(inst_name):
+    """
+    Runs the test suite
+    :param inst_name: The name of the instrument to run tests on,
+                    used to sort the test reports folder into instrument-specific reports
+    :return: True if the tests passed, false otherwise
+    """
+    suite = unittest.TestSuite()
+    loader = unittest.TestLoader()
+
+    suite.addTests(loader.loadTestsFromTestCase(ScriptingDirectoryTests))
+    suite.addTests(loader.loadTestsFromTestCase(GlobalsTests))
+    suite.addTests(loader.loadTestsFromTestCase(ConfigurationsSingleTests))
+
+    # Add configs test suite a dynamic number of times with an argument of the config name.
+    # unittest's test loader is unable to take arguments to test classes by default so have
+    # to use the getTestCaseNames() syntax and explicitly add the argument ourselves.
+    for config in ConfigurationUtils(configs_repo_path).get_configurations_as_list():
+        suite.addTests([ConfigurationsTests(test, config) for test in loader.getTestCaseNames(ConfigurationsTests)])
+
+    return XMLTestRunner(output=os.path.join(reports_path, inst_name), stream=sys.stdout).run(suite).wasSuccessful()
+
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+                                     description="""Runs tests against the configuration repositories on instruments.
+                                            Note: all repositories used by this script will be forcibly cleaned and 
+                                            reset while the tests are running to ensure valid test data.                             
+                                            Do not point this script at any repository where you have changes you want 
+                                            to keep!""")
+
+    parser.add_argument("--configs_repo_path", type=str, help="The path to the configurations repository.",
+                        default="configs\\")
+    parser.add_argument("--gui_repo_path", type=str, help="The path to the GUI repository",
+                        default="gui\\")
+    parser.add_argument("--reports_path", type=str, help="The folder in which test reports should be stored",
+                        default="test-reports\\")
+
+    args = parser.parse_args()
+
+    reports_path = args.reports_path
+    Settings.config_repo_path = configs_repo_path = args.configs_repo_path
+    Settings.gui_repo_path = gui_repo_path = args.gui_repo_path
+
+    return_values = []
+    for instrument in ChannelAccessUtils.get_instlist():
+
+        Settings.name = name = instrument['name']
+        Settings.hostname = hostname = instrument['hostName']
+
+        print("\n\nTesting {} ({})...".format(name, hostname))
+        return_values.append(GitUtils(configs_repo_path).force_clean_checkout(hostname) and run_tests(name))
+
+    sys.exit(False in return_values)
