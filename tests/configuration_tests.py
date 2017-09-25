@@ -38,7 +38,9 @@ class ConfigurationsTests(unittest.TestCase):
         self.assertIsNotNone(self.config, "Config should not be None")
         self.assertIsInstance(self.config, basestring, "Config name should be a string")
         self.assertGreater(len(self.config), 0, "Config name should be a non-empty string")
+
         self.config_dir_path = os.path.join(self.config_utils.get_configurations_directory(), self.config)
+
         self.assertTrue(os.path.isdir(self.config_dir_path), "Config directory should exist ({})"
                         .format(self.config_dir_path))
 
@@ -50,9 +52,22 @@ class ConfigurationsTests(unittest.TestCase):
         self._skip_if_valid_iocs_pv_is_not_available()
 
         for ioc in self.config_utils.get_iocs(self.config):
+
             self.assertIn(ioc, Settings.valid_iocs,
                           "Configuration {} contained an IOC that the server didn't know about ({})"
                           .format(self.config, ioc))
+
             self.assertNotIn(ioc, Settings.protected_iocs,
                              "Configuration {} contained a protected IOC ({})".format(self.config, ioc))
 
+    def test_that_configurations_directory_only_contains_allowed_config_files(self):
+        for filename in os.listdir(self.config_dir_path):
+            self.assertIn(filename, ConfigurationUtils.ALLOWED_CONFIG_FILES,
+                          "Component {} contained unexpected files in it's directory ({})"
+                          .format(self.config, filename))
+
+    def test_that_all_of_the_required_config_files_are_present_in_the_directory(self):
+        for filename in ConfigurationUtils.REQUIRED_CONFIG_FILES:
+            self.assertIn(filename, os.listdir(self.config_dir_path),
+                          "Configuration {} did not contain the required config file {}"
+                          .format(self.config, filename))

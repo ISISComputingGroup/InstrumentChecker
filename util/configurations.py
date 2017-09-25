@@ -8,6 +8,9 @@ class ConfigurationUtils(object):
     Class containing utility methods for interacting with the configurations directory
     """
 
+    REQUIRED_CONFIG_FILES = ["blocks.xml", "components.xml", "groups.xml", "iocs.xml", "meta.xml"]
+    ALLOWED_CONFIG_FILES = REQUIRED_CONFIG_FILES + ["screens.xml"]
+
     def __init__(self, config_repo_path):
         self.config_repo_path = config_repo_path
 
