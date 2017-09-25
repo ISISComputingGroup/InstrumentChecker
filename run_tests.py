@@ -34,7 +34,7 @@ def run_tests(inst_name):
     for config in ConfigurationUtils(configs_repo_path).get_configurations_as_list():
         suite.addTests([ConfigurationsTests(test, config) for test in loader.getTestCaseNames(ConfigurationsTests)])
 
-    return XMLTestRunner(output=os.path.join(reports_path, inst_name), stream=sys.stdout).run(suite).wasSuccessful()
+    return XMLTestRunner(output=str(os.path.join(reports_path, inst_name)), stream=sys.stdout).run(suite).wasSuccessful()
 
 
 if __name__ == "__main__":
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     Settings.gui_repo_path = gui_repo_path = args.gui_repo_path
 
     return_values = []
-    for instrument in ChannelAccessUtils.get_instlist():
+    for instrument in ChannelAccessUtils("CS:INSTLIST").get_from_compressed_json():
 
         Settings.name = name = instrument['name']
         Settings.hostname = hostname = instrument['hostName']

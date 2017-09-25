@@ -19,7 +19,7 @@ class GlobalsUtils(object):
     def get_lines(self):
         try:
             globals_file = open(self._get_file_path(), "r")
-            return [globals_file.readlines()]
+            return [i for i in globals_file.readlines()]
         except IOError:
             return []
 

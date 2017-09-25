@@ -1,20 +1,21 @@
 import json
+import zlib
+from genie_python.genie_cachannel_wrapper import CaChannelWrapper
 
 
 class ChannelAccessUtils(object):
     """
-    Class containing utility methods for interacting with channel access
+    Class containing utility methods for interacting with a PV
     """
 
-    @staticmethod
-    def _get_instlist_pv():
-        return """
-        [
-            {"name": "LARMOR", "hostName": "NDXLARMOR", "pvPrefix": "IN:LARMOR:"},
-            {"name": "DEMO", "hostName": "NDXDEMO", "pvPrefix": "IN:DEMO:"},
-            {"name": "IRIS", "hostName": "NDXIRIS", "pvPrefix": "IN:IRIS:"}
-        ]"""
+    def __init__(self, pv):
+        self.pv = pv
 
-    @staticmethod
-    def get_instlist():
-        return json.loads(ChannelAccessUtils._get_instlist_pv())
+    def get_value(self):
+        return CaChannelWrapper.get_pv_value(self.pv, to_string=True)
+
+    def _dehex_and_decompress(self, data):
+        return zlib.decompress(data.decode('hex'))
+
+    def get_from_compressed_json(self):
+        return json.loads(self._dehex_and_decompress(self.get_value()))

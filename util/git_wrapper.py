@@ -35,7 +35,7 @@ class GitUtils(object):
             repo.git.checkout(branch_name)
             # Actually get the latest changes
             # self.repo.git.pull()
-        except git.GitError as e:
+        except git.GitCommandError as e:
             print("Git command failed. Error was: {}".format(e))
             return False
         return True

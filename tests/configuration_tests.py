@@ -39,9 +39,3 @@ class ConfigurationsTests(unittest.TestCase):
         self.assertGreater(len(self.config), 0, "Config name should be a non-empty string")
         self.config_dir_path = os.path.join(self.config_utils.get_configurations_directory(), self.config)
         self.assertTrue(os.path.isdir(self.config_dir_path))
-
-    def test_pass(self):
-        self.assertTrue(True)
-
-    def test2_pass(self):
-        self.assertFalse(False)

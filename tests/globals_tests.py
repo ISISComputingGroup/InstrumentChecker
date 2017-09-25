@@ -10,8 +10,10 @@ class GlobalsTests(unittest.TestCase):
         if not self.globals_utils.file_exists():
             self.skipTest("Globals file did not exist.")
 
-
     def test_globals_has_correct_syntax(self):
-        for line in self.globals_utils.get_lines():
-            self.assertTrue(self.globals_utils.check_syntax(line))
+        for linenumber, line in enumerate(self.globals_utils.get_lines(), 1):
+            self.assertIsInstance(line, basestring)
+            self.assertTrue(self.globals_utils.check_syntax(line),
+                            "Invalid syntax on line {linenumber}. Line contents was: {contents}"
+                            .format(linenumber=linenumber, contents=line))
 
