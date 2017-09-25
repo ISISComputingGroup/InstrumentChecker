@@ -50,7 +50,7 @@ class VersionTests(unittest.TestCase):
         self.assertFalse(VersionUtils.versions_similar(version1, version2))
         self.assertFalse(VersionUtils.versions_similar(version2, version1))
 
-    def test_GIVEN_only_minor_version_is_different_WHEN_checking_if_they_are_similar_THEN_result_is_false(self):
+    def test_GIVEN_only_patch_version_is_different_WHEN_checking_if_they_are_similar_THEN_result_is_false(self):
         # Arrange
         version1 = "4.0.0"
         version2 = "4.0.2"
