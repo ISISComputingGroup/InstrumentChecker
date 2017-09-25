@@ -9,7 +9,7 @@ class ChannelAccessUtils(object):
     Class containing utility methods for interacting with a PV
     """
 
-    def __init__(self, pv_prefix):
+    def __init__(self, pv_prefix=""):
         self.pv_prefix = pv_prefix
 
     def get_value(self, pv):

@@ -68,7 +68,7 @@ if __name__ == "__main__":
     Settings.gui_repo_path = gui_repo_path = args.gui_repo_path
 
     return_values = []
-    for instrument in ChannelAccessUtils("").get_inst_list():
+    for instrument in ChannelAccessUtils().get_inst_list():
 
         Settings.name = name = instrument['name']
         Settings.hostname = hostname = instrument['hostName']
