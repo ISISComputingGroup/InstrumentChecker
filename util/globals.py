@@ -35,7 +35,7 @@ class GlobalsUtils(object):
         macro_regex = iocname_regex
         value_regex = r".*"
 
-        regexp = r"^{ioc}__{macro}={value}$".format(ioc=iocname_regex, macro=macro_regex, value=value_regex)
+        regexp = r"^({ioc}__)?{macro}={value}$".format(ioc=iocname_regex, macro=macro_regex, value=value_regex)
 
         if line == "" or re.match(regexp, line):
             return True

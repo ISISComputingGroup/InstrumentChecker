@@ -37,7 +37,7 @@ class GlobalsTests(unittest.TestCase):
         # Assert
         self.assertTrue(result)
 
-    def test_GIVEN_a_definition_where_ioc_name_is_missing_WHEN_syntax_check_THEN_invalid(self):
+    def test_GIVEN_a_definition_where_ioc_name_is_not_present_WHEN_syntax_check_THEN_valid(self):
         # Arrange
         line = "ADDR1=1.2.3.4"
 
@@ -45,7 +45,7 @@ class GlobalsTests(unittest.TestCase):
         result = self.utils.check_syntax(line)
 
         # Assert
-        self.assertFalse(result)
+        self.assertTrue(result)
 
     def test_GIVEN_a_definition_where_equals_sign_is_missing_WHEN_syntax_check_THEN_invalid(self):
         # Arrange
@@ -99,7 +99,7 @@ class GlobalsTests(unittest.TestCase):
 
     def test_GIVEN_macro_definition_is_invalid_but_value_contains_valid_definition_WHEN_syntax_check_THEN_invalid(self):
         # Arrange
-        line = "OOPS_NO_DOUBLE_UNDERSCORE=GALIL_01__ADDR1=YES"
+        line = "OOPS_TWO__DOUBLE__UNDERSCORES=GALIL_01__ADDR1=YES"
 
         # Act
         result = self.utils.check_syntax(line)
@@ -119,7 +119,7 @@ class GlobalsTests(unittest.TestCase):
 
     def test_GIVEN_an_invalid_macro_definition_that_is_commented_out_WHEN_syntax_check_THEN_valid(self):
         # Arrange
-        line = "# OOPS_NO_DOUBLE_UNDERSCORE=HELLO"
+        line = "# OOPS_TWO__DOUBLE__UNDERSCORES=HELLO"
 
         # Act
         result = self.utils.check_syntax(line)

@@ -1,37 +1,36 @@
 import unittest
 import os
 from settings import Settings
-from util.channel_access import ChannelAccessUtils
-from util.configurations import ConfigurationUtils
+from util.components import ComponentUtils
 
 
-class ConfigurationsSingleTests(unittest.TestCase):
+class ComponentsSingleTests(unittest.TestCase):
     """
     Tests in this class will be run exactly once regardless of how many configs exist.
     """
 
     def setUp(self):
-        self.config_utils = ConfigurationUtils(Settings.config_repo_path)
+        self.component_utils = ComponentUtils(Settings.config_repo_path)
 
-    def test_that_configs_directory_contains_at_least_one_config(self):
-        self.assertGreaterEqual(len(self.config_utils.get_configurations_as_list()), 1,
-                                "Configurations directory was empty or did not exist")
+    def test_that_components_directory_contains_base_component(self):
+        self.assertIn(ComponentUtils._BASE_COMPONENT, self.component_utils.get_configurations_as_list(),
+                      "Base component was missing (should be called {})".format(ComponentUtils._BASE_COMPONENT))
 
 
-class ConfigurationsTests(unittest.TestCase):
+class ComponentsTests(unittest.TestCase):
     """
-    Tests in this class will run once per config. If there are no configs, these tests will not run.
+    Tests in this class will run once per component.
 
-    This is so that one failing config doesn't hide another error in a different config.
+    This is so that one failing component doesn't hide another error in a different component.
 
-    The configuration name can be accessed as self.config
+    The component name can be accessed as self.config
     """
 
     def __init__(self, methodName, config=None):
         # Boilerplate so that unittest knows how to run these tests.
-        super(ConfigurationsTests, self).__init__(methodName)
+        super(ComponentsTests, self).__init__(methodName)
 
-        self.config_utils = ConfigurationUtils(Settings.config_repo_path)
+        self.config_utils = ComponentUtils(Settings.config_repo_path)
         self.config = config
 
     def setUp(self):
@@ -46,13 +45,15 @@ class ConfigurationsTests(unittest.TestCase):
         if Settings.valid_iocs is None or Settings.protected_iocs is None:
             self.skipTest("Couldn't retrieve valid/protected IOCS from server.")
 
-    def test_that_the_given_configuration_only_contains_valid_iocs(self):
+    def test_that_the_given_component_only_contains_valid_iocs(self):
         self._skip_if_valid_iocs_pv_is_not_available()
 
         for ioc in self.config_utils.get_iocs(self.config):
             self.assertIn(ioc, Settings.valid_iocs,
                           "Configuration {} contained an IOC that the server didn't know about ({})"
                           .format(self.config, ioc))
-            self.assertNotIn(ioc, Settings.protected_iocs,
-                             "Configuration {} contained a protected IOC ({})".format(self.config, ioc))
+
+            if self.config != ComponentUtils._BASE_COMPONENT:
+                self.assertNotIn(ioc, Settings.protected_iocs,
+                                 "Component {} contained a protected IOC ({})".format(self.config, ioc))
 

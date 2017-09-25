@@ -11,6 +11,9 @@ class Settings(object):
     hostname = ""
     config_repo_path = ""
     gui_repo_path = ""
+    pv_prefix = ""
+    valid_iocs = None
+    protected_iocs = None
 
     def __init__(self):
         raise NotImplementedError("Do not create an instance of this class.")

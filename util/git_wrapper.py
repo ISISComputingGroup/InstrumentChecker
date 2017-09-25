@@ -31,10 +31,10 @@ class GitUtils(object):
             repo.git.clean(f=True, d=True, x=True)
 
             # Fetch before checkout in case our branch is new and we don't know about it yet
-            # repo.git.fetch(all=True)
+            repo.git.fetch(all=True)
             repo.git.checkout(branch_name)
             # Actually get the latest changes
-            # self.repo.git.pull()
+            repo.git.pull()
         except git.GitCommandError as e:
             print("Git command failed. Error was: {}".format(e))
             return False

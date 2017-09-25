@@ -5,11 +5,14 @@ from xmlrunner import XMLTestRunner
 import argparse
 
 from tests.configuration_tests import ConfigurationsTests, ConfigurationsSingleTests
+from tests.component_tests import ComponentsTests, ComponentsSingleTests
 from tests.globals_tests import GlobalsTests
 from tests.scripting_directory_tests import ScriptingDirectoryTests
 from tests.settings import Settings
+from tests.version_tests import VersionTests
 
 from util.channel_access import ChannelAccessUtils
+from util.components import ComponentUtils
 from util.configurations import ConfigurationUtils
 from util.git_wrapper import GitUtils
 
@@ -26,13 +29,18 @@ def run_tests(inst_name):
 
     suite.addTests(loader.loadTestsFromTestCase(ScriptingDirectoryTests))
     suite.addTests(loader.loadTestsFromTestCase(GlobalsTests))
+    suite.addTests(loader.loadTestsFromTestCase(VersionTests))
     suite.addTests(loader.loadTestsFromTestCase(ConfigurationsSingleTests))
+    suite.addTests(loader.loadTestsFromTestCase(ComponentsSingleTests))
 
     # Add configs test suite a dynamic number of times with an argument of the config name.
     # unittest's test loader is unable to take arguments to test classes by default so have
     # to use the getTestCaseNames() syntax and explicitly add the argument ourselves.
     for config in ConfigurationUtils(configs_repo_path).get_configurations_as_list():
         suite.addTests([ConfigurationsTests(test, config) for test in loader.getTestCaseNames(ConfigurationsTests)])
+
+    for component in ComponentUtils(configs_repo_path).get_configurations_as_list():
+        suite.addTests([ComponentsTests(test, component) for test in loader.getTestCaseNames(ComponentsTests)])
 
     return XMLTestRunner(output=str(os.path.join(reports_path, inst_name)), stream=sys.stdout).run(suite).wasSuccessful()
 
@@ -60,10 +68,15 @@ if __name__ == "__main__":
     Settings.gui_repo_path = gui_repo_path = args.gui_repo_path
 
     return_values = []
-    for instrument in ChannelAccessUtils("CS:INSTLIST").get_from_compressed_json():
+    for instrument in ChannelAccessUtils("").get_inst_list():
 
         Settings.name = name = instrument['name']
         Settings.hostname = hostname = instrument['hostName']
+        Settings.pv_prefix = pv_prefix = instrument['pvPrefix']
+
+        ca = ChannelAccessUtils(instrument['pvPrefix'])
+        Settings.valid_iocs = ca.get_valid_iocs()
+        Settings.protected_iocs = ca.get_protected_iocs()
 
         print("\n\nTesting {} ({})...".format(name, hostname))
         return_values.append(GitUtils(configs_repo_path).force_clean_checkout(hostname) and run_tests(name))
