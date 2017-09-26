@@ -37,11 +37,11 @@ class ComponentsTests(unittest.TestCase):
 
     def setUp(self):
         self.assertIsNotNone(self.component, "Config should not be None")
-        self.assertIsInstance(self.component, basestring, "Config name should be a string")
-        self.assertGreater(len(self.component), 0, "Config name should be a non-empty string")
-        self.config_dir_path = os.path.join(self.component_utils.get_configurations_directory(), self.component)
-        self.assertTrue(os.path.isdir(self.config_dir_path), "Config directory should exist ({})"
-                        .format(self.config_dir_path))
+
+        self.component_dir_path = os.path.join(self.component_utils.get_configurations_directory(), self.component)
+
+        self.assertTrue(os.path.isdir(self.component_dir_path), "Config directory should exist ({})"
+                        .format(self.component_dir_path))
 
     def _skip_if_valid_iocs_pv_is_not_available(self):
         if Settings.valid_iocs is None or Settings.protected_iocs is None:
@@ -64,22 +64,21 @@ class ComponentsTests(unittest.TestCase):
                                  "Component {} contained a protected IOC ({})".format(self.component, ioc))
 
     def test_GIVEN_a_components_directory_THEN_it_only_contains_the_allowed_files(self):
-        for filename in os.listdir(self.config_dir_path):
+        for filename in os.listdir(self.component_dir_path):
             self.assertIn(filename, ComponentUtils.ALLOWED_CONFIG_FILES,
                           "Component {} contained unexpected files in it's directory ({})"
                           .format(self.component, filename))
 
     def test_GIVEN_a_components_directory_THEN_it_contains_the_required_files(self):
         for filename in ComponentUtils.REQUIRED_CONFIG_FILES:
-            self.assertIn(filename, os.listdir(self.config_dir_path),
+            self.assertIn(filename, os.listdir(self.component_dir_path),
                           "Component {} did not contain the required config file {}"
                           .format(self.component, filename))
 
     def test_GIVEN_a_components_directory_WHEN_parsing_its_contents_as_xml_THEN_no_errors_generated(self):
-        for filename in CommonUtils.get_directory_contents_as_list(self.config_dir_path):
+        for filename in CommonUtils.get_directory_contents_as_list(self.component_dir_path):
             try:
-                ET.parse(filename)
+                ET.parse(os.path.join(self.component_dir_path, filename))
             except Exception as e:
                 self.fail("Exception occured while parsing file {} in component {} as XML. Error was: {}"
                           .format(filename, self.component, e))
-

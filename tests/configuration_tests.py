@@ -78,10 +78,7 @@ class ConfigurationsTests(unittest.TestCase):
     def test_GIVEN_a_configurations_directory_WHEN_parsing_its_contents_as_xml_THEN_no_errors_generated(self):
         for filename in CommonUtils.get_directory_contents_as_list(self.config_dir_path):
             try:
-                ET.parse(filename)
+                ET.parse(os.path.join(self.config_dir_path, filename))
             except Exception as e:
                 self.fail("Exception occured while parsing file {} in configuration {} as XML. Error was: {}"
                           .format(filename, self.config, e))
-
-
-
