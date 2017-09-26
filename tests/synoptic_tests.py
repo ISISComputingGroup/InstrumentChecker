@@ -24,15 +24,14 @@ class SynopticTests(unittest.TestCase):
 
         self.gui_utils.get_gui_repo_at_release(self.version_utils.get_version())
 
-    def test_type_target_pairs_used_in_synoptic_appear_in_opi_info_for_the_relevant_gui_version(self):
+    def test_GIVEN_synoptic_THEN_the_type_target_pairs_that_it_defines_appear_in_opi_info(self):
 
         allowed_pairs = self.gui_utils.get_type_target_pairs(self.gui_utils.get_opi_info_xml())
 
         try:
             type_target_pairs = self.synoptic_utils.get_type_target_pairs(self.synoptic_utils.get_xml(self.synoptic))
         except Exception as e:
-            self.fail("In synoptic {}, XML failed to parse properly. Error text was: {}"
-                      .format(self.synoptic, e))
+            self.fail("In synoptic {}, XML failed to parse properly. Error text was: {}".format(self.synoptic, e))
 
         for type, target in type_target_pairs:
             if self.synoptic_utils.should_be_ignored(type, target):

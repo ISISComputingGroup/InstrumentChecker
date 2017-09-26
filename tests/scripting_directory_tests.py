@@ -19,7 +19,7 @@ class ScriptingDirectoryTests(unittest.TestCase):
         if not os.path.isdir(self.python_dir):
             self.skipTest("Python directory not present")
 
-    def test_python_directory_contains_an_init_file_with_the_correct_name(self):
+    def test_GIVEN_a_python_directory_exists_THEN_it_contains_a_correctly_named_init_file(self):
 
         init_files = [file for file in os.listdir(self.python_dir)
                              if file.endswith(".py") and file.startswith("init_")]
@@ -34,16 +34,18 @@ class ScriptingDirectoryTests(unittest.TestCase):
         return len([file for file in os.listdir(dir) if file.endswith(".pyc")]) != 0
 
     @skip("This currently doesn't pass on any instruments but we should consider enforcing this.")
-    def test_python_directory_does_not_contain_compiled_files(self):
+    def test_GIVEN_python_directory_exists_THEN_compiled_python_files_are_not_in_git(self):
         self.assertFalse(self._directory_contains_compiled_files(self.python_dir),
                          "Python directory contained compiled files")
 
-    def test_that_inst_directory_exists(self):
+    def test_GIVEN_that_python_directory_exists_THEN_inst_directory_exists(self):
         self.assertTrue(os.path.isdir(self.inst_directory), "Instrument scripts directory missing")
 
     @skip("This currently doesn't pass on any instruments but we should consider enforcing this.")
-    def test_that_inst_directory_does_not_contain_compiled_files(self):
+    def test_GIVEN_that_instrument_scripts_directory_exists_THEN_it_does_not_contain_compiled_python_files(self):
 
-        self.assertTrue(os.path.isdir(self.inst_directory), "Instrument scripts directory missing")
+        if not os.path.isdir(self.inst_directory):
+            self.skipTest("Instrument scripts directory missing")
+
         self.assertFalse(self._directory_contains_compiled_files(self.inst_directory),
                          "Instrument scripts directory contained compiled files")

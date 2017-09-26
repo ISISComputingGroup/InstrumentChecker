@@ -1,8 +1,9 @@
 import unittest
 import os
 from settings import Settings
-from util.channel_access import ChannelAccessUtils
+from util.common import CommonUtils
 from util.configurations import ConfigurationUtils
+import xml.etree.ElementTree as ET
 
 
 class ConfigurationsSingleTests(unittest.TestCase):
@@ -13,7 +14,7 @@ class ConfigurationsSingleTests(unittest.TestCase):
     def setUp(self):
         self.config_utils = ConfigurationUtils(Settings.config_repo_path)
 
-    def test_that_configs_directory_contains_at_least_one_config(self):
+    def test_GIVEN_an_instrument_THEN_the_configurations_directory_exists_and_contains_at_least_one_configuration(self):
         self.assertGreaterEqual(len(self.config_utils.get_configurations_as_list()), 1,
                                 "Configurations directory was empty or did not exist")
 
@@ -46,7 +47,7 @@ class ConfigurationsTests(unittest.TestCase):
         if Settings.valid_iocs is None or Settings.protected_iocs is None:
             self.skipTest("Couldn't retrieve valid/protected IOCS from server.")
 
-    def test_that_the_given_configuration_only_contains_valid_iocs(self):
+    def test_GIVEN_a_configuration_THEN_it_only_contains_valid_iocs(self):
         self._skip_if_valid_iocs_pv_is_not_available()
 
         for ioc in self.config_utils.get_iocs(self.config):
@@ -55,21 +56,32 @@ class ConfigurationsTests(unittest.TestCase):
                           "Configuration {} contained an IOC that the server didn't know about ({})"
                           .format(self.config, ioc))
 
-    def test_that_the_given_configuration_does_not_contain_protected_iocs(self):
+    def test_GIVEN_a_configuration_THEN_it_does_not_contain_any_invalid_iocs(self):
         self._skip_if_valid_iocs_pv_is_not_available()
 
         for ioc in self.config_utils.get_iocs(self.config):
             self.assertNotIn(ioc, Settings.protected_iocs,
                              "Configuration {} contained a protected IOC ({})".format(self.config, ioc))
 
-    def test_that_configurations_directory_only_contains_allowed_config_files(self):
+    def test_GIVEN_a_configuration_THEN_the_directory_does_not_contain_unexpected_files(self):
         for filename in os.listdir(self.config_dir_path):
             self.assertIn(filename, ConfigurationUtils.ALLOWED_CONFIG_FILES,
                           "Component {} contained unexpected files in it's directory ({})"
                           .format(self.config, filename))
 
-    def test_that_all_of_the_required_config_files_are_present_in_the_directory(self):
+    def test_GIVEN_a_configuration_THEN_the_directory_contains_the_required_config_files(self):
         for filename in ConfigurationUtils.REQUIRED_CONFIG_FILES:
             self.assertIn(filename, os.listdir(self.config_dir_path),
                           "Configuration {} did not contain the required config file {}"
                           .format(self.config, filename))
+
+    def test_GIVEN_a_configurations_directory_WHEN_parsing_its_contents_as_xml_THEN_no_errors_generated(self):
+        for filename in CommonUtils.get_directory_contents_as_list(self.config_dir_path):
+            try:
+                ET.parse(filename)
+            except Exception as e:
+                self.fail("Exception occured while parsing file {} in configuration {} as XML. Error was: {}"
+                          .format(filename, self.config, e))
+
+
+
