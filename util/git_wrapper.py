@@ -15,10 +15,9 @@ class GitUtils(object):
 
     def force_clean_checkout(self, branch_name):
         """
-        Force cleans an existing git repo and then checks out and pulls the given branch.
+        Force cleans an existing git repo and then checks out the given branch.
 
-        This is intended to get the latest copy of the given branch with no local changes
-        (i.e. emulate a freshly cloned repository as closely as possible).
+        This is intended to get a copy of the given branch with no local changes.
 
         :param branch_name: The name of the branch to check out
         :return: True if successful, False otherwise
@@ -29,12 +28,7 @@ class GitUtils(object):
             # Ensure the repository is in a clean state.
             repo.git.reset("HEAD", hard=True)
             repo.git.clean(f=True, d=True, x=True)
-
-            # Fetch before checkout in case our branch is new and we don't know about it yet
-            repo.git.fetch(all=True)
             repo.git.checkout(branch_name)
-            # Actually get the latest changes
-            repo.git.pull()
         except git.GitCommandError as e:
             print("Git command failed. Error was: {}".format(e))
             return False

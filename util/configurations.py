@@ -25,7 +25,7 @@ class ConfigurationUtils(object):
         Returns a list of iocs in the configuration.
         :return:
         """
-        root = ET.parse(os.path.join(self.get_configurations_directory(), config_name, "iocs.xml"))
+        root = ET.parse(os.path.join(self.get_configurations_directory(), config_name, "iocs.xml")).getroot()
 
         iocs = []
         for ioc in root.iter("ioc"):

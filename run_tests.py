@@ -8,13 +8,15 @@ from tests.configuration_tests import ConfigurationsTests, ConfigurationsSingleT
 from tests.component_tests import ComponentsTests, ComponentsSingleTests
 from tests.globals_tests import GlobalsTests
 from tests.scripting_directory_tests import ScriptingDirectoryTests
-from tests.settings import Settings
+from tests.synoptic_tests import SynopticTests
 from tests.version_tests import VersionTests
+from tests.settings import Settings
 
 from util.channel_access import ChannelAccessUtils
 from util.components import ComponentUtils
 from util.configurations import ConfigurationUtils
 from util.git_wrapper import GitUtils
+from util.synoptic import SynopticUtils
 
 
 def run_tests(inst_name):
@@ -42,6 +44,9 @@ def run_tests(inst_name):
     for component in ComponentUtils(configs_repo_path).get_configurations_as_list():
         suite.addTests([ComponentsTests(test, component) for test in loader.getTestCaseNames(ComponentsTests)])
 
+    for synoptic in SynopticUtils(configs_repo_path).get_synoptics_filenames():
+        suite.addTests([SynopticTests(test, synoptic) for test in loader.getTestCaseNames(SynopticTests)])
+
     return XMLTestRunner(output=str(os.path.join(reports_path, inst_name)), stream=sys.stdout).run(suite).wasSuccessful()
 
 
@@ -63,9 +68,9 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    reports_path = args.reports_path
-    Settings.config_repo_path = configs_repo_path = args.configs_repo_path
-    Settings.gui_repo_path = gui_repo_path = args.gui_repo_path
+    reports_path = os.path.abspath(args.reports_path)
+    Settings.config_repo_path = configs_repo_path = os.path.abspath(args.configs_repo_path)
+    Settings.gui_repo_path = gui_repo_path = os.path.abspath(args.gui_repo_path)
 
     return_values = []
     for instrument in ChannelAccessUtils().get_inst_list():

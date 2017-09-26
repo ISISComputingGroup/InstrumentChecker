@@ -3,6 +3,9 @@ from util.configurations import ConfigurationUtils
 
 
 class ComponentUtils(ConfigurationUtils):
+    """
+    Class containing utility methods for interacting with components
+    """
 
     BASE_COMPONENT = "_base"
 
