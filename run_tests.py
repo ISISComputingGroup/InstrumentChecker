@@ -65,6 +65,7 @@ if __name__ == "__main__":
                         default="gui\\")
     parser.add_argument("--reports_path", type=str, help="The folder in which test reports should be stored",
                         default="test-reports\\")
+    parser.add_argument("--instrument", type=str, help="Single instrument to run tests on", default=None)
 
     args = parser.parse_args()
 
@@ -72,8 +73,15 @@ if __name__ == "__main__":
     Settings.config_repo_path = configs_repo_path = os.path.abspath(args.configs_repo_path)
     Settings.gui_repo_path = gui_repo_path = os.path.abspath(args.gui_repo_path)
 
+    instruments = ChannelAccessUtils().get_inst_list()
+    assert len(instruments) > 0, "No instruments found. Is the instrument list PV available?"
+
+    if args.instrument is not None:
+        instruments = list(filter(lambda x: x["name"] == args.instrument, instruments))
+        assert len(instruments) > 0, "No instruments matching name={} found.".format(args.instrument)
+
     return_values = []
-    for instrument in ChannelAccessUtils().get_inst_list():
+    for instrument in instruments:
 
         Settings.name = name = instrument['name']
         Settings.hostname = hostname = instrument['hostName']
@@ -83,7 +91,9 @@ if __name__ == "__main__":
         Settings.valid_iocs = ca.get_valid_iocs()
         Settings.protected_iocs = ca.get_protected_iocs()
 
-        GitUtils(configs_repo_path).update_branch(hostname)
+        if not GitUtils(configs_repo_path).update_branch(hostname):
+            return_values.append(False)
+            continue
 
         print("\n\nTesting {} ({})...".format(name, hostname))
         return_values.append(GitUtils(configs_repo_path).force_clean_checkout(hostname) and run_tests(name))

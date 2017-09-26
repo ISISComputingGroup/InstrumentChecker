@@ -27,11 +27,8 @@ class ChannelAccessUtils(object):
         return zlib.decompress(data.decode('hex'))
 
     def get_inst_list(self):
-
-        return [{"name":"DEMO", "hostName":"NDXDEMO", "pvPrefix":"IN:DEMO:"}]
-
         pv_value = self.get_value("CS:INSTLIST")
-        return None if pv_value is None else json.loads(self._dehex_and_decompress(pv_value))
+        return {} if pv_value is None else json.loads(self._dehex_and_decompress(pv_value))
 
     def get_valid_iocs(self):
         pv_value = self.get_value("CS:BLOCKSERVER:IOCS")

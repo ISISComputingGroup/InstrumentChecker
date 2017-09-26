@@ -36,8 +36,6 @@ class ConfigurationsTests(unittest.TestCase):
 
     def setUp(self):
         self.assertIsNotNone(self.config, "Config should not be None")
-        self.assertIsInstance(self.config, basestring, "Config name should be a string")
-        self.assertGreater(len(self.config), 0, "Config name should be a non-empty string")
 
         self.config_dir_path = os.path.join(self.config_utils.get_configurations_directory(), self.config)
 
