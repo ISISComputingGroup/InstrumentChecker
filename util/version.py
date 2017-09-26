@@ -30,3 +30,17 @@ class VersionUtils(object):
     @staticmethod
     def versions_similar(version1, version2):
         return all(v1 == v2 for v1, v2 in zip(version1.split("."), version2.split(".")))
+
+    @staticmethod
+    def convert_release_to_branch_name(major, minor=0, patch=0):
+        return "Release_{maj}.{min}.{patch}".format(maj=int(major), min=int(minor), patch=int(patch))
+
+    @staticmethod
+    def extract_release_numbers_from_string(version):
+        split_version = version.split(".")
+        if len(split_version) >= 3:
+            return split_version[0], split_version[1], split_version[2]
+        elif len(split_version) == 2:
+            return split_version[0], split_version[1]
+        else:
+            return split_version[0]

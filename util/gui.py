@@ -2,6 +2,8 @@ from util.git_wrapper import GitUtils
 import xml.etree.ElementTree as ET
 import os
 
+from util.version import VersionUtils
+
 
 class GuiUtils(object):
     """
@@ -12,23 +14,9 @@ class GuiUtils(object):
         self.git = GitUtils(path)
         self.path = path
 
-    @staticmethod
-    def _convert_release_to_branch_name(major, minor=0, patch=0):
-        return "Release_{maj}.{min}.{patch}".format(maj=int(major), min=int(minor), patch=int(patch))
-
-    @staticmethod
-    def _extract_release_numbers_from_string(version):
-        split_version = version.split(".")
-        if len(split_version) >= 3:
-            return split_version[0], split_version[1], split_version[2]
-        elif len(split_version) == 2:
-            return split_version[0], split_version[1]
-        else:
-            return split_version[0]
-
     def get_gui_repo_at_release(self, version):
         self.git.force_clean_checkout(
-            self._convert_release_to_branch_name(*self._extract_release_numbers_from_string(version)))
+            VersionUtils.convert_release_to_branch_name(*VersionUtils.extract_release_numbers_from_string(version)))
 
     def get_type_target_pairs(self, xml):
         """

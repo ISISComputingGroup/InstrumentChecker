@@ -28,5 +28,5 @@ if exist %gui_dir% (
     git clone https://github.com/ISISComputingGroup/ibex_gui.git %gui_dir%
 )
 
-python run_tests.py --configs_repo_path %configs_dir% --gui_repo_path %gui_dir% --reports_path %reports_dir% --instrument DEMO
+python run_tests.py --configs_repo_path %configs_dir% --gui_repo_path %gui_dir% --reports_path %reports_dir%
 if %errorlevel% neq 0 exit /b %errorlevel%
