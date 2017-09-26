@@ -9,6 +9,8 @@ set reports_dir=%~dp0\test-reports
 REM Clone/pull necessary repositories
 if exist %configs_dir% (
 	cd %configs_dir%
+	git reset HEAD --hard
+	git clean -fdx
     git pull
 	cd %~dp0
 ) else (
@@ -18,6 +20,8 @@ if exist %configs_dir% (
 REM Clone/pull necessary repositories
 if exist %gui_dir% (
 	cd %gui_dir%
+	git reset HEAD --hard
+	git clean -fdx
     git pull
 	cd %~dp0
 ) else (

@@ -28,8 +28,14 @@ class GitUtils(object):
             # Ensure the repository is in a clean state.
             repo.git.reset("HEAD", hard=True)
             repo.git.clean(f=True, d=True, x=True)
-            repo.git.checkout(branch_name)
+            repo.git.checkout(branch_name, force=True)
         except git.GitCommandError as e:
             print("Git command failed. Error was: {}".format(e))
             return False
         return True
+
+    def update_branch(self, branch):
+        repo = git.Repo(path=self.path)
+        repo.git.fetch(all=True)
+        self.force_clean_checkout(branch)
+        repo.git.pull(s="recursive", X="theirs")

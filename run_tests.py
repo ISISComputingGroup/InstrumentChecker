@@ -83,6 +83,8 @@ if __name__ == "__main__":
         Settings.valid_iocs = ca.get_valid_iocs()
         Settings.protected_iocs = ca.get_protected_iocs()
 
+        GitUtils(configs_repo_path).update_branch(hostname)
+
         print("\n\nTesting {} ({})...".format(name, hostname))
         return_values.append(GitUtils(configs_repo_path).force_clean_checkout(hostname) and run_tests(name))
 

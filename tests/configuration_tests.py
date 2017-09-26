@@ -57,6 +57,10 @@ class ConfigurationsTests(unittest.TestCase):
                           "Configuration {} contained an IOC that the server didn't know about ({})"
                           .format(self.config, ioc))
 
+    def test_that_the_given_configuration_does_not_contain_protected_iocs(self):
+        self._skip_if_valid_iocs_pv_is_not_available()
+
+        for ioc in self.config_utils.get_iocs(self.config):
             self.assertNotIn(ioc, Settings.protected_iocs,
                              "Configuration {} contained a protected IOC ({})".format(self.config, ioc))
 
