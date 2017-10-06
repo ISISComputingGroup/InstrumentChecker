@@ -96,6 +96,6 @@ if __name__ == "__main__":
             continue
 
         print("\n\nTesting {} ({})...".format(name, hostname))
-        return_values.append(GitUtils(configs_repo_path).force_clean_checkout(hostname) and run_tests(name))
+        return_values.append(run_tests(name))
 
     sys.exit(False in return_values)

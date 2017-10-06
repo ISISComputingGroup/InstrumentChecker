@@ -29,7 +29,7 @@ class GitUtils(object):
             repo.git.reset("HEAD", hard=True)
             repo.git.clean(f=True, d=True, x=True)
             repo.git.checkout(branch_name, force=True)
-        except git.GitCommandError as e:
+        except (git.GitCommandError, git.InvalidGitRepositoryError) as e:
             print("Git command failed. Error was: {}".format(e))
             return False
         return True
@@ -38,9 +38,10 @@ class GitUtils(object):
         try:
             repo = git.Repo(path=self.path)
             repo.git.fetch(all=True)
-            self.force_clean_checkout(branch)
+            if not self.force_clean_checkout(branch):
+                return False
             repo.git.pull(s="recursive", X="theirs")
-        except git.GitCommandError as e:
+        except (git.GitCommandError, git.InvalidGitRepositoryError) as e:
             print("Git command failed. Error was: {}".format(e))
             return False
         return True
