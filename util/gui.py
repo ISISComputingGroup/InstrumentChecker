@@ -15,8 +15,11 @@ class GuiUtils(object):
         self.path = path
 
     def get_gui_repo_at_release(self, version):
-        self.git.force_clean_checkout(
-            VersionUtils.convert_release_to_branch_name(*VersionUtils.extract_release_numbers_from_string(version)))
+        if not self.git.force_clean_checkout(
+                VersionUtils.convert_release_to_branch_name(
+                    *VersionUtils.extract_release_numbers_from_string(version))):
+
+            raise IOError("Couldn't check out GUI branch corresponding to release {}".format(version))
 
     def get_type_target_pairs(self, xml):
         """
