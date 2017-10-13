@@ -80,5 +80,5 @@ class ComponentsTests(unittest.TestCase):
             try:
                 ET.parse(os.path.join(self.component_dir_path, filename))
             except Exception as e:
-                self.fail("Exception occured while parsing file {} in component {} as XML. Error was: {}"
+                self.fail("Exception occurred while parsing file {} in component {} as XML. Error was: {}"
                           .format(filename, self.component, e))

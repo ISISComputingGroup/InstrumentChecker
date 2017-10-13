@@ -55,7 +55,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                                      description="""Runs tests against the configuration repositories on instruments.
                                             Note: all repositories used by this script will be forcibly cleaned and 
-                                            reset while the tests are running to ensure valid test data.                             
+                                            reset while the tests are running to ensure valid test data.
                                             Do not point this script at any repository where you have changes you want 
                                             to keep!""")
 
@@ -87,15 +87,17 @@ if __name__ == "__main__":
         Settings.hostname = hostname = instrument['hostName']
         Settings.pv_prefix = pv_prefix = instrument['pvPrefix']
 
-        ca = ChannelAccessUtils(instrument['pvPrefix'])
+        ca = ChannelAccessUtils(pv_prefix)
         Settings.valid_iocs = ca.get_valid_iocs()
         Settings.protected_iocs = ca.get_protected_iocs()
+
+        print("\n\nChecking out git repository for {} ({})...".format(name, hostname))
 
         if not GitUtils(configs_repo_path).update_branch(hostname):
             return_values.append(False)
             continue
 
-        print("\n\nTesting {} ({})...".format(name, hostname))
+        print("Testing {} ({})...".format(name, hostname))
         return_values.append(run_tests(name))
 
     sys.exit(False in return_values)

@@ -37,10 +37,4 @@ class VersionUtils(object):
 
     @staticmethod
     def extract_release_numbers_from_string(version):
-        split_version = version.split(".")
-        if len(split_version) >= 3:
-            return split_version[0], split_version[1], split_version[2]
-        elif len(split_version) == 2:
-            return split_version[0], split_version[1]
-        else:
-            return split_version[0]
+        return version.split(".")[0:3]
