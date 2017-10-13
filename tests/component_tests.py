@@ -2,7 +2,7 @@ import unittest
 import os
 from settings import Settings
 from util.common import CommonUtils
-from util.components import ComponentUtils
+from util.configurations import ComponentUtils
 import xml.etree.ElementTree as ET
 
 

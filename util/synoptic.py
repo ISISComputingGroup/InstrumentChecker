@@ -28,7 +28,7 @@ class SynopticUtils(object):
             type = component.find("./{schema}type".format(schema=SynopticUtils.SCHEMA))
             target = component.find("./{schema}target/{schema}name".format(schema=SynopticUtils.SCHEMA))
 
-            if target is None:
+            if target is None and type is not None:
                 # This is allowed but should be ignored
                 continue
 

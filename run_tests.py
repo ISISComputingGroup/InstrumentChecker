@@ -13,8 +13,7 @@ from tests.version_tests import VersionTests
 from tests.settings import Settings
 
 from util.channel_access import ChannelAccessUtils
-from util.components import ComponentUtils
-from util.configurations import ConfigurationUtils
+from util.configurations import ConfigurationUtils, ComponentUtils
 from util.git_wrapper import GitUtils
 from util.synoptic import SynopticUtils
 
@@ -82,12 +81,13 @@ if __name__ == "__main__":
 
     return_values = []
 
-    # Run our own unit tests first, before the integration tests.
+    # Run our own unit tests first, before the configuration tests.
     print("Running self-tests...")
     suite = unittest.TestLoader().discover(os.path.join("util", "test_utils"))
     return_values.append(XMLTestRunner(output=str(reports_path), stream=sys.stdout).run(suite).wasSuccessful())
     print("Self-tests complete.")
 
+    # Now run the configuration tests
     for instrument in instruments:
 
         Settings.name = name = instrument['name']

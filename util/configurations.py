@@ -3,11 +3,10 @@ import xml.etree.ElementTree as ET
 from common import CommonUtils
 
 
-class ConfigurationUtils(object):
+class AbstractConfigurationUtils(object):
     """
-    Class containing utility methods for interacting with the configurations directory
+    Class containing utility methods common to both configuration and component directories.
     """
-
     REQUIRED_CONFIG_FILES = ["blocks.xml", "components.xml", "groups.xml", "iocs.xml", "meta.xml"]
     ALLOWED_CONFIG_FILES = REQUIRED_CONFIG_FILES + ["screens.xml"]
 
@@ -15,7 +14,7 @@ class ConfigurationUtils(object):
         self.config_repo_path = config_repo_path
 
     def get_configurations_directory(self):
-        return os.path.join(self.config_repo_path, "configurations", "configurations")
+        raise NotImplementedError("This is an abstract class, use a concrete class instead")
 
     def get_configurations_as_list(self):
         return CommonUtils.get_folders_in_directory_as_list(self.get_configurations_directory())
@@ -32,3 +31,21 @@ class ConfigurationUtils(object):
             iocs.append(ioc.attrib["name"])
 
         return iocs
+
+
+class ConfigurationUtils(AbstractConfigurationUtils):
+    """
+    Class containing utility methods for interacting with the configurations directory
+    """
+    def get_configurations_directory(self):
+        return os.path.join(self.config_repo_path, "configurations", "configurations")
+
+
+class ComponentUtils(AbstractConfigurationUtils):
+    """
+    Class containing utility methods for interacting with components
+    """
+    BASE_COMPONENT = "_base"
+
+    def get_configurations_directory(self):
+        return os.path.join(self.config_repo_path, "configurations", "components")
