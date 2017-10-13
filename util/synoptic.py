@@ -25,11 +25,33 @@ class SynopticUtils(object):
         result = []
 
         for component in root.iter("{schema}component".format(schema=SynopticUtils.SCHEMA)):
-            type = component.find("./{schema}type".format(schema=SynopticUtils.SCHEMA)).text
-            target = component.find("./{schema}target/{schema}name".format(schema=SynopticUtils.SCHEMA)).text
+            type = component.find("./{schema}type".format(schema=SynopticUtils.SCHEMA))
+            target = component.find("./{schema}target/{schema}name".format(schema=SynopticUtils.SCHEMA))
 
-            if type is not None and target is not None:
-                result.append((type, target))
+            if target is None:
+                # This is allowed but should be ignored
+                continue
+
+            if type is not None:
+                result.append((type.text, target.text))
+            else:
+                message = "Couldn't find ./type or ./target/name in component.".format()
+
+                name = component.find("./{schema}name".format(schema=SynopticUtils.SCHEMA))
+                if name is not None:
+                    message += "\n Component name is: {}".format(name.text)
+                else:
+                    message += "\n Component name could not be extracted."
+
+                if type is not None:
+                    message += "\n Component type is: {}".format(type.text)
+                else:
+                    message += "\n Component type could not be extracted."
+
+                # Target name is already guaranteed not to be None
+                message += "\n Component target name is: {}".format(target.text)
+
+                raise ValueError(message)
 
         return result
 
