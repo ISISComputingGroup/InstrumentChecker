@@ -81,6 +81,13 @@ if __name__ == "__main__":
         assert len(instruments) > 0, "No instruments matching name={} found.".format(args.instrument)
 
     return_values = []
+
+    # Run our own unit tests first, before the integration tests.
+    print("Running self-tests...")
+    suite = unittest.TestLoader().discover(os.path.join("util", "test_utils"))
+    return_values.append(XMLTestRunner(output=str(reports_path), stream=sys.stdout).run(suite).wasSuccessful())
+    print("Self-tests complete.")
+
     for instrument in instruments:
 
         Settings.name = name = instrument['name']
