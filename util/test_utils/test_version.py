@@ -116,7 +116,7 @@ class VersionTests(unittest.TestCase):
         self.assertEqual(2, int(minor))
         self.assertEqual(1, int(patch))
 
-    def test_GIVEN_a_2_level_version_with_a_checksum_in_a_string_THEN_arguments_extracted_appropriately(self):
+    def test_GIVEN_a_2_level_version_in_a_string_THEN_arguments_extracted_appropriately(self):
         # Arrange
         version = "3.2"
 
