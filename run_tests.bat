@@ -3,6 +3,8 @@ REM call C:\Instrument\Apps\EPICS\config_env.bat
 set EPICS_CA_ADDR_LIST=127.255.255.255 130.246.51.255
 set EPICS_CA_AUTO_ADDR_LIST=NO
 set EPICS_CA_MAX_ARRAY_BYTES=65536
+set "PATH=%PATH%;C:\Instrument\Apps\Python\EPICS_UTILS"
+
 REM Define working directories
 set configs_dir=%~dp0\configs
 set gui_dir=%~dp0\gui
