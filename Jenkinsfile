@@ -6,19 +6,16 @@ pipeline {
   agent {  
     label {
       label "ConfigCheck"
-      // Use custom workspace to avoid issue with long filepaths on Win32
-      customWorkspace "C:/ConfigCheck/${env.BRANCH_NAME}"
     }
   }
   
   triggers {
-    pollSCM('H/2 * * * *')
+    cron('H 1 * * *')
   }
   
   stages {  
     stage("Checkout") {
       steps {
-        echo "Branch: ${env.BRANCH_NAME}"
         checkout scm
       }
     }
