@@ -1,10 +1,4 @@
-REM config_env sets CA ADDR LIST and lets us use genie_python's CaChannelWrapper.
-REM call C:\Instrument\Apps\EPICS\config_env.bat
 setlocal
-set EPICS_CA_ADDR_LIST=127.255.255.255 130.246.51.255
-set EPICS_CA_AUTO_ADDR_LIST=NO
-set EPICS_CA_MAX_ARRAY_BYTES=65536
-set "PATH=%PATH%;C:\Instrument\Apps\Python\EPICS_UTILS"
 
 REM Define working directories
 set configs_dir=%~dp0\configs
@@ -20,5 +14,5 @@ if not exist "%gui_dir%" (
     git clone https://github.com/ISISComputingGroup/ibex_gui.git "%gui_dir%"
 )
 
-c:\Instrument\Apps\Python\python.exe run_tests.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" --reports_path "%reports_dir%"
+call c:\Instrument\Apps\Python\genie_python.bat run_tests.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" --reports_path "%reports_dir%"
 if %errorlevel% neq 0 exit /b %errorlevel%
