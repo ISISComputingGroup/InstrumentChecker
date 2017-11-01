@@ -34,13 +34,15 @@ pipeline {
             """
       }
     }
+    
+    stage("Unit Test Results") {
+      steps {
+        junit "test-reports/**/*.xml"
+      }
+   }
   }
   
   post {
-    always {
-        junit "test-reports/*.xml"
-        junit "test-reports/**/*.xml"
-    }
     failure {
       step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: 'icp-buildserver@lists.isis.rl.ac.uk', sendToIndividuals: true])
     }    
