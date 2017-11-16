@@ -18,7 +18,7 @@ from util.git_wrapper import GitUtils
 from util.synoptic import SynopticUtils
 
 
-def run_tests(inst_name):
+def run_instrument_tests(inst_name, reports_path):
     """
     Runs the test suite
     :param inst_name: The name of the instrument to run tests on,
@@ -37,19 +37,66 @@ def run_tests(inst_name):
     # Add configs test suite a dynamic number of times with an argument of the config name.
     # unittest's test loader is unable to take arguments to test classes by default so have
     # to use the getTestCaseNames() syntax and explicitly add the argument ourselves.
-    for config in ConfigurationUtils(configs_repo_path).get_configurations_as_list():
+    for config in ConfigurationUtils(Settings.config_repo_path).get_configurations_as_list():
         suite.addTests([ConfigurationsTests(test, config) for test in loader.getTestCaseNames(ConfigurationsTests)])
 
-    for component in ComponentUtils(configs_repo_path).get_configurations_as_list():
+    for component in ComponentUtils(Settings.config_repo_path).get_configurations_as_list():
         suite.addTests([ComponentsTests(test, component) for test in loader.getTestCaseNames(ComponentsTests)])
 
-    for synoptic in SynopticUtils(configs_repo_path).get_synoptics_filenames():
+    for synoptic in SynopticUtils(Settings.config_repo_path).get_synoptics_filenames():
         suite.addTests([SynopticTests(test, synoptic) for test in loader.getTestCaseNames(SynopticTests)])
 
-    return XMLTestRunner(output=str(os.path.join(reports_path, inst_name)), stream=sys.stdout).run(suite).wasSuccessful()
+    runner = XMLTestRunner(output=str(os.path.join(reports_path, inst_name)), stream=sys.stdout)
+    return runner.run(suite).wasSuccessful()
 
 
-if __name__ == "__main__":
+def setup_instrument_tests(instrument):
+    """
+    Sets up the settings class and configurations repository to point at the given instrument.
+
+    :param instrument: A dictionary representing the properties of an instrument as per the CS:INSTLIST PV.
+    :return: True if successful, False otherwise.
+    """
+    name, hostname, pv_prefix = instrument['name'], instrument['hostName'], instrument['pvPrefix']
+    Settings.set_instrument(name, hostname, pv_prefix)
+
+    print("\n\nChecking out git repository for {} ({})...".format(name, hostname))
+    if not GitUtils(Settings.config_repo_path).update_branch(hostname):
+        return False
+
+    return True
+
+
+def run_self_tests(reports_path):
+    """
+    Runs our own unit tests.
+    :return: True if all tests passed, False otherwise
+    """
+    print("Running self-tests...")
+    suite = unittest.TestLoader().discover(os.path.join("util", "test_utils"))
+    return XMLTestRunner(output=str(reports_path), stream=sys.stdout).run(suite).wasSuccessful()
+
+
+def run_all_tests(reports_path, instruments):
+    """
+    Runs all of the tests (including our own unit tests)
+    :return: True if all tests succeeded, False otherwise.
+    """
+
+    # Run our own unit tests first, before the configuration tests.
+    return_values = [run_self_tests(reports_path)]
+
+    # Now run the configuration tests
+    for instrument in instruments:
+        if setup_instrument_tests(instrument):
+            return_values.append(run_instrument_tests(instrument['name'], reports_path))
+        else:
+            return_values.append(False)
+
+    return all(value for value in return_values)
+
+
+def main():
 
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                                      description="""Runs tests against the configuration repositories on instruments.
@@ -64,47 +111,27 @@ if __name__ == "__main__":
                         help="The path to the GUI repository.")
     parser.add_argument("--reports_path", required=True, type=str,
                         help="The folder in which test reports should be stored.")
-    parser.add_argument("--instrument", type=str, help="Single instrument to run tests on.", default=None)
+    parser.add_argument("--instruments", type=str, nargs="+", default=None,
+                        help="Instruments to run tests on. If defined, configuration tests will only be run on the "
+                             "given instruments. If not defined, tests will be run on all instruments.")
 
     args = parser.parse_args()
 
-    reports_path = os.path.abspath(args.reports_path)
-    Settings.config_repo_path = configs_repo_path = os.path.abspath(args.configs_repo_path)
-    Settings.gui_repo_path = gui_repo_path = os.path.abspath(args.gui_repo_path)
-
     instruments = ChannelAccessUtils().get_inst_list()
-    assert len(instruments) > 0, "No instruments found. Is the instrument list PV available?"
+    if len(instruments) == 0:
+        raise IOError("No instruments found. This is probably because the instrument list PV is unavailable.")
 
-    if args.instrument is not None:
-        instruments = list(filter(lambda x: x["name"] == args.instrument, instruments))
-        assert len(instruments) > 0, "No instruments matching name={} found.".format(args.instrument)
+    if args.instruments is not None:
+        instruments = list(filter(lambda x: x["name"] in args.instruments, instruments))
+        if len(instruments) < len(args.instruments):
+            raise ValueError("Some instruments specified could not be found in the instrument list.")
 
-    return_values = []
+    reports_path = os.path.abspath(args.reports_path)
+    Settings.set_repo_paths(os.path.abspath(args.configs_repo_path), os.path.abspath(args.gui_repo_path))
 
-    # Run our own unit tests first, before the configuration tests.
-    print("Running self-tests...")
-    suite = unittest.TestLoader().discover(os.path.join("util", "test_utils"))
-    return_values.append(XMLTestRunner(output=str(reports_path), stream=sys.stdout).run(suite).wasSuccessful())
-    print("Self-tests complete.")
+    success = run_all_tests(reports_path, instruments)
+    sys.exit(0 if success else 1)
 
-    # Now run the configuration tests
-    for instrument in instruments:
 
-        Settings.name = name = instrument['name']
-        Settings.hostname = hostname = instrument['hostName']
-        Settings.pv_prefix = pv_prefix = instrument['pvPrefix']
-
-        ca = ChannelAccessUtils(pv_prefix)
-        Settings.valid_iocs = ca.get_valid_iocs()
-        Settings.protected_iocs = ca.get_protected_iocs()
-
-        print("\n\nChecking out git repository for {} ({})...".format(name, hostname))
-
-        if not GitUtils(configs_repo_path).update_branch(hostname):
-            return_values.append(False)
-            continue
-
-        print("Testing {} ({})...".format(name, hostname))
-        return_values.append(run_tests(name))
-
-    sys.exit(False in return_values)
+if __name__ == "__main__":
+    main()
