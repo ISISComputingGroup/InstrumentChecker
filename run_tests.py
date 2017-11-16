@@ -81,7 +81,11 @@ def run_all_tests(reports_path, instruments):
     """
 
     # Run our own unit tests first, before the configuration tests.
-    return_values = [run_self_tests(reports_path)]
+    if not run_self_tests(reports_path):
+        print("Unit tests failed!")
+        return False
+
+    return_values = []
 
     # Now run the configuration tests
     for instrument in instruments:
