@@ -28,11 +28,8 @@ def run_instrument_tests(inst_name, reports_path):
     suite = unittest.TestSuite()
     loader = unittest.TestLoader()
 
-    suite.addTests(loader.loadTestsFromTestCase(ScriptingDirectoryTests))
-    suite.addTests(loader.loadTestsFromTestCase(GlobalsTests))
-    suite.addTests(loader.loadTestsFromTestCase(VersionTests))
-    suite.addTests(loader.loadTestsFromTestCase(ConfigurationsSingleTests))
-    suite.addTests(loader.loadTestsFromTestCase(ComponentsSingleTests))
+    for case in [ScriptingDirectoryTests, GlobalsTests, VersionTests, ConfigurationsSingleTests, ComponentsSingleTests]:
+        suite.addTests(loader.loadTestsFromTestCase(case))
 
     # Add configs test suite a dynamic number of times with an argument of the config name.
     # unittest's test loader is unable to take arguments to test classes by default so have
