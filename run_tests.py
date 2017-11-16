@@ -54,17 +54,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                                      description="""Runs tests against the configuration repositories on instruments.
                                             Note: all repositories used by this script will be forcibly cleaned and 
-                                            reset while the tests are running to ensure valid test data.
+                                            reset while the tests are running.
                                             Do not point this script at any repository where you have changes you want 
                                             to keep!""")
 
-    parser.add_argument("--configs_repo_path", type=str, help="The path to the configurations repository.",
-                        default="configs\\")
-    parser.add_argument("--gui_repo_path", type=str, help="The path to the GUI repository",
-                        default="gui\\")
-    parser.add_argument("--reports_path", type=str, help="The folder in which test reports should be stored",
-                        default="test-reports\\")
-    parser.add_argument("--instrument", type=str, help="Single instrument to run tests on", default=None)
+    parser.add_argument("--configs_repo_path", required=True, type=str,
+                        help="The path to the configurations repository.")
+    parser.add_argument("--gui_repo_path", required=True, type=str,
+                        help="The path to the GUI repository.")
+    parser.add_argument("--reports_path", required=True, type=str,
+                        help="The folder in which test reports should be stored.")
+    parser.add_argument("--instrument", type=str, help="Single instrument to run tests on.", default=None)
 
     args = parser.parse_args()
 
