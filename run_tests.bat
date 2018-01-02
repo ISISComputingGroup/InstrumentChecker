@@ -6,6 +6,7 @@ set gui_dir=%~dp0\gui
 set reports_dir=%~dp0\test-reports
 
 REM Clone necessary repositories
+REM Do this here rather than in python because it will make git authentication dialogs visible rather than being in a python thread.
 if not exist "%configs_dir%" (
     git clone http://spudulike@control-svcs.isis.cclrc.ac.uk/gitroot/instconfigs/inst.git "%configs_dir%"
 )
