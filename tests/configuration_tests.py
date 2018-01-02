@@ -50,7 +50,7 @@ class ConfigurationsTests(unittest.TestCase):
     def test_GIVEN_a_configuration_THEN_it_only_contains_valid_iocs(self):
         self._skip_if_valid_iocs_pv_is_not_available()
 
-        for ioc in self.config_utils.get_iocs(self.config):
+        for ioc in self.config_utils.get_iocs(self.config_utils.get_iocs_xml(self.config)):
 
             self.assertIn(ioc, Settings.valid_iocs,
                           "Configuration {} contained an IOC that the server didn't know about ({})"
@@ -59,7 +59,7 @@ class ConfigurationsTests(unittest.TestCase):
     def test_GIVEN_a_configuration_THEN_it_does_not_contain_any_invalid_iocs(self):
         self._skip_if_valid_iocs_pv_is_not_available()
 
-        for ioc in self.config_utils.get_iocs(self.config):
+        for ioc in self.config_utils.get_iocs(self.config_utils.get_iocs_xml(self.config)):
             self.assertNotIn(ioc, Settings.protected_iocs,
                              "Configuration {} contained a protected IOC ({})".format(self.config, ioc))
 

@@ -21,24 +21,30 @@ class GuiUtils(object):
 
             raise IOError("Couldn't check out GUI branch corresponding to release {}".format(version))
 
-    def get_type_target_pairs(self, xml):
-        """
-        Returns a set of type, target pairs defined in the opi_info xml
-        :param xml: string version of the xml
-        """
+    def get_valid_types(self, xml):
+        root = ET.fromstring(xml)
+        result = []
+
+        for component in root.iter("entry"):
+            type = component.find("./value/type").text
+
+            if type is not None:
+                result.append(type)
+
+        return result
+
+    def get_valid_targets(self, xml):
         root = ET.fromstring(xml)
         result = []
 
         for component in root.iter("entry"):
             target = component.find("./key").text
-            type = component.find("./value/type").text
 
-            if type is not None and target is not None:
-                result.append((type, target))
+            if target is not None:
+                result.append(target)
 
         return result
 
     def get_opi_info_xml(self):
-        return open(os.path.join(self.path, "base",
-                                 "uk.ac.stfc.isis.ibex.opis", "resources", "opi_info.xml"), "r").read()
-
+        with open(os.path.join(self.path, "base", "uk.ac.stfc.isis.ibex.opis", "resources", "opi_info.xml")) as f:
+            return f.read()

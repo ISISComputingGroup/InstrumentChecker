@@ -50,7 +50,7 @@ class ComponentsTests(unittest.TestCase):
     def test_GIVEN_a_component_THEN_it_only_contains_valid_iocs(self):
         self._skip_if_valid_iocs_pv_is_not_available()
 
-        for ioc in self.component_utils.get_iocs(self.component):
+        for ioc in self.component_utils.get_iocs(self.component_utils.get_iocs_xml(self.component)):
             self.assertIn(ioc, Settings.valid_iocs,
                           "Component {} contained an IOC that the server didn't know about ({})"
                           .format(self.component, ioc))
@@ -58,7 +58,7 @@ class ComponentsTests(unittest.TestCase):
     def test_GIVEN_a_component_THEN_it_does_not_contain_protected_iocs_unless_it_is_the_base_component(self):
         self._skip_if_valid_iocs_pv_is_not_available()
 
-        for ioc in self.component_utils.get_iocs(self.component):
+        for ioc in self.component_utils.get_iocs(self.component_utils.get_iocs_xml(self.component)):
             if self.component != ComponentUtils.BASE_COMPONENT:
                 self.assertNotIn(ioc, Settings.protected_iocs,
                                  "Component {} contained a protected IOC ({})".format(self.component, ioc))
