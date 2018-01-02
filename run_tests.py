@@ -58,10 +58,7 @@ def setup_instrument_tests(instrument):
     Settings.set_instrument(name, hostname, pv_prefix)
 
     print("\n\nChecking out git repository for {} ({})...".format(name, hostname))
-    if not GitUtils(Settings.config_repo_path).update_branch(hostname):
-        return False
-
-    return True
+    return GitUtils(Settings.config_repo_path).update_branch(hostname)
 
 
 def run_self_tests(reports_path):
