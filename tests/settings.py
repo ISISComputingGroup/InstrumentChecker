@@ -19,7 +19,7 @@ class Settings(object):
     protected_iocs = None
 
     def __init__(self):
-        raise NotImplementedError("Do not create an instance of this class.")
+        raise RuntimeError("Do not create an instance of this class.")
 
     @staticmethod
     def set_instrument(name, hostname, pv_prefix):

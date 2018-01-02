@@ -1,9 +1,13 @@
 import unittest
 from settings import Settings
 from util.globals import GlobalsUtils
+from six import string_types
 
 
 class GlobalsTests(unittest.TestCase):
+    """
+    Tests in this class relate to the contents or existence of the globals.txt configuration file.
+    """
 
     def setUp(self):
         self.globals_utils = GlobalsUtils(Settings.config_repo_path)
@@ -14,7 +18,7 @@ class GlobalsTests(unittest.TestCase):
             self.skipTest("Globals file did not exist.")
 
         for linenumber, line in enumerate(self.globals_utils.get_lines(), 1):
-            self.assertIsInstance(line, basestring)
+            self.assertIsInstance(line, string_types)
             self.assertTrue(self.globals_utils.check_syntax(line),
                             "Invalid syntax on line {linenumber}. Line contents was: {contents}"
                             .format(linenumber=linenumber, contents=line))

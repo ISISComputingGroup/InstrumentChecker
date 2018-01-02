@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 
 class ComponentsSingleTests(unittest.TestCase):
     """
-    Tests in this class will be run exactly once regardless of how many configs exist.
+    Tests in this class will be run exactly once regardless of how many components exist.
     """
 
     def setUp(self):
@@ -36,7 +36,9 @@ class ComponentsTests(unittest.TestCase):
         self.component = component
 
     def setUp(self):
-        self.assertIsNotNone(self.component, "Config should not be None")
+        # Class has to have an __init__ that accepts one argument for unittest's test loader to work properly.
+        # However it should never be the default (None) when actually running the tests.
+        self.assertIsNotNone(self.component, "Component should not be None")
 
         self.component_dir_path = os.path.join(self.component_utils.get_configurations_directory(), self.component)
 

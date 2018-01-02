@@ -15,6 +15,10 @@ class SynopticTests(unittest.TestCase):
         self.synoptic = synoptic
 
     def setUp(self):
+        # Has to have an __init__ that accepts one argument for unittest's test loader to work properly.
+        # However the config should never be the default (None) when actually running the tests.
+        self.assertIsNotNone(self.synoptic)
+
         self.gui_utils = GuiUtils(Settings.gui_repo_path)
         self.synoptic_utils = SynopticUtils(Settings.config_repo_path)
         self.version_utils = VersionUtils(Settings.config_repo_path)

@@ -36,6 +36,8 @@ class ConfigurationsTests(unittest.TestCase):
         self.config = config
 
     def setUp(self):
+        # Class has to have an __init__ that accepts one argument for unittest's test loader to work properly.
+        # However it should never be the default (None) when actually running the tests.
         self.assertIsNotNone(self.config, "Config should not be None")
 
         self.config_dir_path = os.path.join(self.config_utils.get_configurations_directory(), self.config)
