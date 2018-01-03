@@ -23,6 +23,7 @@ def run_instrument_tests(inst_name, reports_path):
     Runs the test suite
     :param inst_name: The name of the instrument to run tests on,
                     used to sort the test reports folder into instrument-specific reports
+    :param reports_path: The path to store test reports
     :return: True if the tests passed, false otherwise
     """
     suite = unittest.TestSuite()
