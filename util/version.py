@@ -5,7 +5,7 @@ from util.common import CommonUtils
 
 class VersionUtils(object):
     """
-    Class containing utility methods for interacting with the Python scripting directory
+    Class containing utility methods relating to the version of IBEX.
     """
 
     VERSION_FILE = "config_version.txt"

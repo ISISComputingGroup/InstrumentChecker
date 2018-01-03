@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 
 class ComponentsSingleTests(unittest.TestCase):
     """
-    Tests in this class will be run exactly once regardless of how many configs exist.
+    Tests in this class will be run exactly once regardless of how many components exist.
     """
 
     def setUp(self):
@@ -36,7 +36,9 @@ class ComponentsTests(unittest.TestCase):
         self.component = component
 
     def setUp(self):
-        self.assertIsNotNone(self.component, "Config should not be None")
+        # Class has to have an __init__ that accepts one argument for unittest's test loader to work properly.
+        # However it should never be the default (None) when actually running the tests.
+        self.assertIsNotNone(self.component, "Component should not be None")
 
         self.component_dir_path = os.path.join(self.component_utils.get_configurations_directory(), self.component)
 
@@ -50,7 +52,7 @@ class ComponentsTests(unittest.TestCase):
     def test_GIVEN_a_component_THEN_it_only_contains_valid_iocs(self):
         self._skip_if_valid_iocs_pv_is_not_available()
 
-        for ioc in self.component_utils.get_iocs(self.component):
+        for ioc in self.component_utils.get_iocs(self.component_utils.get_iocs_xml(self.component)):
             self.assertIn(ioc, Settings.valid_iocs,
                           "Component {} contained an IOC that the server didn't know about ({})"
                           .format(self.component, ioc))
@@ -58,7 +60,7 @@ class ComponentsTests(unittest.TestCase):
     def test_GIVEN_a_component_THEN_it_does_not_contain_protected_iocs_unless_it_is_the_base_component(self):
         self._skip_if_valid_iocs_pv_is_not_available()
 
-        for ioc in self.component_utils.get_iocs(self.component):
+        for ioc in self.component_utils.get_iocs(self.component_utils.get_iocs_xml(self.component)):
             if self.component != ComponentUtils.BASE_COMPONENT:
                 self.assertNotIn(ioc, Settings.protected_iocs,
                                  "Component {} contained a protected IOC ({})".format(self.component, ioc))

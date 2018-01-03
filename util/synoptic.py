@@ -56,7 +56,11 @@ class SynopticUtils(object):
         return result
 
     def get_xml(self, file_name):
-        return open(os.path.join(self.synoptics_path, file_name), "r").read()
+        with open(os.path.join(self.synoptics_path, file_name)) as f:
+            return f.read()
 
-    def should_be_ignored(self, type, target):
-        return (type == "UNKNOWN" and target == "NONE") or type == "DAE"
+    def type_should_be_ignored(self, type):
+        return type in ["UNKNOWN", "DAE"]
+
+    def target_should_be_ignored(self, target):
+        return target == "NONE"

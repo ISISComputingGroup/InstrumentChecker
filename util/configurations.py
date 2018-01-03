@@ -10,6 +10,8 @@ class AbstractConfigurationUtils(object):
     REQUIRED_CONFIG_FILES = ["blocks.xml", "components.xml", "groups.xml", "iocs.xml", "meta.xml"]
     ALLOWED_CONFIG_FILES = REQUIRED_CONFIG_FILES + ["screens.xml"]
 
+    XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/iocs/1.0}"
+
     def __init__(self, config_repo_path):
         self.config_repo_path = config_repo_path
 
@@ -19,15 +21,25 @@ class AbstractConfigurationUtils(object):
     def get_configurations_as_list(self):
         return CommonUtils.get_folders_in_directory_as_list(self.get_configurations_directory())
 
-    def get_iocs(self, config_name):
+    def get_iocs_xml(self, config_name):
         """
-        Returns a list of iocs in the configuration.
+        Gets the XML corresponding to the IOCs file for a particular configuration.
+        :param config_name: the configuration or component name
+        :return: the XML as a string
+        """
+        path = os.path.join(self.get_configurations_directory(), config_name, "iocs.xml")
+        with open(path) as f:
+            return f.read()
+
+    def get_iocs(self, xml):
+        """
+        Returns a list of iocs in the xml provided.
         :return:
         """
-        root = ET.parse(os.path.join(self.get_configurations_directory(), config_name, "iocs.xml")).getroot()
+        root = ET.fromstring(xml)
 
         iocs = []
-        for ioc in root.iter("ioc"):
+        for ioc in root.iter("{}ioc".format(self.XML_SCHEMA)):
             iocs.append(ioc.attrib["name"])
 
         return iocs
