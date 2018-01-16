@@ -55,3 +55,9 @@ class SynopticTests(unittest.TestCase):
             if not self.synoptic_utils.type_should_be_ignored(type):
                 self.assertIn(type, allowed_types, "In synoptic {}, component type '{}' was unknown."
                               .format(self.synoptic, type))
+
+    def test_GIVEN_synoptic_THEN_pv_addresses_are_not_empty(self):
+        try:
+            self.synoptic_utils.get_pv_addresses(self.synoptic_utils.get_xml(self.synoptic))
+        except Exception as e:
+            self.fail("In synoptic {}, XML failed to parse properly. Error text was: {}".format(self.synoptic, e))
