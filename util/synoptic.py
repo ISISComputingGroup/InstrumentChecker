@@ -69,19 +69,11 @@ class SynopticUtils(object):
         return target == "NONE"
 
     def get_pv_addresses(self, synoptic_xml):
-        names_with_no_address = list()
-        valid_addresses = dict()
+        pv_addresses = dict()
 
         for pv in ET.fromstring(synoptic_xml).iter(self._prefix_schema("pv")):
             address = pv.find(self._prefix_schema("address")).text
             name = pv.find(self._prefix_schema("displayname")).text
-            if address is None:
-                names_with_no_address.append(name)
-            else:
-                valid_addresses[name] = address
+            pv_addresses[name] = address
 
-        if len(names_with_no_address) > 0:
-            msg = "The synoptic contains PVs with no associated address:\n    " + "\n    ".join(names_with_no_address)
-            raise ValueError(msg)
-
-        return valid_addresses
+        return pv_addresses
