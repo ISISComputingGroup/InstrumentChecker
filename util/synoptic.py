@@ -12,6 +12,9 @@ class SynopticUtils(object):
     def __init__(self, config_repo_path):
         self.synoptics_path = os.path.join(config_repo_path, "configurations", "synoptics")
 
+    def _prefix_schema(self, tag):
+        return "{schema}{tag}".format(schema=SynopticUtils.SCHEMA, tag=tag)
+
     def get_synoptics_filenames(self):
         return [f for f in os.listdir(self.synoptics_path) if f.endswith(".xml")]
 
@@ -24,9 +27,9 @@ class SynopticUtils(object):
         root = ET.fromstring(synoptic_xml)
         result = []
 
-        for component in root.iter("{schema}component".format(schema=SynopticUtils.SCHEMA)):
-            type = component.find("./{schema}type".format(schema=SynopticUtils.SCHEMA))
-            target = component.find("./{schema}target/{schema}name".format(schema=SynopticUtils.SCHEMA))
+        for component in root.iter(self._prefix_schema("component")):
+            type = component.find("./{}".format(self._prefix_schema("type")))
+            target = component.find("./{}/{}".format(self._prefix_schema("target"), self._prefix_schema("name")))
 
             if target is None and type is not None:
                 # This is allowed but should be ignored
@@ -64,3 +67,13 @@ class SynopticUtils(object):
 
     def target_should_be_ignored(self, target):
         return target == "NONE"
+
+    def get_pv_addresses(self, synoptic_xml):
+        pv_addresses = dict()
+
+        for pv in ET.fromstring(synoptic_xml).iter(self._prefix_schema("pv")):
+            address = pv.find(self._prefix_schema("address")).text
+            name = pv.find(self._prefix_schema("displayname")).text
+            pv_addresses[name] = address
+
+        return pv_addresses

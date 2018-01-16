@@ -99,3 +99,96 @@ class SynopticTests(unittest.TestCase):
                     """
 
         self.assertListEqual(self.synoptic_utils.get_type_target_pairs(xml), [])
+
+    def test_GIVEN_a_synoptic_xml_with_pv_address_WHEN_parsed_THEN_name_and_address_identified_as_in_XML(self):
+        name = "Test PV"
+        address = "TE:PV:1"
+        xml = """<?xml version="1.0" ?>
+                    <instrument xmlns="http://www.isis.stfc.ac.uk//instrument">
+                        <name>Name</name>
+                        <components>
+                            <component>
+                                <name>Name</name>
+                                <type>HE_LEVEL_GAUGE</type>
+                                <target>
+                                    <name>HLG</name>
+                                </target>
+                                <pvs>
+                                    <pv>
+                                        <displayname>{name}</displayname>
+                                        <address>{address}</address>
+                                    </pv>
+                                </pvs>
+                            </component>
+                        </components>
+                    </instrument>
+                    """.format(name=name, address=address)
+
+        expected_pvs = {name: address}
+        self.assertEqual(expected_pvs, self.synoptic_utils.get_pv_addresses(xml))
+
+    def test_GIVEN_a_synoptic_xml_with_empty_pv_address_WHEN_parsed_THEN_name_matches_xml_address_is_none(self):
+        name = "Test PV"
+        xml = """<?xml version="1.0" ?>
+                    <instrument xmlns="http://www.isis.stfc.ac.uk//instrument">
+                        <name>Name</name>
+                        <components>
+                            <component>
+                                <name>Name</name>
+                                <type>HE_LEVEL_GAUGE</type>
+                                <target>
+                                    <name>HLG</name>
+                                </target>
+                                <pvs>
+                                    <pv>
+                                        <displayname>{name}</displayname>
+                                        <address/>
+                                    </pv>
+                                </pvs>
+                            </component>
+                        </components>
+                    </instrument>
+                    """.format(name=name)
+
+        expected_pvs = {name: None}
+        self.assertEqual(expected_pvs, self.synoptic_utils.get_pv_addresses(xml))
+
+    def test_GIVEN_a_synoptic_xml_with_a_mix_of_undefined_and_defined_pv_addresses_WHEN_parsed_THEN_extracted_names_and_addresses_match_XML_input(self):
+
+        name_1 = "Test PV 1"
+        address_1 = "TE:PV:1"
+        name_2 = "Test PV 2"
+        address_2 = "TE:PV:2"
+        name_3 = "Test PV 3"
+
+        xml = """<?xml version="1.0" ?>
+                    <instrument xmlns="http://www.isis.stfc.ac.uk//instrument">
+                        <name>Name</name>
+                        <components>
+                            <component>
+                                <name>Name</name>
+                                <type>HE_LEVEL_GAUGE</type>
+                                <target>
+                                    <name>HLG</name>
+                                </target>
+                                <pvs>
+                                    <pv>
+                                        <displayname>{name_1}</displayname>
+                                        <address>{address_1}</address>
+                                    </pv>
+                                    <pv>
+                                        <displayname>{name_2}</displayname>
+                                        <address>{address_2}</address>
+                                    </pv>
+                                    <pv>
+                                        <displayname>{name_3}</displayname>
+                                        <address/>
+                                    </pv>
+                                </pvs>
+                            </component>
+                        </components>
+                    </instrument>
+                    """.format(name_1=name_1, address_1=address_1, name_2=name_2, address_2=address_2, name_3=name_3)
+
+        expected_pvs = {name_1: address_1, name_2: address_2, name_3: None}
+        self.assertEqual(expected_pvs, self.synoptic_utils.get_pv_addresses(xml))
