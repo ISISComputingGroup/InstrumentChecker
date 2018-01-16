@@ -58,6 +58,11 @@ class SynopticTests(unittest.TestCase):
 
     def test_GIVEN_synoptic_THEN_pv_addresses_are_not_empty(self):
         try:
-            self.synoptic_utils.get_pv_addresses(self.synoptic_utils.get_xml(self.synoptic))
+            pvs = self.synoptic_utils.get_pv_addresses(self.synoptic_utils.get_xml(self.synoptic))
         except Exception as e:
             self.fail("In synoptic {}, XML failed to parse properly. Error text was: {}".format(self.synoptic, e))
+        else:
+            invalid_names = [name for name in pvs.keys() if pvs[name] is None]
+            error_msg = "Synoptic {} contains the following PV names with no associated address:\n    {}".format(
+                self.synoptic, "\n    ".join(invalid_names))
+            self.assertEqual(len(invalid_names), 0, error_msg)
