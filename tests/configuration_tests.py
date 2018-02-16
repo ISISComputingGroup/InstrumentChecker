@@ -84,3 +84,6 @@ class ConfigurationsTests(unittest.TestCase):
             except Exception as e:
                 self.fail("Exception occurred while parsing file {} in configuration {} as XML. Error was: {}"
                           .format(filename, self.config, e))
+
+    def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(self):
+        raise NotImplementedError()
