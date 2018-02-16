@@ -44,6 +44,29 @@ class AbstractConfigurationUtils(object):
 
         return iocs
 
+    def get_ioc_macros(self, xml, ioc_name, config_name):
+        """
+        Returns a dictionary of macro information for a given ioc_name in the given xml.
+
+        :param xml: The IOC xml.
+        :param ioc_name: The name of the ioc.
+        :param config_name: The name of the configuration we're looking in.
+        :return: A dictionary of macro information. Keys are the macro name, values are the macro value
+        """
+        # Parse the XML
+        root = ET.fromstring(xml)
+        ioc_xml = tuple(ioc for ioc in root.iter("{}ioc".format(self.XML_SCHEMA)) if ioc.attrib["name"] == ioc_name)
+
+        # Assert that we found exactly 1 IOC with the right name
+        if len(ioc_xml) == 0:
+            raise ValueError("Unable to find IOC {} in IOC XML for config {}".format(ioc_name, config_name))
+        elif len(ioc_xml) > 1:
+            raise ValueError("Unable to identify unique IOC {} in IOC XML for config {}".format(
+                len(ioc_xml), config_name))
+
+        # Extract the macros
+        return {m.attrib["name"]: m.attrib["value"] for m in ioc_xml[0].iter("{}macro".format(self.XML_SCHEMA))}
+
 
 class ConfigurationUtils(AbstractConfigurationUtils):
     """
