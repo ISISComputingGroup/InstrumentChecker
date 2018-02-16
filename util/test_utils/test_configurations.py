@@ -80,7 +80,7 @@ class ConfigurationTests(unittest.TestCase):
         self.assertEqual(macros_2[name_1], value_1_02)
         self.assertEqual(macros_2[name_2], value_2_02)
 
-    def test_GIVEN_ioc_xml_WHEN_macros_requested_for_ioc_that_does_not_exist_THEN_causes_exception(self):
+    def test_GIVEN_ioc_xml_WHEN_macros_requested_for_ioc_that_does_not_exist_THEN_returns_no_data(self):
 
         xml = """<?xml version="1.0" ?>
                     <iocs xmlns="http://epics.isis.rl.ac.uk/schema/iocs/1.0" 
@@ -89,5 +89,5 @@ class ConfigurationTests(unittest.TestCase):
                     </iocs>
                     """
 
-        with self.assertRaises(ValueError):
-            self.config_utils.get_ioc_macros(xml, "SIMPL", "test_config")
+        self.assertEqual(len(self.config_utils.get_ioc_macros(xml, "SIMPL", "test_config").values()), 0)
+

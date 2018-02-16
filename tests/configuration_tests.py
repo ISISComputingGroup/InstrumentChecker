@@ -3,6 +3,7 @@ import os
 from settings import Settings
 from util.common import CommonUtils
 from util.configurations import ConfigurationUtils
+import itertools
 import xml.etree.ElementTree as ET
 
 
@@ -86,24 +87,17 @@ class ConfigurationsTests(unittest.TestCase):
                           .format(filename, self.config, e))
 
     def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(self):
-        iocs_xml = ConfigurationUtils.get_iocs_xml(self.config)
-
-        def get_ioc_prefix(ioc_name):
-            # Extract the IOC prefix from an IOC name (e.g. GALIL_01 -> GALIL)
-            return ioc_name[:-3]
+        iocs_xml = self.config_utils.get_iocs_xml(self.config)
 
         motor_ioc_prefixes = ["GALIL", "MCLENNAN", "LINMOT", "SM300"]
-        motor_iocs = (ioc for ioc in ConfigurationUtils.get_iocs(iocs_xml) if get_ioc_prefix(ioc) in motor_ioc_prefixes)
+        max_suffix = 10
+        motor_iocs = ["{}_{:02d}".format(p, i) for p, i in
+                      itertools.product(motor_ioc_prefixes, range(1, max_suffix + 1))]
 
-        def get_defined_macros_for_ioc(ioc_name):
-            raise NotImplementedError()
-
-        for ioc in motor_iocs:
-            defined_macros = get_defined_macros_for_ioc(ioc)
+        for motor_ioc in motor_iocs:
+            defined_macros = self.config_utils.get_ioc_macros(iocs_xml, motor_ioc, self.config)
 
             controller_number_defined = "MTRCTRL" in defined_macros
-
-            comms_macros = ["COM", "GALILADDR"]
-            comms_macro_defined = len((m for m in comms_macros if m in defined_macros)) > 0
+            comms_macro_defined = any(m in defined_macros for m in ["COM", "GALILADDR"])
 
             self.assertTrue(controller_number_defined == comms_macro_defined)  # Both or neither

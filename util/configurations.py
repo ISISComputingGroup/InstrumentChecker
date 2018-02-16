@@ -57,15 +57,11 @@ class AbstractConfigurationUtils(object):
         root = ET.fromstring(xml)
         ioc_xml = tuple(ioc for ioc in root.iter("{}ioc".format(self.XML_SCHEMA)) if ioc.attrib["name"] == ioc_name)
 
-        # Assert that we found exactly 1 IOC with the right name
-        if len(ioc_xml) == 0:
-            raise ValueError("Unable to find IOC {} in IOC XML for config {}".format(ioc_name, config_name))
-        elif len(ioc_xml) > 1:
-            raise ValueError("Unable to identify unique IOC {} in IOC XML for config {}".format(
-                len(ioc_xml), config_name))
-
         # Extract the macros
-        return {m.attrib["name"]: m.attrib["value"] for m in ioc_xml[0].iter("{}macro".format(self.XML_SCHEMA))}
+        if len(ioc_xml) == 0:
+            return dict()
+        else:
+            return {m.attrib["name"]: m.attrib["value"] for m in ioc_xml[0].iter("{}macro".format(self.XML_SCHEMA))}
 
 
 class ConfigurationUtils(AbstractConfigurationUtils):
