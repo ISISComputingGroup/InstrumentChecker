@@ -86,4 +86,24 @@ class ConfigurationsTests(unittest.TestCase):
                           .format(filename, self.config, e))
 
     def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(self):
-        raise NotImplementedError()
+        iocs_xml = ConfigurationUtils.get_iocs_xml(self.config)
+
+        def get_ioc_prefix(ioc_name):
+            # Extract the IOC prefix from an IOC name (e.g. GALIL_01 -> GALIL)
+            return ioc_name[:-3]
+
+        motor_ioc_prefixes = ["GALIL", "MCLENNAN", "LINMOT", "SM300"]
+        motor_iocs = (ioc for ioc in ConfigurationUtils.get_iocs(iocs_xml) if get_ioc_prefix(ioc) in motor_ioc_prefixes)
+
+        def get_defined_macros_for_ioc(ioc_name):
+            raise NotImplementedError()
+
+        for ioc in motor_iocs:
+            defined_macros = get_defined_macros_for_ioc(ioc)
+
+            controller_number_defined = "MTRCTRL" in defined_macros
+
+            comms_macros = ["COM", "GALILADDR"]
+            comms_macro_defined = len((m for m in comms_macros if m in defined_macros)) > 0
+
+            self.assertTrue(controller_number_defined == comms_macro_defined)  # Both or neither
