@@ -98,6 +98,6 @@ class ConfigurationsTests(unittest.TestCase):
             defined_macros = self.config_utils.get_ioc_macros(iocs_xml, motor_ioc, self.config)
 
             controller_number_defined = "MTRCTRL" in defined_macros
-            comms_macro_defined = any(m in defined_macros for m in ["COM", "GALILADDR"])
+            comms_macro_defined = any(m in defined_macros for m in ["PORT", "GALILADDR"])
 
             self.assertTrue(controller_number_defined == comms_macro_defined)  # Both or neither
