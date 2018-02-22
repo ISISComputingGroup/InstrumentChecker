@@ -34,6 +34,20 @@ class GlobalsUtils(object):
         except IOError:
             return []
 
+    def get_macros(self, ioc_name):
+        """
+        Get the macros associated with an ioc of the given name
+        :param ioc_name: Name of the IOC to search for
+        :return: A dictionary of macros (keys) and values
+        """
+        lines = self.get_lines()
+        macros = dict()
+        for line in lines:
+            if line.startswith(ioc_name):
+                key, value = line.replace("{}__".format(ioc_name), "").split("=")
+                macros[key] = value
+        return macros
+
     @staticmethod
     def check_syntax(line):
         # Remove comments, discard anything after a "#" sign
