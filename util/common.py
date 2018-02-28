@@ -1,4 +1,4 @@
-import json
+import itertools
 import os
 
 
@@ -6,6 +6,8 @@ class CommonUtils(object):
     """
     Class containing utility methods common to several other utilities
     """
+    MOTOR_IOCS = ["{}_{:02d}".format(p, i) for p, i in
+                  itertools.product(["GALIL", "MCLENNAN", "LINMOT", "SM300"], range(1, 11))]
 
     @staticmethod
     def get_directory_contents_as_list(path):

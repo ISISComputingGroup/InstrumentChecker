@@ -1,6 +1,7 @@
 import unittest
 from settings import Settings
 from util.globals import GlobalsUtils
+from util.common import CommonUtils
 from six import string_types
 import itertools
 
@@ -29,13 +30,7 @@ class GlobalsTests(unittest.TestCase):
                          "Extra globals files ({}) files in repository.".format(self.globals_utils.GLOBALS_FILE))
 
     def test_WHEN_macros_are_defined_in_globals_for_a_motor_ioc_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(self):
-
-        motor_ioc_prefixes = ["GALIL", "MCLENNAN", "LINMOT", "SM300"]
-        max_suffix = 10
-        motor_iocs = ["{}_{:02d}".format(p, i) for p, i in
-                      itertools.product(motor_ioc_prefixes, range(1, max_suffix + 1))]
-
-        for motor_ioc in motor_iocs:
+        for motor_ioc in CommonUtils.MOTOR_IOCS:
             defined_macros = self.globals_utils.get_macros(motor_ioc)
 
             controller_number_defined = "MTRCTRL" in defined_macros
