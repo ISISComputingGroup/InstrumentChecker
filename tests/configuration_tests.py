@@ -3,7 +3,6 @@ import os
 from settings import Settings
 from util.common import CommonUtils
 from util.configurations import ConfigurationUtils
-import itertools
 import xml.etree.ElementTree as ET
 
 

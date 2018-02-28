@@ -3,7 +3,6 @@ from settings import Settings
 from util.globals import GlobalsUtils
 from util.common import CommonUtils
 from six import string_types
-import itertools
 
 
 class GlobalsTests(unittest.TestCase):
