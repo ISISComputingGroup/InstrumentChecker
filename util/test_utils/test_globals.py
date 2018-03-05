@@ -1,5 +1,6 @@
 import unittest
 from util.globals import GlobalsUtils
+from mock import Mock
 
 
 class GlobalsTests(unittest.TestCase):
@@ -146,3 +147,35 @@ class GlobalsTests(unittest.TestCase):
 
         # Assert
         self.assertFalse(result)
+
+    def test_GIVEN_a_line_WHEN_macro_requested_for_correct_ioc_name_THEN_key_and_value_matches_input(self):
+        # Arrange
+        ioc_name = "MYIOC_01"
+        macro = "macro"
+        value = "01"
+        line = "{}__{}={}".format(ioc_name, macro, value)
+
+        self.utils.get_lines = Mock(return_value=[line])
+
+        # Act
+        result = self.utils.get_macros(ioc_name)
+
+        # Assert
+        self.assertEqual(len(result.keys()), 1)
+        self.assertTrue(result.has_key(macro))
+        self.assertEqual(result[macro], value)
+
+    def test_GIVEN_a_line_WHEN_macro_requested_for_non_existant_ioc_THEN_no_macros_returned(self):
+        # Arrange
+        ioc_name = "MYIOC_01"
+        macro = "macro"
+        value = "01"
+        line = "{}__{}={}".format(ioc_name, macro, value)
+
+        self.utils.get_lines = Mock(return_value=[line])
+
+        # Act
+        result = self.utils.get_macros("not_" + ioc_name)
+
+        # Assert
+        self.assertEqual(len(result.keys()), 0)
