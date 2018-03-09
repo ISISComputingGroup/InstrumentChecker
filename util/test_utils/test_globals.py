@@ -179,3 +179,65 @@ class GlobalsTests(unittest.TestCase):
 
         # Assert
         self.assertEqual(len(result.keys()), 0)
+
+    def test_GIVEN_a_line_WHEN_value_requested_for_correct_macro_name_THEN_key_and_value_matches_input(self):
+        # Arrange
+        ioc_name = "MYIOC 01"
+        macro = "macro"
+        value = "01"
+        line = "{}__{}={}".format(ioc_name, macro, value)
+
+        self.utils.get_lines = Mock(return_value=[line])
+
+        # Act
+        result = self.utils.get_values_of_macro(macro)
+
+        # Assert
+        self.assertEqual(len(result.keys()), 1)
+        self.assertTrue(result.has_key(macro))
+        self.assertEqual(result[macro], value)
+
+    def test_GIVEN_a_line_WHEN_value_requested_for_incorrect_macro_name_THEN_no_values_returned(self):
+        # Arrange
+        ioc_name = "MYIOC_01"
+        macro = "macro"
+        value = "01"
+        line = "{}__{}={}".format(ioc_name, macro, value)
+
+        self.utils.get_lines = Mock(return_value=[line])
+
+        # Act
+        result = self.utils.get_values_of_macro("not_" + ioc_name)
+
+        # Assert
+        self.assertEqual(len(result.keys()), 0)
+
+    def test_GIVEN_a_line_WHEN_sim_flag_is_set_on_THEN_return_true(self):
+        #Arrange
+        ioc_name = "MYIOC_01"
+        macro = "DEVSIM"
+        value = "1"
+        line = "{}__{}={}".format(ioc_name, macro, value)
+
+        self.utils.get_lines = Mock(return_value=[line])
+
+        # Act
+        result = self.utils.is_in_sim_mode()
+
+        # Assert
+        self.assertTrue(result)
+
+    def test_GIVEN_a_line_WHEN_sim_flag_is_set_off_THEN_return_false(self):
+        # Arrange
+        ioc_name = "MYIOC_01"
+        macro = "DEVSIM"
+        value = "0"
+        line = "{}__{}={}".format(ioc_name, macro, value)
+
+        self.utils.get_lines = Mock(return_value=[line])
+
+        # Act
+        result = self.utils.is_in_sim_mode()
+
+        # Assert
+        self.assertFalse(result)

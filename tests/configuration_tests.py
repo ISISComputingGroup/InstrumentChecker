@@ -94,3 +94,10 @@ class ConfigurationsTests(unittest.TestCase):
             comms_macro_defined = any(m in defined_macros for m in ["PORT", "GALILADDR"])
 
             self.assertTrue(controller_number_defined == comms_macro_defined)  # Both or neither
+
+    def test_GIVEN_ioc_xml_WHEN_simlevel_is_not_none_THEN_returns_false(self):
+        iocs_xml = self.config_utils.get_iocs_xml(self.config)
+
+        for ioc in iocs_xml:
+            self.assertFalse(self.config_utils.get_ioc_in_sim_mode(iocs_xml, ioc),
+                             "Simulation Mode is Active on {}".format(ioc))

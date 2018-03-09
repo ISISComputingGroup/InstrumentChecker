@@ -36,3 +36,7 @@ class GlobalsTests(unittest.TestCase):
             comms_macro_defined = any(m in defined_macros for m in ["PORT", "GALILADDR"])
 
             self.assertTrue(controller_number_defined == comms_macro_defined)  # Both or neither
+
+    def test_WHEN_sim_macros_are_flagged_on_THEN_warns_user(self):
+        self.assertFalse(self.globals_utils.is_in_sim_mode(), "Simulation Mode is Active")
+

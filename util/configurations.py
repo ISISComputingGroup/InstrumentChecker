@@ -63,6 +63,22 @@ class AbstractConfigurationUtils(object):
         else:
             return {m.attrib["name"]: m.attrib["value"] for m in ioc_xml[0].iter("{}macro".format(self.XML_SCHEMA))}
 
+    def get_ioc_in_sim_mode(self, xml, ioc_name):
+        """
+        Returns true if the given ioc_name is in simulation mode
+        :param xml: The IOC xml.
+        :param ioc_name: The name of the ioc.
+        :return: True if in simulation mode, otherwise false.
+        """
+        # Parse the XML
+        root = ET.fromstring(xml)
+
+        # check the simulation mode for the given ioc
+        for ioc in root.iter("{}ioc".format(self.XML_SCHEMA)):
+            if ioc.attrib["name"] == ioc_name:
+                return ioc.attrib["simlevel"] != "none"
+
+
 
 class ConfigurationUtils(AbstractConfigurationUtils):
     """

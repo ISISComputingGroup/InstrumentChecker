@@ -48,6 +48,30 @@ class GlobalsUtils(object):
                 macros[key] = value
         return macros
 
+    def get_values_of_macro(self, macro_name):
+        """
+        Get the values of all macros of a given name.
+        :param macro_name: The name of the macro to search for
+        :return:  A dictionary of all instances of the matching values and the values.
+        """
+        lines = self.get_lines()
+        macros = dict()
+        for line in lines:
+            if line.__contains__(macro_name):
+                line = line.split("__")[1]
+                key, value = line.split("=")
+                macros[key] = value
+        return macros
+
+    def is_in_sim_mode(self):
+        """
+        :return: TRUE if any simulation flags are set
+        """
+        has_recsim = "1" in self.get_values_of_macro("RECSIM").values()
+        has_devsim = "1" in self.get_values_of_macro("DEVSIM").values()
+        has_simulate = "1" in self.get_values_of_macro("SIMULATE").values()
+        return has_recsim or has_devsim or has_simulate
+
     @staticmethod
     def check_syntax(line):
         # Remove comments, discard anything after a "#" sign
