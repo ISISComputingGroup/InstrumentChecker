@@ -53,21 +53,16 @@ def print_instruments_with_ioc(instrument_configs, ioc_name):
     print("All those having the {}".format(ioc_name))
     for instrument, iocs in instrument_configs.items():
 
-        has_mk3chopper = True
         for ioc in iocs:
-
             if ioc.startswith(ioc_name):
+                print(instrument)
                 break
-        else:
-            has_mk3chopper = False
-        if has_mk3chopper:
-            print(instrument)
 
 
 def main():
 
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-                                     description="""Runs tests against the configuration repositories on instruments.
+                                     description="""Looks through all configurations for IOCS configured to run.
                                             Note: all repositories used by this script will be forcibly cleaned and 
                                             reset while the tests are running.
                                             Do not point this script at any repository where you have changes you want 
@@ -78,7 +73,7 @@ def main():
     parser.add_argument("--gui_repo_path", required=True, type=str,
                         help="The path to the GUI repository.")
     parser.add_argument("--instruments", type=str, nargs="+", default=None,
-                        help="Instruments to run tests on. If defined, configuration tests will only be run on the "
+                        help="Instruments to look at. If defined, will only be run on the "
                              "given instruments. If not defined, tests will be run on all instruments.")
     parser.add_argument("--ioc", type=str, default=None, help="If specified show instruments with IOC starting with"
                                                               "this string, otherwise show all iocs on the instruments")
