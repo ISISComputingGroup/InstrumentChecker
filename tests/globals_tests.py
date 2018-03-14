@@ -37,6 +37,6 @@ class GlobalsTests(unittest.TestCase):
 
             self.assertTrue(controller_number_defined == comms_macro_defined)  # Both or neither
 
-    def test_WHEN_sim_macros_are_flagged_on_THEN_warns_user(self):
-        self.assertFalse(self.globals_utils.is_in_sim_mode(), "Simulation Mode is Active")
+    def test_GIVEN_macros_in_globals_file_WHEN_checking_sim_mode_THEN_it_is_not_enabled(self):
+        self.assertFalse(self.globals_utils.is_any_ioc_in_sim_mode(), "Simulation Mode is Enabled")
 

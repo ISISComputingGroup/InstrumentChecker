@@ -4,6 +4,11 @@ import re
 from util.common import CommonUtils
 
 
+def strip_comments(line):
+    line = line.split('#')[0]
+    return line.strip()
+
+
 class GlobalsUtils(object):
     """
     Class containing utility methods for interacting with globals.txt
@@ -30,7 +35,7 @@ class GlobalsUtils(object):
     def get_lines(self):
         try:
             globals_file = open(self._get_file_path(), "r")
-            return [i for i in globals_file.readlines()]
+            return [i for i in globals_file.read().splitlines()]
         except IOError:
             return []
 
@@ -57,13 +62,15 @@ class GlobalsUtils(object):
         lines = self.get_lines()
         macros = dict()
         for line in lines:
-            if line.__contains__(macro_name):
-                line = line.split("__")[1]
+            if macro_name in line:
+                line = strip_comments(line)
+                if "__" in line:
+                    line = line.split("__")[1]
                 key, value = line.split("=")
                 macros[key] = value
         return macros
 
-    def is_in_sim_mode(self):
+    def is_any_ioc_in_sim_mode(self):
         """
         :return: TRUE if any simulation flags are set
         """
@@ -74,9 +81,7 @@ class GlobalsUtils(object):
 
     @staticmethod
     def check_syntax(line):
-        # Remove comments, discard anything after a "#" sign
-        line = line.split('#')[0]
-        line = line.strip()
+        line = strip_comments(line)
 
         alphanumeric = r"[a-zA-Z0-9]+"
 

@@ -79,7 +79,6 @@ class AbstractConfigurationUtils(object):
                 return ioc.attrib["simlevel"] != "none"
 
 
-
 class ConfigurationUtils(AbstractConfigurationUtils):
     """
     Class containing utility methods for interacting with the configurations directory

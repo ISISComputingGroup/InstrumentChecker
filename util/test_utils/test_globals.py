@@ -182,7 +182,7 @@ class GlobalsTests(unittest.TestCase):
 
     def test_GIVEN_a_line_WHEN_value_requested_for_correct_macro_name_THEN_key_and_value_matches_input(self):
         # Arrange
-        ioc_name = "MYIOC 01"
+        ioc_name = "MYIOC_01"
         macro = "macro"
         value = "01"
         line = "{}__{}={}".format(ioc_name, macro, value)
@@ -222,7 +222,7 @@ class GlobalsTests(unittest.TestCase):
         self.utils.get_lines = Mock(return_value=[line])
 
         # Act
-        result = self.utils.is_in_sim_mode()
+        result = self.utils.is_any_ioc_in_sim_mode()
 
         # Assert
         self.assertTrue(result)
@@ -237,7 +237,7 @@ class GlobalsTests(unittest.TestCase):
         self.utils.get_lines = Mock(return_value=[line])
 
         # Act
-        result = self.utils.is_in_sim_mode()
+        result = self.utils.is_any_ioc_in_sim_mode()
 
         # Assert
         self.assertFalse(result)
