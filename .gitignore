@@ -104,5 +104,7 @@ ENV/
 configs/
 gui/
 test-reports/
+%reports_dir%
 NULL
-
+.idea
+reports

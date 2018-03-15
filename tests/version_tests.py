@@ -28,6 +28,8 @@ class VersionTests(unittest.TestCase):
         if server_version is None:
             self.skipTest("Couldn't connect to version PV on server")
 
-        self.assertTrue(self.version_utils.versions_similar(config_version, server_version),
-                        "Config version was wrong. Server version={}, config version={}"
-                        .format(server_version, config_version))
+        # Special case for server version 0.0.0 which is a development release - assume it's always up to date.
+        if not server_version.startswith("0.0.0"):
+            self.assertTrue(self.version_utils.versions_similar(config_version, server_version),
+                            "Config version was wrong. Server version={}, config version={}"
+                            .format(server_version, config_version))
