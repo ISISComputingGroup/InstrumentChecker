@@ -128,4 +128,3 @@ class ConfigurationTests(unittest.TestCase):
                     </iocs>
                     """
         self.assertTrue(self.config_utils.get_ioc_in_sim_mode(xml, "SIMPLE_01"))
-
