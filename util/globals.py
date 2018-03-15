@@ -62,12 +62,13 @@ class GlobalsUtils(object):
         lines = self.get_lines()
         macros = dict()
         for line in lines:
-            if macro_name in line:
-                line = strip_comments(line)
-                if "__" in line:
-                    line = line.split("__")[1]
-                key, value = line.split("=")
-                macros[key] = value
+            if not line.startswith('#'):
+                if macro_name in line:
+                    line = strip_comments(line)
+                    if "__" in line:
+                        line = line.split("__")[1]
+                    key, value = line.split("=")
+                    macros[key] = value
         return macros
 
     def is_any_ioc_in_sim_mode(self):
