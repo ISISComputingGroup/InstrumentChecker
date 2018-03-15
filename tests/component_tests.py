@@ -85,6 +85,18 @@ class ComponentsTests(unittest.TestCase):
                 self.fail("Exception occurred while parsing file {} in component {} as XML. Error was: {}"
                           .format(filename, self.component, e))
 
+    def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(self):
+        iocs_xml = self.component_utils.get_iocs_xml(self.component)
+        for motor_ioc in CommonUtils.MOTOR_IOCS:
+            defined_macros = self.component_utils.get_ioc_macros(iocs_xml, motor_ioc, self.component)
+
+            controller_number_defined = "MTRCTRL" in defined_macros
+            comms_macro_defined = any(m in defined_macros for m in ["PORT", "GALILADDR"])
+
+            self.assertTrue(controller_number_defined == comms_macro_defined,  # Both or neither
+                            "Only one of com setting and motor control was defined in {} in component {}"
+                            .format(motor_ioc, self.component))
+
     def test_GIVEN_ioc_xml_WHEN_simlevel_is_not_none_THEN_get_ioc_in_sim_mode_returns_false(self):
         if Settings.name == "DEMO":
             self.skipTest("Having IOCs in simulation mode is valid on DEMO")
