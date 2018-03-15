@@ -84,3 +84,13 @@ class ComponentsTests(unittest.TestCase):
             except Exception as e:
                 self.fail("Exception occurred while parsing file {} in component {} as XML. Error was: {}"
                           .format(filename, self.component, e))
+
+    def test_GIVEN_ioc_xml_WHEN_simlevel_is_not_none_THEN_get_ioc_in_sim_mode_returns_false(self):
+        if Settings.name == "DEMO":
+            self.skipTest("Having IOCs in simulation mode is valid on DEMO")
+
+        iocs_xml = self.component_utils.get_iocs_xml(self.component)
+
+        for ioc in self.component_utils.get_iocs(iocs_xml):
+            self.assertFalse(self.component_utils.get_ioc_in_sim_mode(iocs_xml, ioc),
+                             "Simulation Mode is Active on {} in component {}".format(ioc, self.component))

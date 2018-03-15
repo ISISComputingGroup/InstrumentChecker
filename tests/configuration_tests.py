@@ -93,4 +93,16 @@ class ConfigurationsTests(unittest.TestCase):
             controller_number_defined = "MTRCTRL" in defined_macros
             comms_macro_defined = any(m in defined_macros for m in ["PORT", "GALILADDR"])
 
-            self.assertTrue(controller_number_defined == comms_macro_defined)  # Both or neither
+            self.assertTrue(controller_number_defined == comms_macro_defined,  # Both or neither
+                            "Only one of com setting and motor control was defined in {} in component {}"
+                            .format(motor_ioc, self.config))
+
+    def test_GIVEN_ioc_xml_WHEN_simlevel_is_not_none_THEN_get_ioc_in_sim_mode_returns_false(self):
+        if Settings.name == "DEMO":
+            self.skipTest("Having IOCs in simulation mode is valid on DEMO")
+
+        iocs_xml = self.config_utils.get_iocs_xml(self.config)
+
+        for ioc in self.config_utils.get_iocs(iocs_xml):
+            self.assertFalse(self.config_utils.get_ioc_in_sim_mode(iocs_xml, ioc),
+                             "Simulation Mode is Active on {} in configuration {}".format(ioc, self.config))

@@ -91,3 +91,40 @@ class ConfigurationTests(unittest.TestCase):
 
         self.assertEqual(len(self.config_utils.get_ioc_macros(xml, "SIMPL", "test_config").values()), 0)
 
+    def test_GIVEN_ioc_xml_WHEN_simlevel_is_not_none_THEN_returns_false(self):
+
+        xml = """<?xml version="1.0" ?>
+                    <iocs xmlns="http://epics.isis.rl.ac.uk/schema/iocs/1.0" 
+                    xmlns:ioc="http://epics.isis.rl.ac.uk/schema/iocs/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+                        <ioc autostart="true" name="SIMPLE_01" restart="false" simlevel="none">
+                            <macros/>
+                            <pvs/>
+                            <pvsets/>
+                        </ioc>
+                        <ioc autostart="true" name="SIMPLE_02" restart="false" simlevel="none">
+                            <macros/>
+                            <pvs/>
+                            <pvsets/>
+                        </ioc>
+                    </iocs>
+                    """
+        self.assertFalse(self.config_utils.get_ioc_in_sim_mode(xml, "SIMPLE_01"))
+
+    def test_GIVEN_ioc_xml_WHEN_simlevel_is_none_THEN_returns_true(self):
+
+        xml = """<?xml version="1.0" ?>
+                    <iocs xmlns="http://epics.isis.rl.ac.uk/schema/iocs/1.0" 
+                    xmlns:ioc="http://epics.isis.rl.ac.uk/schema/iocs/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+                        <ioc autostart="true" name="SIMPLE_01" restart="false" simlevel="true">
+                            <macros/>
+                            <pvs/>
+                            <pvsets/>
+                        </ioc>
+                        <ioc autostart="true" name="SIMPLE_02" restart="false" simlevel="none">
+                            <macros/>
+                            <pvs/>
+                            <pvsets/>
+                        </ioc>
+                    </iocs>
+                    """
+        self.assertTrue(self.config_utils.get_ioc_in_sim_mode(xml, "SIMPLE_01"))

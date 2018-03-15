@@ -4,6 +4,11 @@ import re
 from util.common import CommonUtils
 
 
+def strip_comments(line):
+    line = line.split('#')[0]
+    return line.strip()
+
+
 class GlobalsUtils(object):
     """
     Class containing utility methods for interacting with globals.txt
@@ -30,7 +35,7 @@ class GlobalsUtils(object):
     def get_lines(self):
         try:
             globals_file = open(self._get_file_path(), "r")
-            return [i for i in globals_file.readlines()]
+            return [i for i in globals_file.read().splitlines()]
         except IOError:
             return []
 
@@ -48,11 +53,36 @@ class GlobalsUtils(object):
                 macros[key] = value
         return macros
 
+    def get_values_of_macro(self, macro_name):
+        """
+        Get the values of all macros of a given name.
+        :param macro_name: The name of the macro to search for
+        :return:  A dictionary of all instances of the matching values and the values.
+        """
+        lines = self.get_lines()
+        macros = dict()
+        for line in lines:
+            if not line.startswith('#'):
+                if macro_name in line:
+                    line = strip_comments(line)
+                    if "__" in line:
+                        line = line.split("__")[1]
+                    key, value = line.split("=")
+                    macros[key] = value
+        return macros
+
+    def is_any_ioc_in_sim_mode(self):
+        """
+        :return: TRUE if any simulation flags are set
+        """
+        has_recsim = "1" in self.get_values_of_macro("RECSIM").values()
+        has_devsim = "1" in self.get_values_of_macro("DEVSIM").values()
+        has_simulate = "1" in self.get_values_of_macro("SIMULATE").values()
+        return has_recsim or has_devsim or has_simulate
+
     @staticmethod
     def check_syntax(line):
-        # Remove comments, discard anything after a "#" sign
-        line = line.split('#')[0]
-        line = line.strip()
+        line = strip_comments(line)
 
         alphanumeric = r"[a-zA-Z0-9]+"
 
