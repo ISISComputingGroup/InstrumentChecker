@@ -30,7 +30,8 @@ pipeline {
                     goto ERROR
             )
 
-            call run_tests.bat || echo "running tests failed."
+            call run_tests.bat
+            if %errorlevel% neq 0 exit /b %errorlevel%
             """
       }
     }
