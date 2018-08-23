@@ -129,7 +129,6 @@ def main():
     Settings.set_repo_paths(os.path.abspath(args.configs_repo_path), os.path.abspath(args.gui_repo_path))
 
     success = run_all_tests(reports_path, instruments)
-    sys.exit(0 if success else 1)
 
 
 if __name__ == "__main__":
