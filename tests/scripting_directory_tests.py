@@ -49,3 +49,13 @@ class ScriptingDirectoryTests(unittest.TestCase):
 
         self.assertFalse(self._directory_contains_compiled_files(self.inst_directory),
                          "Instrument scripts directory contained compiled files")
+
+    def test_GIVEN_init_file_in_inst_directory_then_its_contents_is_the_same_as_on_the_master_branch(self):
+        if not os.path.isdir(self.inst_directory):
+            self.skipTest("Instrument scripts directory missing")
+
+        init_file = os.path.join(self.inst_directory, "__init__.py")
+
+        self.assertTrue(os.path.isfile(init_file), "inst init file missing")
+        self.assertTrue(self.script_utils.diff_against_latest_master(init_file) == "",
+                        "inst/__init__.py had contents which differed from the one on origin/master")

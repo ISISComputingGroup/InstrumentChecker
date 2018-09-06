@@ -1,4 +1,5 @@
 import os
+import git
 
 
 class ScriptingUtils(object):
@@ -14,3 +15,7 @@ class ScriptingUtils(object):
 
     def get_instrument_scripts_directory(self):
         return os.path.join(self.get_scripting_directory(), "inst")
+
+    def diff_against_latest_master(self, file_to_diff):
+        repo = git.Repo(self.config_repo_path)
+        return repo.git.diff("origin/master", file_to_diff)
