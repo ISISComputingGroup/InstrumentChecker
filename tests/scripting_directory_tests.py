@@ -39,7 +39,9 @@ class ScriptingDirectoryTests(unittest.TestCase):
                          "Python directory contained compiled files")
 
     def test_GIVEN_that_python_directory_exists_THEN_inst_directory_exists(self):
-        self.assertTrue(os.path.isdir(self.inst_directory), "Instrument scripts directory missing")
+        inst_is_dir = os.path.isdir(self.inst_directory)
+        inst_is_file = os.path.isfile(self.inst_directory)
+        self.assertTrue(inst_is_dir or inst_is_file, "Instrument scripts directory/file is missing")
 
     @skip("This currently doesn't pass on any instruments but we should consider enforcing this.")
     def test_GIVEN_that_instrument_scripts_directory_exists_THEN_it_does_not_contain_compiled_python_files(self):
