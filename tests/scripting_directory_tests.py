@@ -12,6 +12,7 @@ class ScriptingDirectoryTests(unittest.TestCase):
         self.script_utils = ScriptingUtils(Settings.config_repo_path)
         self.python_dir = self.script_utils.get_scripting_directory()
         self.inst_directory = self.script_utils.get_instrument_scripts_directory()
+        self.inst_file = self.script_utils.get_instrument_script_file()
         self.name = Settings.name
 
         # Skip all tests in this class if scripting directory doesn't exist
@@ -40,7 +41,7 @@ class ScriptingDirectoryTests(unittest.TestCase):
 
     def test_GIVEN_that_python_directory_exists_THEN_inst_directory_exists(self):
         inst_is_dir = os.path.isdir(self.inst_directory)
-        inst_is_file = os.path.isfile(self.inst_directory)
+        inst_is_file = os.path.isfile(self.inst_file)
         self.assertTrue(inst_is_dir or inst_is_file, "Instrument scripts directory/file is missing")
 
     @skip("This currently doesn't pass on any instruments but we should consider enforcing this.")
