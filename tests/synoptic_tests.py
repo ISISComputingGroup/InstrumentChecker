@@ -38,6 +38,10 @@ class SynopticTests(unittest.TestCase):
             self.fail("In synoptic {}, XML failed to parse properly. Error text was: {}".format(self.synoptic, e))
 
         for type, target in type_target_pairs:
+
+            if Settings.name == "OSIRIS" and self.version_utils.get_version() == "5.1.0" and target == "Vertical Jaws":
+                continue  # This is hotfixed on OSIRIS. This condition can be removed at next release.
+
             if not self.synoptic_utils.target_should_be_ignored(target):
                 self.assertIn(target, allowed_targets, "In synoptic {}, component target '{}' was unknown."
                               .format(self.synoptic, target))
@@ -52,6 +56,7 @@ class SynopticTests(unittest.TestCase):
             self.fail("In synoptic {}, XML failed to parse properly. Error text was: {}".format(self.synoptic, e))
 
         for type, target in type_target_pairs:
+
             if not self.synoptic_utils.type_should_be_ignored(type):
                 self.assertIn(type, allowed_types, "In synoptic {}, component type '{}' was unknown."
                               .format(self.synoptic, type))
