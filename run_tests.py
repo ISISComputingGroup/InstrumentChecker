@@ -42,7 +42,7 @@ def run_instrument_tests(inst_name, reports_path):
         components = ComponentUtils(Settings.config_repo_path).get_configurations_as_list()
         synoptics = SynopticUtils(Settings.config_repo_path).get_synoptics_filenames()
     except IOError as e:
-        print("Cannot build tests for instrument {}: exception occured.".format(inst_name))
+        print("Failed to build tests for instrument {}: exception occured while generating tests.".format(inst_name))
         traceback.print_exc(e)
         return False
 
