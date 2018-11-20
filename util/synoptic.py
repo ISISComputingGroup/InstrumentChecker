@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import os
+from common import CommonUtils
 
 
 class SynopticUtils(object):
@@ -16,7 +17,7 @@ class SynopticUtils(object):
         return "{schema}{tag}".format(schema=SynopticUtils.SCHEMA, tag=tag)
 
     def get_synoptics_filenames(self):
-        return [f for f in os.listdir(self.synoptics_path) if f.endswith(".xml")]
+        return [f for f in CommonUtils.get_directory_contents_as_list(self.synoptics_path) if f.endswith(".xml")]
 
     def get_type_target_pairs(self, synoptic_xml):
         """

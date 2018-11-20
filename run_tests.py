@@ -3,6 +3,7 @@ import sys
 import unittest
 from xmlrunner import XMLTestRunner
 import argparse
+import traceback
 
 from tests.configuration_tests import ConfigurationsTests, ConfigurationsSingleTests
 from tests.component_tests import ComponentsTests, ComponentsSingleTests
@@ -35,13 +36,23 @@ def run_instrument_tests(inst_name, reports_path):
     # Add configs test suite a dynamic number of times with an argument of the config name.
     # unittest's test loader is unable to take arguments to test classes by default so have
     # to use the getTestCaseNames() syntax and explicitly add the argument ourselves.
-    for config in ConfigurationUtils(Settings.config_repo_path).get_configurations_as_list():
+
+    try:
+        configs = ConfigurationUtils(Settings.config_repo_path).get_configurations_as_list()
+        components = ComponentUtils(Settings.config_repo_path).get_configurations_as_list()
+        synoptics = SynopticUtils(Settings.config_repo_path).get_synoptics_filenames()
+    except IOError as e:
+        print("Cannot build tests for instrument {}: exception occured.".format(inst_name))
+        traceback.print_exc(e)
+        return False
+
+    for config in configs:
         suite.addTests([ConfigurationsTests(test, config) for test in loader.getTestCaseNames(ConfigurationsTests)])
 
-    for component in ComponentUtils(Settings.config_repo_path).get_configurations_as_list():
+    for component in components:
         suite.addTests([ComponentsTests(test, component) for test in loader.getTestCaseNames(ComponentsTests)])
 
-    for synoptic in SynopticUtils(Settings.config_repo_path).get_synoptics_filenames():
+    for synoptic in synoptics:
         suite.addTests([SynopticTests(test, synoptic) for test in loader.getTestCaseNames(SynopticTests)])
 
     runner = XMLTestRunner(output=str(os.path.join(reports_path, inst_name)), stream=sys.stdout)

@@ -14,14 +14,14 @@ class CommonUtils(object):
         if os.path.isdir(path):
             return os.listdir(path)
         else:
-            return []
+            raise IOError("Path '{}' is not a directory.".format(path))
 
     @staticmethod
     def get_folders_in_directory_as_list(path):
         if os.path.isdir(path):
             return [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
         else:
-            return []
+            raise IOError("Path '{}' is not a directory.".format(path))
 
     @staticmethod
     def count_files_with_name(path, name):
@@ -29,4 +29,6 @@ class CommonUtils(object):
         Scans the given directory for files with a given name. Returns the number of these files that were found.
         :return:
         """
+        if not os.path.isdir(path):
+            raise IOError("Path '{}' is not a directory.".format(path))
         return sum(len([f for f in files if f == name]) for _, _, files in os.walk(path))
