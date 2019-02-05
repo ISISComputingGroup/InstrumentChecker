@@ -42,6 +42,9 @@ class SynopticTests(unittest.TestCase):
             if Settings.name == "OSIRIS" and self.version_utils.get_version() == "5.1.0" and target == "Vertical Jaws":
                 continue  # This is hotfixed on OSIRIS. This condition can be removed at next release.
 
+            if Settings.name == "LOQ" and self.version_utils.get_version() == "5.2.0" and target == "Water bath valve":
+                continue  # This is hotfixed on LOQ. This condition can be removed at next release.
+
             if not self.synoptic_utils.target_should_be_ignored(target):
                 self.assertIn(target, allowed_targets, "In synoptic {}, component target '{}' was unknown."
                               .format(self.synoptic, target))
