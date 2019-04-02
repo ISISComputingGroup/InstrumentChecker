@@ -1,6 +1,7 @@
 import unittest
 
 from tests.settings import Settings
+from util.common import skip_on_instruments
 from util.gui import GuiUtils
 from util.synoptic import SynopticUtils
 from util.version import VersionUtils
@@ -28,6 +29,7 @@ class SynopticTests(unittest.TestCase):
 
         self.gui_utils.get_gui_repo_at_release(self.version_utils.get_version())
 
+    @skip_on_instruments(["DEMO"], "Demo often has a development version installed; this test is not useful")
     def test_GIVEN_synoptic_THEN_targets_that_it_defines_appear_in_opi_info(self):
 
         allowed_targets = self.gui_utils.get_valid_targets(self.gui_utils.get_opi_info_xml())
@@ -52,6 +54,7 @@ class SynopticTests(unittest.TestCase):
                 self.assertIn(target, allowed_targets, "In synoptic {}, component target '{}' was unknown."
                               .format(self.synoptic, target))
 
+    @skip_on_instruments(["DEMO"], "Demo often has a development version installed; this test is not useful")
     def test_GIVEN_synoptic_THEN_types_that_it_defines_appear_in_opi_info(self):
 
         allowed_types = self.gui_utils.get_valid_types(self.gui_utils.get_opi_info_xml())

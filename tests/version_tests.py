@@ -1,6 +1,7 @@
 import unittest
 from tests.settings import Settings
 from util.channel_access import ChannelAccessUtils
+from util.common import skip_on_instruments
 from util.version import VersionUtils
 
 
@@ -18,6 +19,7 @@ class VersionTests(unittest.TestCase):
                              "There should not be more than one '{}' file in the repository."
                              .format(VersionUtils.VERSION_FILE))
 
+    @skip_on_instruments(["DEMO"], "DEMO does not typically have a full release installed")
     def test_GIVEN_version_file_exists_THEN_it_is_the_same_as_version_pv_on_server(self):
         if not self.version_utils.version_file_exists():
             self.skipTest("Version file did not exist.")
