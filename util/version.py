@@ -25,7 +25,8 @@ class VersionUtils(object):
         return CommonUtils.count_files_with_name(self.config_repo_path, VersionUtils.VERSION_FILE)
 
     def get_version(self):
-        return open(self.version_file_path).readline().strip()
+        with open(self.version_file_path) as f:
+            return f.readline().strip()
 
     @staticmethod
     def versions_similar(version1, version2):
