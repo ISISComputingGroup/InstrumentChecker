@@ -1,5 +1,10 @@
 import itertools
 import os
+import unittest
+
+import functools
+
+from tests.settings import Settings
 
 
 class CommonUtils(object):
@@ -32,3 +37,24 @@ class CommonUtils(object):
         if not os.path.isdir(path):
             raise IOError("Path '{}' is not a directory.".format(path))
         return sum(len([f for f in files if f == name]) for _, _, files in os.walk(path))
+
+
+def skip_on_instruments(instruments_to_skip, skip_reason):
+    """
+    Decorator to skip a given test on the provided list of instruments
+
+    Usage:
+
+    @skip_on_instruments(["DEMO"], "Demo does not foo the bar correctly")
+    def test_xyz(self):
+        ...
+    """
+    def _decorator(func):
+        @functools.wraps(func)
+        def _wrapper(*args, **kwargs):
+            if Settings.name in instruments_to_skip:
+                raise unittest.SkipTest(skip_reason)
+            else:
+                return func(*args, **kwargs)
+        return _wrapper
+    return _decorator
