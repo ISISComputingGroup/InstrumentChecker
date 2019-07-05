@@ -1,7 +1,7 @@
 import unittest
 import os
 from settings import Settings
-from util.common import CommonUtils, skip_on_instruments
+from util.common import CommonUtils, skip_on_instruments, MAX_BLOCK_NAME_LENGTH
 from util.configurations import ConfigurationUtils
 import xml.etree.ElementTree as ET
 
@@ -108,3 +108,11 @@ class ConfigurationsTests(unittest.TestCase):
         for ioc in self.config_utils.get_iocs(iocs_xml):
             self.assertFalse(self.config_utils.get_ioc_in_sim_mode(iocs_xml, ioc),
                              "Simulation Mode is Active on {} in configuration {}".format(ioc, self.config))
+
+    def test_GIVEN_config_THEN_block_names_are_not_longer_than_max_characters(self):
+        blocks_xml = self.config_utils.get_blocks_xml(self.config)
+
+        for block in self.config_utils.get_blocks(blocks_xml):
+            self.assertLessEqual(len(block), MAX_BLOCK_NAME_LENGTH,
+                                 "Block name '{}' is too long (max length: {}) in configuration {}"
+                                 .format(block, MAX_BLOCK_NAME_LENGTH, self.config))

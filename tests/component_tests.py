@@ -1,7 +1,7 @@
 import unittest
 import os
 from settings import Settings
-from util.common import CommonUtils, skip_on_instruments
+from util.common import CommonUtils, skip_on_instruments, MAX_BLOCK_NAME_LENGTH
 from util.configurations import ComponentUtils
 import xml.etree.ElementTree as ET
 
@@ -100,11 +100,16 @@ class ComponentsTests(unittest.TestCase):
 
     @skip_on_instruments(["DEMO"], "Demo is allowed to have IOCs in simulation mode, it is a fake instrument")
     def test_GIVEN_ioc_xml_WHEN_simlevel_is_not_none_THEN_get_ioc_in_sim_mode_returns_false(self):
-        if Settings.name == "DEMO":
-            self.skipTest("Having IOCs in simulation mode is valid on DEMO")
-
         iocs_xml = self.component_utils.get_iocs_xml(self.component)
 
         for ioc in self.component_utils.get_iocs(iocs_xml):
             self.assertFalse(self.component_utils.get_ioc_in_sim_mode(iocs_xml, ioc),
                              "Simulation Mode is Active on {} in component {}".format(ioc, self.component))
+
+    def test_GIVEN_component_THEN_block_names_are_not_longer_than_max_characters(self):
+        blocks_xml = self.component_utils.get_blocks_xml(self.component)
+
+        for block in self.component_utils.get_blocks(blocks_xml):
+            self.assertLessEqual(len(block), MAX_BLOCK_NAME_LENGTH,
+                                 "Block name '{}' is too long (max length: {}) in component {}"
+                                 .format(block, MAX_BLOCK_NAME_LENGTH, self.component))

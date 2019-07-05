@@ -10,7 +10,8 @@ class AbstractConfigurationUtils(object):
     REQUIRED_CONFIG_FILES = ["blocks.xml", "components.xml", "groups.xml", "iocs.xml", "meta.xml"]
     ALLOWED_CONFIG_FILES = REQUIRED_CONFIG_FILES + ["screens.xml"]
 
-    XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/iocs/1.0}"
+    IOC_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/iocs/1.0}"
+    BLOCKS_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/blocks/1.0}"
 
     def __init__(self, config_repo_path):
         self.config_repo_path = config_repo_path
@@ -31,6 +32,29 @@ class AbstractConfigurationUtils(object):
         with open(path) as f:
             return f.read()
 
+    def get_blocks_xml(self, config_name):
+        """
+        Gets the XML corresponding to the blocks file for a particular configuration.
+        :param config_name: the configuration or component name
+        :return: the XML as a string
+        """
+        path = os.path.join(self.get_configurations_directory(), config_name, "blocks.xml")
+        with open(path) as f:
+            return f.read()
+
+    def get_blocks(self, xml):
+        """
+        Returns a list of iocs in the xml provided.
+        :return:
+        """
+        root = ET.fromstring(xml)
+
+        blocks = []
+        for block in root.iter("{}name".format(self.BLOCKS_SCHEMA)):
+            blocks.append(block.text)
+
+        return blocks
+
     def get_iocs(self, xml):
         """
         Returns a list of iocs in the xml provided.
@@ -39,7 +63,7 @@ class AbstractConfigurationUtils(object):
         root = ET.fromstring(xml)
 
         iocs = []
-        for ioc in root.iter("{}ioc".format(self.XML_SCHEMA)):
+        for ioc in root.iter("{}ioc".format(self.IOC_SCHEMA)):
             iocs.append(ioc.attrib["name"])
 
         return iocs
@@ -55,13 +79,13 @@ class AbstractConfigurationUtils(object):
         """
         # Parse the XML
         root = ET.fromstring(xml)
-        ioc_xml = tuple(ioc for ioc in root.iter("{}ioc".format(self.XML_SCHEMA)) if ioc.attrib["name"] == ioc_name)
+        ioc_xml = tuple(ioc for ioc in root.iter("{}ioc".format(self.IOC_SCHEMA)) if ioc.attrib["name"] == ioc_name)
 
         # Extract the macros
         if len(ioc_xml) == 0:
             return dict()
         else:
-            return {m.attrib["name"]: m.attrib["value"] for m in ioc_xml[0].iter("{}macro".format(self.XML_SCHEMA))}
+            return {m.attrib["name"]: m.attrib["value"] for m in ioc_xml[0].iter("{}macro".format(self.IOC_SCHEMA))}
 
     def get_ioc_in_sim_mode(self, xml, ioc_name):
         """
@@ -74,7 +98,7 @@ class AbstractConfigurationUtils(object):
         root = ET.fromstring(xml)
 
         # check the simulation mode for the given ioc
-        for ioc in root.iter("{}ioc".format(self.XML_SCHEMA)):
+        for ioc in root.iter("{}ioc".format(self.IOC_SCHEMA)):
             if ioc.attrib["name"] == ioc_name:
                 return ioc.attrib["simlevel"] != "none"
 

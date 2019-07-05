@@ -7,6 +7,9 @@ import functools
 from tests.settings import Settings
 
 
+MAX_BLOCK_NAME_LENGTH = 20
+
+
 class CommonUtils(object):
     """
     Class containing utility methods common to several other utilities
