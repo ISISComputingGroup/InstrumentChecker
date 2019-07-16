@@ -39,6 +39,29 @@ class ConfigurationTests(unittest.TestCase):
 
         self.assertListEqual(self.config_utils.get_iocs(xml), ["SIMPLE_01", "SIMPLE_02"])
 
+    def test_GIVEN_component_xml_WHEN_parsed_THEN_can_extract_a_single_component(self):
+        xml = """<?xml version="1.0" ?>
+                     <components xmlns="http://epics.isis.rl.ac.uk/schema/components/1.0"
+                     xmlns:comp="http://epics.isis.rl.ac.uk/schema/components/1.0"
+                     xmlns:xi="http://www.w3.org/2001/XInclude">
+                         <component name="COMPONENT_1"/>
+                     </components>
+              """
+
+        self.assertListEqual(self.config_utils.get_active_components_from_xml(xml), ["COMPONENT_1"])
+
+    def test_GIVEN_component_xml_WHEN_parsed_THEN_can_extract_multiple_components(self):
+        xml = """<?xml version="1.0" ?>
+                     <components xmlns="http://epics.isis.rl.ac.uk/schema/components/1.0"
+                     xmlns:comp="http://epics.isis.rl.ac.uk/schema/components/1.0"
+                     xmlns:xi="http://www.w3.org/2001/XInclude">
+                         <component name="COMPONENT_1"/>
+                         <component name="COMPONENT_2"/>
+                     </components>
+              """
+
+        self.assertListEqual(self.config_utils.get_active_components_from_xml(xml), ["COMPONENT_1", "COMPONENT_2"])
+
     def test_GIVEN_ioc_xml_WHEN_macros_requested_for_ioc_that_exists_THEN_macro_information_matches_xml(self):
         name_1 = "macro1"
         value_1_01 = "1"
