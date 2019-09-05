@@ -21,6 +21,39 @@ class AbstractConfigurationUtils(object):
     def get_configurations_as_list(self):
         return CommonUtils.get_folders_in_directory_as_list(self.get_configurations_directory())
 
+    def get_active_components_as_list(self, config_name):
+        """
+        Gets a list of active components for a particular configuration.
+        :param config_name: the configuration name
+        :return: a list of components
+        """
+        return self.get_active_components_from_xml(self.get_components_xml(config_name))
+
+    def get_components_xml(self, config_name):
+        """
+        Gets the XML corresponding to the components file for a particular configuration.
+        :param config_name: the configuration name
+        :return: the XML as a string
+        """
+        path = os.path.join(self.get_configurations_directory(), config_name, "components.xml")
+
+        with open(path) as f:
+            return f.read()
+
+    def get_active_components_from_xml(self, xml):
+        """
+        Gets a list of active components from a component XML.
+        :param xml: a components XML as a string
+        :return: a list of components
+        """
+        root = ET.fromstring(xml)
+
+        components = []
+        for component in root.iter("{http://epics.isis.rl.ac.uk/schema/components/1.0}component"):
+            components.append(component.attrib["name"])
+
+        return components
+
     def get_iocs_xml(self, config_name):
         """
         Gets the XML corresponding to the IOCs file for a particular configuration.

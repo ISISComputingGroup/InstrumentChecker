@@ -2,7 +2,7 @@ import unittest
 import os
 from settings import Settings
 from util.common import CommonUtils, skip_on_instruments
-from util.configurations import ConfigurationUtils
+from util.configurations import ConfigurationUtils, ComponentUtils
 import xml.etree.ElementTree as ET
 
 
@@ -33,6 +33,7 @@ class ConfigurationsTests(unittest.TestCase):
         super(ConfigurationsTests, self).__init__(methodName)
 
         self.config_utils = ConfigurationUtils(Settings.config_repo_path)
+        self.comp_utils = ComponentUtils(Settings.config_repo_path)
         self.config = config
 
     def setUp(self):
@@ -64,6 +65,18 @@ class ConfigurationsTests(unittest.TestCase):
         for ioc in self.config_utils.get_iocs(self.config_utils.get_iocs_xml(self.config)):
             self.assertNotIn(ioc, Settings.protected_iocs,
                              "Configuration {} contained a protected IOC ({})".format(self.config, ioc))
+
+    def test_GIVEN_a_configuration_and_active_components_THEN_does_not_contain_multiple_instances_of_same_ioc(self):
+        components = self.config_utils.get_active_components_as_list(self.config)
+
+        iocs = self.config_utils.get_iocs(self.config_utils.get_iocs_xml(self.config))
+
+        for comp in components:
+            iocs.extend(self.comp_utils.get_iocs(self.comp_utils.get_iocs_xml(comp)))
+
+        for ioc in iocs:
+            self.assertEqual(len([i for i in iocs if i == ioc]), 1,
+                             "Configuration {} contained multiple instances of ioc ({})".format(self.config, ioc))
 
     def test_GIVEN_a_configuration_THEN_the_directory_does_not_contain_unexpected_files(self):
         for filename in os.listdir(self.config_dir_path):
