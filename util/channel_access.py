@@ -18,6 +18,7 @@ class ChannelAccessUtils(object):
         :return: The PV value as a string, or None if there was an error
         """
         try:
+            print("{}{}".format(self.pv_prefix, pv, to_string=True))
             return CaChannelWrapper.get_pv_value("{}{}".format(self.pv_prefix, pv, to_string=True))
         except (UnableToConnectToPVException, ReadAccessException):
             return None
@@ -36,8 +37,36 @@ class ChannelAccessUtils(object):
         pv_value = self.get_value("CS:INSTLIST")
         return {} if pv_value is None else json.loads(self._dehex_and_decompress(pv_value))
 
+    def _get_high_interest_pvs(self):
+        pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:HIGH')
+        if pv_value is None:
+            return []
+        else:
+            pv_value = json.loads(self._dehex_and_decompress(pv_value))
+            high_pv_names = []
+            for high_pv in pv_value:
+                high_pv_names.append(high_pv[0])
+
+            print(high_pv_names)
+            return high_pv_names
+
+    def _get_medium_interest_pvs(self):
+        pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:MEDIUM')
+        if pv_value is None:
+            return []
+        else:
+            pv_value = json.loads(self._dehex_and_decompress(pv_value))
+            medium_pv_names = []
+            for medium_pv in pv_value:
+                medium_pv_names.append(medium_pv[0])
+
+            print(medium_pv_names)
+            return medium_pv_names
+
+
     def get_valid_iocs(self):
         pv_value = self.get_value("CS:BLOCKSERVER:IOCS")
+        self._get_high_interest_pvs()
         return None if pv_value is None else json.loads(self._dehex_and_decompress(pv_value)).keys()
 
     def get_protected_iocs(self):
