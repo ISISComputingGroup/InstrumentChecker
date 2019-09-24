@@ -24,6 +24,12 @@ class ChannelAccessUtils(object):
 
     @staticmethod
     def _dehex_and_decompress(data):
+        """
+        Converts the raw data from a PV to a decompressed string.
+        :param data: The raw data from the PV. It is a string of numbers representing the bytes of the raw data of the
+        PV.
+        :return: The data of the PV in the form of a decompressed and decoded string.
+        """
         return zlib.decompress(data.decode('hex'))
 
     def get_inst_list(self):
