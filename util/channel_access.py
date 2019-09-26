@@ -18,7 +18,6 @@ class ChannelAccessUtils(object):
         :return: The PV value as a string, or None if there was an error
         """
         try:
-            print("{}{}".format(self.pv_prefix, pv, to_string=True))
             return CaChannelWrapper.get_pv_value("{}{}".format(self.pv_prefix, pv, to_string=True))
         except (UnableToConnectToPVException, ReadAccessException):
             return None
@@ -53,7 +52,7 @@ class ChannelAccessUtils(object):
         for pv in self._get_medium_interest_pvs():
             interesting_pvs[pv.__hash__()] = pv
 
-        print(len(interesting_pvs))
+        print('Number of interesting PVs: ' + str(len(interesting_pvs)))
         return interesting_pvs
 
     def _get_high_interest_pvs(self):
