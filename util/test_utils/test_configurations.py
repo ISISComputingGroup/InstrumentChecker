@@ -29,6 +29,98 @@ class ConfigurationTests(unittest.TestCase):
 
         self.assertListEqual(self.config_utils.get_active_components_from_xml(xml), ["COMPONENT_1", "COMPONENT_2"])
 
+    def test_GIVEN_block_xml_WHEN_parsed_and_no_blocks_THEN_return_no_data(self):
+        xml = """<?xml version="1.0" ?>
+                    <blocks xmlns="http://epics.isis.rl.ac.uk/schema/blocks/1.0" 
+                    xmlns:blk="http://epics.isis.rl.ac.uk/schema/blocks/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+                    </blocks>"""
+
+        self.assertListEqual(self.config_utils.get_block_pvs_from_xml("", xml), [])
+
+    def test_GIVEN_block_xml_WHEN_parsed_THEN_can_extract_one_global_pv(self):
+        xml = """<?xml version="1.0" ?>
+                    <blocks xmlns="http://epics.isis.rl.ac.uk/schema/blocks/1.0" 
+                    xmlns:blk="http://epics.isis.rl.ac.uk/schema/blocks/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+                        <block>
+                            <name>S2VG</name>
+                            <read_pv>MOT:JAWS2:VGAP</read_pv>
+                            <local>False</local>
+                            <visible>True</visible>
+                            <rc_enabled>False</rc_enabled>
+                            <rc_lowlimit>0.0</rc_lowlimit>
+                            <rc_highlimit>0.0</rc_highlimit>
+                            <log_periodic>True</log_periodic>
+                            <log_rate>30</log_rate>
+                            <log_deadband>0.0</log_deadband>
+                        </block>
+                    </blocks>"""
+
+        self.assertListEqual(self.config_utils.get_block_pvs_from_xml("IN:DEMO", xml), ["MOT:JAWS2:VGAP"])
+
+    def test_GIVEN_block_xml_WHEN_parsed_THEN_can_extract_multiple_global_pvs(self):
+        xml = """<?xml version="1.0" ?>
+                    <blocks xmlns="http://epics.isis.rl.ac.uk/schema/blocks/1.0" 
+                    xmlns:blk="http://epics.isis.rl.ac.uk/schema/blocks/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+                        <block>
+                            <name>S2VG</name>
+                            <read_pv>MOT:JAWS2:VGAP</read_pv>
+                            <local>False</local>
+                            <visible>True</visible>
+                            <rc_enabled>False</rc_enabled>
+                            <rc_lowlimit>0.0</rc_lowlimit>
+                            <rc_highlimit>0.0</rc_highlimit>
+                            <log_periodic>True</log_periodic>
+                            <log_rate>30</log_rate>
+                            <log_deadband>0.0</log_deadband>
+                        </block>
+                        <block>
+                            <name>Cy</name>
+                            <read_pv>CY</read_pv>
+                            <local>False</local>
+                            <visible>True</visible>
+                            <rc_enabled>False</rc_enabled>
+                            <rc_lowlimit>0.0</rc_lowlimit>
+                            <rc_highlimit>0.0</rc_highlimit>
+                            <log_periodic>True</log_periodic>
+                            <log_rate>30</log_rate>
+                            <log_deadband>0.0</log_deadband>
+                        </block>
+                        <block>
+                            <name>Cx</name>
+                            <read_pv>CX</read_pv>
+                            <local>False</local>
+                            <visible>True</visible>
+                            <rc_enabled>False</rc_enabled>
+                            <rc_lowlimit>0.0</rc_lowlimit>
+                            <rc_highlimit>0.0</rc_highlimit>
+                            <log_periodic>True</log_periodic>
+                            <log_rate>30</log_rate>
+                            <log_deadband>0.0</log_deadband>
+                        </block>
+                    </blocks>"""
+
+        self.assertListEqual(self.config_utils.get_block_pvs_from_xml("IN:DEMO", xml), ["MOT:JAWS2:VGAP", "CY", "CX"])
+
+    def test_GIVEN_block_xml_WHEN_parsed_THEN_can_extract_one_local_pv(self):
+        xml = """<?xml version="1.0" ?>
+                    <blocks xmlns="http://epics.isis.rl.ac.uk/schema/blocks/1.0" 
+                    xmlns:blk="http://epics.isis.rl.ac.uk/schema/blocks/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+                        <block>
+                            <name>S2VG</name>
+                            <read_pv>MOT:JAWS2:VGAP</read_pv>
+                            <local>True</local>
+                            <visible>True</visible>
+                            <rc_enabled>False</rc_enabled>
+                            <rc_lowlimit>0.0</rc_lowlimit>
+                            <rc_highlimit>0.0</rc_highlimit>
+                            <log_periodic>True</log_periodic>
+                            <log_rate>30</log_rate>
+                            <log_deadband>0.0</log_deadband>
+                        </block>
+                    </blocks>"""
+
+        self.assertListEqual(self.config_utils.get_block_pvs_from_xml("IN:DEMO:", xml), ["IN:DEMO:MOT:JAWS2:VGAP"])
+
     def test_GIVEN_ioc_xml_WHEN_parsed_THEN_can_extract_a_single_ioc(self):
         xml = """<?xml version="1.0" ?>
                     <iocs xmlns="http://epics.isis.rl.ac.uk/schema/iocs/1.0" 

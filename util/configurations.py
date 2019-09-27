@@ -62,7 +62,8 @@ class AbstractConfigurationUtils(object):
         :param config_name: Name of configuration or component.
         :return: list of PVs that have a block on them.
         """
-        return self.get_block_pvs_from_xml( Settings.pv_prefix, self.get_blocks_xml(config_name))
+
+        return self.get_block_pvs_from_xml(Settings.pv_prefix, self.get_blocks_xml(config_name))
 
     def get_blocks_xml(self, config_name):
         """
@@ -103,7 +104,7 @@ class AbstractConfigurationUtils(object):
         :param config_name: the configuration or component name
         :return: the XML as a string
         """
-        print(self.get_block_pvs_from_xml(self.get_blocks_xml(config_name)))
+        self.get_block_pvs_from_xml(Settings.pv_prefix, self.get_blocks_xml(config_name))
         path = os.path.join(self.get_configurations_directory(), config_name, "iocs.xml")
         with open(path) as xml_file:
             return xml_file.read()
