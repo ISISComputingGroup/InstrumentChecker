@@ -68,6 +68,12 @@ class AbstractConfigurationUtils(object):
             return xml_file.read()
 
     def get_block_pvs(self, block_xml):
+        """
+        Gets a list of all PVs which a have block on them in a certain component or configuration.
+        :param block_xml: A string representing the XML block data of a component or configuration.
+        :return: A list of the names of all PVs which have a block on them. The names of the PV include the instrument
+        prefix.
+        """
         root = ET.fromstring(block_xml)
         pvs_with_blocks = []
 
