@@ -1,5 +1,7 @@
 import json
 import zlib
+
+from enum import Enum
 from genie_python.genie_cachannel_wrapper import CaChannelWrapper
 from genie_python.channel_access_exceptions import UnableToConnectToPVException, ReadAccessException
 
@@ -46,52 +48,39 @@ class ChannelAccessUtils(object):
         """
         interesting_pvs = {}
 
-        for pv in self._get_high_interest_pvs():
+        for pv in self._get_interesting_pvs(PvInterestingLevel.HIGH):
             interesting_pvs[pv.__hash__()] = pv
 
-        for pv in self._get_medium_interest_pvs():
+        for pv in self._get_interesting_pvs(PvInterestingLevel.MEDIUM):
             interesting_pvs[pv.__hash__()] = pv
 
         print('Number of interesting PVs: ' + str(len(interesting_pvs)))
         return interesting_pvs
 
-    def _get_high_interest_pvs(self):
+    def _get_interesting_pvs(self, interesting_level):
         """
-        Returns the list of all PVs with high interest status from the corresponding instrument PV. The instrument for
-        which it returns the list depends on the prefix assigned to this class, which needs to be in the format
-        IN:NAME_OF_INSTRUMENT.
-        :return: A python list with the names of all the PVs with a high interest status.
+        Returns the list of all PVs with the specified interesting level from the corresponding instrument PV. The
+        instrument for which it returns the list depends on the prefix assigned to this class, which needs to be in the
+        format IN:NAME_OF_INSTRUMENT.
+        :param interesting_level An enum type representing the interesting level of a PV.
+        :return: A python list with the names of all the PVs with the specified interesting level.
         """
-        pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:HIGH')
+        if interesting_level == PvInterestingLevel.HIGH:
+            pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:HIGH')
+        elif interesting_level == PvInterestingLevel.MEDIUM:
+            pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:MEDIUM')
+        else:
+            pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:LOW')
 
         if pv_value is None:
             return []
         else:
             pv_value = json.loads(self._dehex_and_decompress(pv_value))
-            high_pv_names = []
-            for high_pv in pv_value:
-                high_pv_names.append(high_pv[0])
+            pv_names = []
+            for pv in pv_value:
+                pv_names.append(pv[0])
 
-            return high_pv_names
-
-    def _get_medium_interest_pvs(self):
-        """
-        Returns the list of all PVs with high interest status from the corresponding instrument PV. The instrument for
-        which it returns the list depends on the prefix assigned to this class, which needs to be in the format
-        IN:NAME_OF_INSTRUMENT.
-        :return: A python list with the names of all the PVs with a medium interest status.
-        """
-        pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:MEDIUM')
-
-        if pv_value is None:
-            return []
-        else:
-            pv_value = json.loads(self._dehex_and_decompress(pv_value))
-            medium_pv_names = []
-            for medium_pv in pv_value:
-                medium_pv_names.append(medium_pv[0])
-
-            return medium_pv_names
+            return pv_names
 
     def get_valid_iocs(self):
         pv_value = self.get_value("CS:BLOCKSERVER:IOCS")
@@ -104,3 +93,9 @@ class ChannelAccessUtils(object):
 
     def get_version_string(self):
         return self.get_value("CS:VERSION:SVN:REV")
+
+
+class PvInterestingLevel(Enum):
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
