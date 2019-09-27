@@ -102,7 +102,7 @@ class ConfigurationsTests(unittest.TestCase):
     def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(self):
         iocs_xml = self.config_utils.get_iocs_xml(self.config)
         for motor_ioc in CommonUtils.MOTOR_IOCS:
-            defined_macros = self.config_utils.get_ioc_macros(iocs_xml, motor_ioc, self.config)
+            defined_macros = self.config_utils.get_ioc_macros(iocs_xml, motor_ioc)
 
             controller_number_defined = "MTRCTRL" in defined_macros
             comms_macro_defined = any(m in defined_macros for m in ["PORT", "GALILADDR"])
