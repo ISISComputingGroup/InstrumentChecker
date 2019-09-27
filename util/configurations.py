@@ -1,6 +1,7 @@
 import os
 import xml.etree.ElementTree as ET
 from common import CommonUtils
+from tests.settings import Settings
 
 
 class AbstractConfigurationUtils(object):
@@ -71,10 +72,14 @@ class AbstractConfigurationUtils(object):
         pvs_with_blocks = []
 
         for block in root.iter("{}block".format(self.BLOCK_XML_SCHEMA)):
-            pvs_with_blocks.append(block.find("{}read_pv".format(self.BLOCK_XML_SCHEMA)).text)
+            pv_name = block.find("{}read_pv".format(self.BLOCK_XML_SCHEMA)).text
+
+            if block.find("{}local".format(self.BLOCK_XML_SCHEMA)).text == "True":
+                pv_name = Settings.pv_prefix + pv_name
+
+            pvs_with_blocks.append(pv_name)
 
         return pvs_with_blocks
-
 
     def get_iocs_xml(self, config_name):
         """
