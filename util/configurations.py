@@ -119,13 +119,12 @@ class AbstractConfigurationUtils(object):
 
         return iocs
 
-    def get_ioc_macros(self, xml, ioc_name, config_name):
+    def get_ioc_macros(self, xml, ioc_name):
         """
         Returns a dictionary of macro information for a given ioc_name in the given xml.
 
         :param xml: The IOC xml.
         :param ioc_name: The name of the ioc.
-        :param config_name: The name of the configuration we're looking in.
         :return: A dictionary of macro information. Keys are the macro name, values are the macro value
         """
         # Parse the XML

@@ -95,11 +95,11 @@ class ConfigurationTests(unittest.TestCase):
                                value_1_01=value_1_01, value_1_02=value_1_02,
                                value_2_01=value_2_01, value_2_02=value_2_02)
 
-        macros_1 = self.config_utils.get_ioc_macros(xml, "SIMPLE_01", "test_config")
+        macros_1 = self.config_utils.get_ioc_macros(xml, "SIMPLE_01")
         self.assertEqual(macros_1[name_1], value_1_01)
         self.assertEqual(macros_1[name_2], value_2_01)
 
-        macros_2 = self.config_utils.get_ioc_macros(xml, "SIMPLE_02", "test_config")
+        macros_2 = self.config_utils.get_ioc_macros(xml, "SIMPLE_02")
         self.assertEqual(macros_2[name_1], value_1_02)
         self.assertEqual(macros_2[name_2], value_2_02)
 
