@@ -62,7 +62,7 @@ class AbstractConfigurationUtils(object):
         :param config_name: Name of configuration or component.
         :return: list of PVs that have a block on them.
         """
-        return self.get_block_pvs_from_xml(self.get_blocks_xml(config_name))
+        return self.get_block_pvs_from_xml( Settings.pv_prefix, self.get_blocks_xml(config_name))
 
     def get_blocks_xml(self, config_name):
         """
@@ -75,10 +75,12 @@ class AbstractConfigurationUtils(object):
         with open(path) as xml_file:
             return xml_file.read()
 
-    def get_block_pvs_from_xml(self, block_xml):
+    def get_block_pvs_from_xml(self, pv_prefix, block_xml):
         """
         Gets a list of all PVs which a have block on them in a certain component or configuration.
         :param block_xml: A string representing the XML block data of a component or configuration.
+        :param pv_prefix: A string representing the instrument prefix of the PV. If the PV is local, then this prefix
+        will be ignored.
         :return: A list of the names of all PVs which have a block on them. The names of the PV include the instrument
         prefix.
         """
@@ -89,7 +91,7 @@ class AbstractConfigurationUtils(object):
             pv_name = block.find("{}read_pv".format(self.BLOCK_XML_SCHEMA)).text
 
             if block.find("{}local".format(self.BLOCK_XML_SCHEMA)).text == "True":
-                pv_name = Settings.pv_prefix + pv_name
+                pv_name = pv_prefix + pv_name
 
             pvs_with_blocks.append(pv_name)
 
