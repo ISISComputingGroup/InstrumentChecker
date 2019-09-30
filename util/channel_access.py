@@ -49,10 +49,10 @@ class ChannelAccessUtils(object):
         interesting_pvs = {}
 
         for pv in self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH):
-            interesting_pvs[pv.__hash__()] = pv
+            interesting_pvs[pv] = pv
 
         for pv in self._get_pvs_by_interesting_level(PvInterestingLevel.MEDIUM):
-            interesting_pvs[pv.__hash__()] = pv
+            interesting_pvs[pv] = pv
 
         print('Number of interesting PVs: ' + str(len(interesting_pvs)))
         return interesting_pvs
