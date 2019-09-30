@@ -1,15 +1,18 @@
 import unittest
 import os
+import xml.etree.ElementTree as ET
+
 from settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ComponentUtils
-import xml.etree.ElementTree as ET
+from util.channel_access import ChannelAccessUtils
 
 
 class ComponentsSingleTests(unittest.TestCase):
     """
     Tests in this class will be run exactly once regardless of how many components exist.
     """
+    TOTAL_NON_INTERESTING_PVS_IN_BLOCKS = 0
 
     def setUp(self):
         self.component_utils = ComponentUtils(Settings.config_repo_path)
@@ -17,6 +20,23 @@ class ComponentsSingleTests(unittest.TestCase):
     def test_GIVEN_components_directory_THEN_it_contains_the_base_component(self):
         self.assertIn(ComponentUtils.BASE_COMPONENT, self.component_utils.get_configurations_as_list(),
                       "Base component was missing (should be called {})".format(ComponentUtils.BASE_COMPONENT))
+
+    def test_GIVEN_an_instrument_THEN_all_block_pvs_are_interesting(self):
+        non_interesting_block_pvs = []
+        interesting_pvs = ChannelAccessUtils(Settings.pv_prefix).get_interesting_pvs()
+
+        for block_pv in self.component_utils.get_set_of_block_pvs_for_all_configs():
+            if block_pv not in interesting_pvs:
+                non_interesting_block_pvs.append(block_pv)
+
+        nr_non_interesting_block_pvs = len(non_interesting_block_pvs)
+        ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += nr_non_interesting_block_pvs
+
+        if nr_non_interesting_block_pvs != 0:
+            print("WARNING! The instrument " + Settings.pv_prefix + " has " + str(len(non_interesting_block_pvs)) +
+                  " non-interesting pvs in that have a block on them in components")
+            print(str(self.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS) + " non interesting component block pvs in total")
+            print(non_interesting_block_pvs)
 
 
 class ComponentsTests(unittest.TestCase):
