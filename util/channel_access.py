@@ -46,13 +46,14 @@ class ChannelAccessUtils(object):
         :return: A python dictionary with the names of all the PVs with a high or medium interest status. The key
         pointing to a PV name is the hash code of the string name.
         """
-        interesting_pvs = {}
+        interesting_pvs = set()
 
+        # We just need a set
         for pv in self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH):
-            interesting_pvs[pv] = pv
+            interesting_pvs.add(pv)
 
         for pv in self._get_pvs_by_interesting_level(PvInterestingLevel.MEDIUM):
-            interesting_pvs[pv] = pv
+            interesting_pvs.add(pv)
 
         print('Number of interesting PVs: ' + str(len(interesting_pvs)))
         return interesting_pvs
