@@ -88,7 +88,7 @@ class ChannelAccessUtils(object):
 
     def get_valid_iocs(self):
         pv_value = self.get_value("CS:BLOCKSERVER:IOCS")
-        self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH)
+        # self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH)
         return None if pv_value is None else json.loads(self._dehex_and_decompress(pv_value)).keys()
 
     def get_protected_iocs(self):

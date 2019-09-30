@@ -57,6 +57,15 @@ class AbstractConfigurationUtils(object):
 
         return components
 
+    def get_set_of_block_pvs_for_configs(self):
+        block_pvs_set = set()
+
+        for configuration in self.get_configurations_as_list():
+            for block_pv in self.get_block_pvs(configuration):
+                block_pvs_set.add(block_pv)
+
+        return block_pvs_set
+
     def get_block_pvs(self, config_name):
         """
         Gets list of PVs that have a block on them for a particular configuration or component.
@@ -105,7 +114,7 @@ class AbstractConfigurationUtils(object):
         :param config_name: the configuration or component name
         :return: the XML as a string
         """
-        self.get_block_pvs_from_xml(Settings.pv_prefix, self.get_blocks_xml(config_name))
+        # self.get_block_pvs_from_xml(Settings.pv_prefix, self.get_blocks_xml(config_name))
         path = os.path.join(self.get_configurations_directory(), config_name, "iocs.xml")
         with open(path) as xml_file:
             return xml_file.read()
