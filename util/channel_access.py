@@ -79,16 +79,16 @@ class ChannelAccessUtils(object):
         if pv_value is None:
             return []
         else:
-            pv_value = json.loads(self._dehex_and_decompress(pv_value))
+            interesting_pvs = json.loads(self._dehex_and_decompress(pv_value))
             pv_names = []
-            for pv in pv_value:
+            for pv in interesting_pvs:
                 pv_names.append(pv[0])
 
             return pv_names
 
     def get_valid_iocs(self):
         pv_value = self.get_value("CS:BLOCKSERVER:IOCS")
-        self.get_interesting_pvs()
+        self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH)
         return None if pv_value is None else json.loads(self._dehex_and_decompress(pv_value)).keys()
 
     def get_protected_iocs(self):

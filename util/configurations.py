@@ -1,5 +1,6 @@
 import os
 import xml.etree.ElementTree as ET
+
 from common import CommonUtils
 from tests.settings import Settings
 
