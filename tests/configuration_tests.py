@@ -1,9 +1,11 @@
 import unittest
 import os
+import xml.etree.ElementTree as ET
+
 from settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ConfigurationUtils, ComponentUtils
-import xml.etree.ElementTree as ET
+from util.channel_access import ChannelAccessUtils
 
 
 class ConfigurationsSingleTests(unittest.TestCase):
@@ -11,12 +13,31 @@ class ConfigurationsSingleTests(unittest.TestCase):
     Tests in this class will be run exactly once regardless of how many configs exist.
     """
 
+    TOTAL_NON_INTERESTING_PVS_IN_BLOCKS = 0
+
     def setUp(self):
         self.config_utils = ConfigurationUtils(Settings.config_repo_path)
 
     def test_GIVEN_an_instrument_THEN_the_configurations_directory_exists_and_contains_at_least_one_configuration(self):
         self.assertGreaterEqual(len(self.config_utils.get_configurations_as_list()), 1,
                                 "Configurations directory was empty or did not exist")
+
+    def test_GIVEN_an_instrument_THEN_all_block_pvs_are_interesting(self):
+        non_interesting_block_pvs = []
+        interesting_pvs = ChannelAccessUtils(Settings.pv_prefix).get_interesting_pvs()
+
+        for block_pv in self.config_utils.get_set_of_block_pvs_for_all_configs():
+            if block_pv not in interesting_pvs:
+                non_interesting_block_pvs.append(block_pv)
+
+        nr_non_interesting_block_pvs = len(non_interesting_block_pvs)
+        ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += nr_non_interesting_block_pvs
+
+        if nr_non_interesting_block_pvs != 0:
+            print("\nWARNING! The instrument " + Settings.pv_prefix + " has " + str(len(non_interesting_block_pvs)) +
+                  " non-interesting pvs in that have a block on them in configs")
+            print(str(self.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS) + " non interesting configuration block pvs in total")
+            print(non_interesting_block_pvs)
 
 
 class ConfigurationsTests(unittest.TestCase):
