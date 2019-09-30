@@ -35,6 +35,10 @@ class ChannelAccessUtils(object):
         return zlib.decompress(data.decode('hex'))
 
     def get_inst_list(self):
+        """
+        Gets a list with all instruments running on IBEX from CS:INSTLIST.
+        :return: a list of strings of instrument names.
+        """
         pv_value = self.get_value("CS:INSTLIST")
         return {} if pv_value is None else json.loads(self._dehex_and_decompress(pv_value))
 
@@ -87,19 +91,35 @@ class ChannelAccessUtils(object):
             return pv_names
 
     def get_valid_iocs(self):
+        """
+        Gets the names of all valid IOCS from the PV of IOCs of the instrument.
+        :return: a list of strings representing IOC names.
+        """
         pv_value = self.get_value("CS:BLOCKSERVER:IOCS")
         # self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH)
         return None if pv_value is None else json.loads(self._dehex_and_decompress(pv_value)).keys()
 
     def get_protected_iocs(self):
+        """
+        Gets the names of all protected IOCS from the PV of IOCs of the instrument. Protected IOCs are IOCs that a user
+        is not allowed to stop.
+        :return: a list of strings representing IOC names.
+        """
         pv_value = self.get_value("CS:BLOCKSERVER:IOCS_NOT_TO_STOP")
         return None if pv_value is None else json.loads(self._dehex_and_decompress(pv_value))
 
     def get_version_string(self):
+        """
+        Gets the version of IBEX server running.
+        :return: a compressed and hex encoded string representing the version.
+        """
         return self.get_value("CS:VERSION:SVN:REV")
 
 
 class PvInterestingLevel(Enum):
+    """
+    Enumerated type representing the possible interesting levels a PV can have.
+    """
     HIGH = "HIGH"
     MEDIUM = "MEDIUM"
     LOW = "LOW"

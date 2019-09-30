@@ -49,9 +49,9 @@ class ConfigurationsTests(unittest.TestCase):
     The configuration name can be accessed as self.config
     """
 
-    def __init__(self, methodName, config=None):
+    def __init__(self, method_name, config=None):
         # Boilerplate so that unittest knows how to run these tests.
-        super(ConfigurationsTests, self).__init__(methodName)
+        super(ConfigurationsTests, self).__init__(method_name)
 
         self.config_utils = ConfigurationUtils(Settings.config_repo_path)
         self.comp_utils = ComponentUtils(Settings.config_repo_path)

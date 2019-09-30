@@ -23,6 +23,10 @@ class AbstractConfigurationUtils(object):
         raise NotImplementedError("This is an abstract class, use a concrete class instead")
 
     def get_configurations_as_list(self):
+        """
+        Gets a list of all configurations/components of the current instrument.
+        :return: a list of strings.
+        """
         return CommonUtils.get_folders_in_directory_as_list(self.get_configurations_directory())
 
     def get_active_components_as_list(self, config_name):
