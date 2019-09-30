@@ -48,16 +48,16 @@ class ChannelAccessUtils(object):
         """
         interesting_pvs = {}
 
-        for pv in self._get_interesting_pvs(PvInterestingLevel.HIGH):
+        for pv in self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH):
             interesting_pvs[pv.__hash__()] = pv
 
-        for pv in self._get_interesting_pvs(PvInterestingLevel.MEDIUM):
+        for pv in self._get_pvs_by_interesting_level(PvInterestingLevel.MEDIUM):
             interesting_pvs[pv.__hash__()] = pv
 
         print('Number of interesting PVs: ' + str(len(interesting_pvs)))
         return interesting_pvs
 
-    def _get_interesting_pvs(self, interesting_level):
+    def _get_pvs_by_interesting_level(self, interesting_level):
         """
         Returns the list of all PVs with the specified interesting level from the corresponding instrument PV. The
         instrument for which it returns the list depends on the prefix assigned to this class, which needs to be in the
