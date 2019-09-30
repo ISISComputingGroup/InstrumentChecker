@@ -58,7 +58,7 @@ class ChannelAccessUtils(object):
         for pv in self._get_pvs_by_interesting_level(PvInterestingLevel.LOW):
             interesting_pvs.add(pv)
 
-        print('Number of interesting PVs: ' + str(len(interesting_pvs)))
+        # print('Number of interesting PVs: ' + str(len(interesting_pvs)))
         return interesting_pvs
 
     def _get_pvs_by_interesting_level(self, interesting_level):

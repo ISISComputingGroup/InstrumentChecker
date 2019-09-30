@@ -33,7 +33,7 @@ class ComponentsSingleTests(unittest.TestCase):
         ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += nr_non_interesting_block_pvs
 
         if nr_non_interesting_block_pvs != 0:
-            print("WARNING! The instrument " + Settings.pv_prefix + " has " + str(len(non_interesting_block_pvs)) +
+            print("\nWARNING! The instrument " + Settings.pv_prefix + " has " + str(len(non_interesting_block_pvs)) +
                   " non-interesting pvs in that have a block on them in components")
             print(str(self.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS) + " non interesting component block pvs in total")
             print(non_interesting_block_pvs)
