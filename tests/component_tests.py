@@ -25,17 +25,17 @@ class ComponentsSingleTests(unittest.TestCase):
         non_interesting_block_pvs = []
         interesting_pvs = ChannelAccessUtils(Settings.pv_prefix).get_interesting_pvs()
 
-        for block_pv in self.component_utils.get_set_of_block_pvs_for_all_configs():
-            if block_pv not in interesting_pvs:
-                non_interesting_block_pvs.append(block_pv)
+        non_interesting_block_pvs = [block_pv for block_pv in self.component_utils.get_set_of_block_pvs_for_all_configs(
+                                        )if block_pv not in interesting_pvs]
 
-        nr_non_interesting_block_pvs = len(non_interesting_block_pvs)
-        ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += nr_non_interesting_block_pvs
+        num_non_interesting_block_pvs = len(non_interesting_block_pvs)
+        ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
 
-        if nr_non_interesting_block_pvs != 0:
-            print("\nWARNING! The instrument " + Settings.pv_prefix + " has " + str(len(non_interesting_block_pvs)) +
-                  " non-interesting pvs in that have a block on them in components")
-            print(str(self.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS) + " non interesting component block pvs in total")
+        if num_non_interesting_block_pvs != 0:
+            print("\nWARNING! The instrument {} has {} non-interesting pvs that have a block on them in components".
+                  format(Settings.pv_prefix, len(non_interesting_block_pvs)))
+            print("{} non interesting component block pvs in total across all instruments".format(
+                self.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))
             print(non_interesting_block_pvs)
 
 
@@ -106,7 +106,8 @@ class ComponentsTests(unittest.TestCase):
                           .format(filename, self.component, e))
 
     @skip_on_instruments(["DEMO"], "This does not matter on DEMO, and we often demo software in slightly odd configs")
-    def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(self):
+    def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(
+            self):
         iocs_xml = self.component_utils.get_iocs_xml(self.component)
         for motor_ioc in CommonUtils.MOTOR_IOCS:
             defined_macros = self.component_utils.get_ioc_macros(iocs_xml, motor_ioc)

@@ -26,19 +26,19 @@ class ConfigurationsSingleTests(unittest.TestCase):
         non_interesting_block_pvs = []
         interesting_pvs = ChannelAccessUtils(Settings.pv_prefix).get_interesting_pvs()
 
-        for block_pv in self.config_utils.get_set_of_block_pvs_for_all_configs():
-            if block_pv not in interesting_pvs:
-                non_interesting_block_pvs.append(block_pv)
+        non_interesting_block_pvs = [block_pv for block_pv in self.config_utils.get_set_of_block_pvs_for_all_configs(
+                                        ) if block_pv not in interesting_pvs]
 
-        nr_non_interesting_block_pvs = len(non_interesting_block_pvs)
-        ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += nr_non_interesting_block_pvs
+        num_non_interesting_block_pvs = len(non_interesting_block_pvs)
+        ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
 
-        if nr_non_interesting_block_pvs != 0:
-            print("\nWARNING! The instrument " + Settings.pv_prefix + " has " + str(len(non_interesting_block_pvs)) +
-                  " non-interesting pvs in that have a block on them in configs")
-            print(str(self.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS) + " non interesting configuration block pvs in total")
+        if num_non_interesting_block_pvs != 0:
+            print("\nWARNING! The instrument {} has {} non-interesting pvs that have a block on them in configs".
+                  format(Settings.pv_prefix, len(non_interesting_block_pvs)))
+            print("{} non interesting configuration block pvs in total across all instruments".format(
+                self.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))
             print(non_interesting_block_pvs)
-
+            
 
 class ConfigurationsTests(unittest.TestCase):
     """
