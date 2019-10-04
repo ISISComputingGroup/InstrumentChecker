@@ -1,5 +1,7 @@
 setlocal
 
+set EPICS_CA_ARRAY_BYTES=128000
+
 REM Define working directories
 set configs_dir=%~dp0\configs
 set gui_dir=%~dp0\gui
