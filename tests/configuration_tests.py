@@ -6,9 +6,10 @@ from settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ConfigurationUtils, ComponentUtils
 from util.channel_access import ChannelAccessUtils
+from abstract_test_utils import AbstractSingleTests
 
 
-class ConfigurationsSingleTests(unittest.TestCase):
+class ConfigurationsSingleTests(AbstractSingleTests):
     """
     Tests in this class will be run exactly once regardless of how many configs exist.
     """
@@ -16,35 +17,19 @@ class ConfigurationsSingleTests(unittest.TestCase):
     TOTAL_NON_INTERESTING_PVS_IN_BLOCKS = 0
 
     def setUp(self):
-        self.config_utils = ConfigurationUtils(Settings.config_repo_path)
+        self.utils = ConfigurationUtils(Settings.config_repo_path)
 
     def test_GIVEN_an_instrument_THEN_the_configurations_directory_exists_and_contains_at_least_one_configuration(self):
-        self.assertGreaterEqual(len(self.config_utils.get_configurations_as_list()), 1,
+        self.assertGreaterEqual(len(self.utils.get_configurations_as_list()), 1,
                                 "Configurations directory was empty or did not exist")
 
-    def test_GIVEN_an_instrument_THEN_all_block_pvs_are_interesting(self):
-        interesting_pvs = ChannelAccessUtils(Settings.pv_prefix).get_interesting_pvs()
+    def get_config_type(self):
+        return "configuration"
 
-        if len(interesting_pvs) == 0:
-            print("Set of interesting PVs is empty, this is probably because the instrument {} is off. Since we do not "
-                  "know interesting pvs, configs are not checked for non interesting block pvs test is terminated "
-                  "early.".format(Settings.pv_prefix))
-
-            # exiting the function early will still make the test pass automatically
-            return
-
-        non_interesting_block_pvs = [block_pv for block_pv in self.config_utils.get_set_of_block_pvs_for_all_configs(
-                                        ) if block_pv not in interesting_pvs]
-
-        num_non_interesting_block_pvs = len(non_interesting_block_pvs)
+    def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
         ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
-
-        if num_non_interesting_block_pvs != 0:
-            print("\nWARNING! The instrument {} has {} non-interesting pvs that have a block on them in configs".
-                  format(Settings.pv_prefix, len(non_interesting_block_pvs)))
-            print("{} non interesting configuration block pvs in total across all instruments".format(
-                self.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))
-            print(non_interesting_block_pvs)
+        print("{} non interesting configuration block pvs in total across all instruments".format(
+                ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))
 
 
 class ConfigurationsTests(unittest.TestCase):
