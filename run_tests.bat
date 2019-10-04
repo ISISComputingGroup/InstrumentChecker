@@ -1,6 +1,6 @@
 setlocal
 
-set EPICS_CA_ARRAY_BYTES=128000
+set EPICS_CA_MAX_ARRAY_BYTES=128000
 
 REM Define working directories
 set configs_dir=%~dp0\configs
