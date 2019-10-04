@@ -5,7 +5,6 @@ import xml.etree.ElementTree as ET
 from settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ComponentUtils
-from util.channel_access import ChannelAccessUtils
 from abstract_test_utils import AbstractSingleTests
 
 
@@ -23,9 +22,19 @@ class ComponentsSingleTests(AbstractSingleTests):
                       "Base component was missing (should be called {})".format(ComponentUtils.BASE_COMPONENT))
 
     def get_config_type(self):
+        """
+        This method is used for printing messages to the screen where the only difference is the word
+        configuration/component.
+        :return: component as string.
+        """
         return "component"
 
     def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
+        """
+        This class monitors the number of non interesting block pvs discovered so far for
+        components and print it to the screen.
+        :param num_non_interesting_block_pvs: the number of non interesting block pvs for all instruments so far.
+        """
         ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
         print("{} non interesting component block pvs in total across all instruments".format(
                 ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))

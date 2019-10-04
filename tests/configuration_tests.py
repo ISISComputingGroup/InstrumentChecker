@@ -5,7 +5,6 @@ import xml.etree.ElementTree as ET
 from settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ConfigurationUtils, ComponentUtils
-from util.channel_access import ChannelAccessUtils
 from abstract_test_utils import AbstractSingleTests
 
 
@@ -24,9 +23,19 @@ class ConfigurationsSingleTests(AbstractSingleTests):
                                 "Configurations directory was empty or did not exist")
 
     def get_config_type(self):
+        """
+        This method is used for printing messages to the screen where the only difference is the word
+        configuration/component.
+        :return: configuration as string.
+        """
         return "configuration"
 
     def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
+        """
+        This class monitors the number of non interesting block pvs discovered so far for
+        configurations and print it to the screen.
+        :param num_non_interesting_block_pvs: the number of non interesting block pvs for all instruments so far.
+        """
         ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
         print("{} non interesting configuration block pvs in total across all instruments".format(
                 ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))

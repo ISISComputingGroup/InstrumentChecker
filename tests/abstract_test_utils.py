@@ -6,9 +6,18 @@ from util.channel_access import ChannelAccessUtils
 
 
 class AbstractSingleTests(unittest.TestCase):
+    """
+    Abstract class for tests to be run exactly one regardless of how many components/configurations exist. It is meant
+    to be extended by classes for configurations and for components.
+    """
     __metaclass__ = ABCMeta
 
     def setUp(self):
+        """
+        This only initializes a utils object that should be instantiated as ComponentUtils or ConfigurationUtils or
+        anything else in a subclass.
+        :return: nothing.
+        """
         self.utils = None
 
     def test_GIVEN_an_instrument_THEN_all_block_pvs_are_interesting(self):
@@ -34,11 +43,22 @@ class AbstractSingleTests(unittest.TestCase):
 
     @abstractmethod
     def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
+        """
+        This class should monitor the number of non interesting block pvs discovered so far for
+        components/configurations and print it to the screen.
+        :param num_non_interesting_block_pvs: the number of non interesting block pvs for all instruments so far.
+        :return: nothing.
+        """
         raise NotImplementedError("You need to implement this abstract method!")
         pass
 
     @abstractmethod
     def get_config_type(self):
+        """
+        This method is used for printing messages to the screen where the only difference is the word
+        configuration/component.
+        :return: configuration for ConfigurationSingleTests, component for ComponentsSingleTests
+        """
         raise NotImplementedError("You need to implement this abstract method!")
         pass
 
