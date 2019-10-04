@@ -27,7 +27,7 @@ class ComponentsSingleTests(AbstractSingleTests):
 
     def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
         ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
-        print("{} non interesting configuration block pvs in total across all instruments".format(
+        print("{} non interesting component block pvs in total across all instruments".format(
                 ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))
 
 
