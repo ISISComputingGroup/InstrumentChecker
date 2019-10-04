@@ -51,7 +51,8 @@ class ChannelAccessUtils(object):
         """
         all_interesting_pvs = self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH) + \
                               self._get_pvs_by_interesting_level(PvInterestingLevel.MEDIUM) + \
-                              self._get_pvs_by_interesting_level(PvInterestingLevel.LOW)
+                              self._get_pvs_by_interesting_level(PvInterestingLevel.LOW) + \
+                              self._get_pvs_by_interesting_level(PvInterestingLevel.FACILITY)
         interesting_pvs = set([pv for pv in all_interesting_pvs])
 
         return interesting_pvs
@@ -106,3 +107,4 @@ class PvInterestingLevel(Enum):
     HIGH = "HIGH"
     MEDIUM = "MEDIUM"
     LOW = "LOW"
+    FACILITY = "FACILITY"

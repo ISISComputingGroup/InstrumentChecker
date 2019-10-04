@@ -18,6 +18,10 @@ class ChannelAccessTests(unittest.TestCase):
                 return """[["IN:DEMO:PV_LOW_INTEREST_1", "bo", "Set withdrawn volume dispensed to 0.0",\
                 "ALDN1000_01"], ["IN:DEMO:PV_LOW_INTEREST_2", "mbbi", "Error in pressure readback",\
                 "AMINT2L_01"]]"""
+            elif pv == 'CS:BLOCKSERVER:PVS:INTEREST:FACILITY':
+                return """[["IN:DEMO:PV_FACILITY_1", "bou", "Set withdrawn volume dispensed to 5",\
+                "ALION1000_01"], ["IN:DEMO:PV_FACILITY_2", "mbbsdfi", "Error in temp readback",\
+                "AMHJGNT2L_01"]]"""
             else:
                 raise ValueError('pv argument needs to be HIGH, MEDIUM or LOW instrument PV for list of pvs by '
                                  'interesting level')
@@ -47,3 +51,7 @@ class ChannelAccessTests(unittest.TestCase):
     def test_GIVEN_interesting_level_WHEN_low_THEN_correct_low_pvs_returned(self):
         self.assertListEqual(self.channel_access._get_pvs_by_interesting_level(PvInterestingLevel.LOW),
                              ["IN:DEMO:PV_LOW_INTEREST_1", "IN:DEMO:PV_LOW_INTEREST_2"])
+
+    def test_GIVEN_interesting_level_WHEN_facility_THEN_correct_facility_pvs_returned(self):
+        self.assertListEqual(self.channel_access._get_pvs_by_interesting_level(PvInterestingLevel.FACILITY),
+                             ["IN:DEMO:PV_FACILITY_1", "IN:DEMO:PV_FACILITY_2"])
