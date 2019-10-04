@@ -44,25 +44,16 @@ class ChannelAccessUtils(object):
 
     def get_interesting_pvs(self):
         """
-        Returns the list of all PVs with high or medium interest status from the corresponding instrument PV. The
+        Returns all PVs with high or medium interest status from the corresponding instrument PV. The
         instrument for which it returns the list depends on the prefix assigned to this class, which needs to be in the
         format IN:NAME_OF_INSTRUMENT.
-        :return: A python dictionary with the names of all the PVs with a high or medium interest status. The key
-        pointing to a PV name is the hash code of the string name.
+        :return: A python set with the names of all the PVs with a high or medium interest status.
         """
-        interesting_pvs = set()
+        all_interesting_pvs = self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH) + \
+                              self._get_pvs_by_interesting_level(PvInterestingLevel.MEDIUM) + \
+                              self._get_pvs_by_interesting_level(PvInterestingLevel.LOW)
+        interesting_pvs = set([pv for pv in all_interesting_pvs])
 
-        # We just need a set
-        for pv in self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH):
-            interesting_pvs.add(pv)
-
-        for pv in self._get_pvs_by_interesting_level(PvInterestingLevel.MEDIUM):
-            interesting_pvs.add(pv)
-
-        for pv in self._get_pvs_by_interesting_level(PvInterestingLevel.LOW):
-            interesting_pvs.add(pv)
-
-        # print('Number of interesting PVs: ' + str(len(interesting_pvs)))
         return interesting_pvs
 
     def _get_pvs_by_interesting_level(self, interesting_level):
@@ -73,20 +64,13 @@ class ChannelAccessUtils(object):
         :param interesting_level An enum type representing the interesting level of a PV.
         :return: A python list with the names of all the PVs with the specified interesting level.
         """
-        if interesting_level == PvInterestingLevel.HIGH:
-            pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:HIGH')
-        elif interesting_level == PvInterestingLevel.MEDIUM:
-            pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:MEDIUM')
-        else:
-            pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:LOW')
 
+        pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:' + interesting_level.value)
         if pv_value is None:
             return []
         else:
             interesting_pvs = json.loads(self._dehex_and_decompress(pv_value))
-            pv_names = []
-            for pv in interesting_pvs:
-                pv_names.append(pv[0])
+            pv_names = [pv[0] for pv in interesting_pvs]
 
             return pv_names
 
@@ -96,7 +80,6 @@ class ChannelAccessUtils(object):
         :return: a list of strings representing IOC names.
         """
         pv_value = self.get_value("CS:BLOCKSERVER:IOCS")
-        # self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH)
         return None if pv_value is None else json.loads(self._dehex_and_decompress(pv_value)).keys()
 
     def get_protected_iocs(self):
