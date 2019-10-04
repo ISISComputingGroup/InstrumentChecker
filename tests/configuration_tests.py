@@ -23,7 +23,6 @@ class ConfigurationsSingleTests(unittest.TestCase):
                                 "Configurations directory was empty or did not exist")
 
     def test_GIVEN_an_instrument_THEN_all_block_pvs_are_interesting(self):
-        non_interesting_block_pvs = []
         interesting_pvs = ChannelAccessUtils(Settings.pv_prefix).get_interesting_pvs()
 
         non_interesting_block_pvs = [block_pv for block_pv in self.config_utils.get_set_of_block_pvs_for_all_configs(
@@ -38,7 +37,7 @@ class ConfigurationsSingleTests(unittest.TestCase):
             print("{} non interesting configuration block pvs in total across all instruments".format(
                 self.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))
             print(non_interesting_block_pvs)
-            
+
 
 class ConfigurationsTests(unittest.TestCase):
     """

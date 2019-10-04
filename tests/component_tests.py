@@ -22,7 +22,6 @@ class ComponentsSingleTests(unittest.TestCase):
                       "Base component was missing (should be called {})".format(ComponentUtils.BASE_COMPONENT))
 
     def test_GIVEN_an_instrument_THEN_all_block_pvs_are_interesting(self):
-        non_interesting_block_pvs = []
         interesting_pvs = ChannelAccessUtils(Settings.pv_prefix).get_interesting_pvs()
 
         non_interesting_block_pvs = [block_pv for block_pv in self.component_utils.get_set_of_block_pvs_for_all_configs(
