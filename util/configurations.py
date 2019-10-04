@@ -66,11 +66,8 @@ class AbstractConfigurationUtils(object):
         Gets a set of all pvs that have a block on them in any configuration or component of the instrument.
         :return: A set of strings representing the names of the pvs.
         """
-        block_pvs_set = set()
-
-        for configuration in self.get_configurations_as_list():
-            for block_pv in self.get_block_pvs(configuration):
-                block_pvs_set.add(block_pv)
+        block_pvs_set = set([block_pv for config in self.get_configurations_as_list()
+                             for block_pv in self.get_block_pvs(config)])
 
         return block_pvs_set
 
@@ -97,9 +94,9 @@ class AbstractConfigurationUtils(object):
     def get_block_pvs_from_xml(self, pv_prefix, block_xml):
         """
         Gets a list of all PVs which a have block on them in a certain component or configuration.
-        :param block_xml: A string representing the XML block data of a component or configuration.
         :param pv_prefix: A string representing the instrument prefix of the PV. If the PV is local, then this prefix
         will be ignored.
+        :param block_xml: A string representing the XML block data of a component or configuration.
         :return: A list of the names of all PVs which have a block on them. The names of the PV include the instrument
         prefix.
         """
@@ -122,7 +119,6 @@ class AbstractConfigurationUtils(object):
         :param config_name: the configuration or component name
         :return: the XML as a string
         """
-        # self.get_block_pvs_from_xml(Settings.pv_prefix, self.get_blocks_xml(config_name))
         path = os.path.join(self.get_configurations_directory(), config_name, "iocs.xml")
         with open(path) as xml_file:
             return xml_file.read()
