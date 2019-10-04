@@ -24,6 +24,14 @@ class ComponentsSingleTests(unittest.TestCase):
     def test_GIVEN_an_instrument_THEN_all_block_pvs_are_interesting(self):
         interesting_pvs = ChannelAccessUtils(Settings.pv_prefix).get_interesting_pvs()
 
+        if len(interesting_pvs) == 0:
+            print("Set of interesting PVs is empty, this is probably because the instrument {} is off. Since we do not "
+                  "know interesting pvs, components are not checked for non interesting block pvs test is terminated "
+                  "early.".format(Settings.pv_prefix))
+
+            # exiting the function early will still make the test pass automatically
+            return
+
         non_interesting_block_pvs = [block_pv for block_pv in self.component_utils.get_set_of_block_pvs_for_all_configs(
                                         )if block_pv not in interesting_pvs]
 
