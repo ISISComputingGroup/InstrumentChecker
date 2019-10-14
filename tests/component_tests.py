@@ -22,10 +22,8 @@ class ComponentsSingleTests(AbstractSingleTests):
         self.assertIn(ComponentUtils.BASE_COMPONENT, self.utils.get_configurations_as_list(),
                       "Base component was missing (should be called {})".format(ComponentUtils.BASE_COMPONENT))
 
-    def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
+    def update_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
         ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
-        print("{} non interesting component block pvs in total across all instruments".format(
-                ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))
 
 
 class ComponentsTests(unittest.TestCase):

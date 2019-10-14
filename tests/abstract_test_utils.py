@@ -36,11 +36,11 @@ class AbstractSingleTests(unittest.TestCase):
         if num_non_interesting_block_pvs != 0:
             print("\nWARNING! The instrument {} has {} non-interesting pvs that have a block on them in {}".
                   format(Settings.pv_prefix, len(non_interesting_block_pvs), self.type))
-            self.print_total_non_interesting_block_pvs(num_non_interesting_block_pvs)
+            self.update_total_non_interesting_block_pvs(num_non_interesting_block_pvs)
             print(non_interesting_block_pvs)
 
     @abstractmethod
-    def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
+    def update_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
         """
         This method should monitor the number of non interesting block pvs discovered so far for
         components/configurations and print it to the screen.

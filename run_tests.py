@@ -67,7 +67,11 @@ def setup_instrument_tests(instrument):
     :return: True if successful, False otherwise.
     """
     name, hostname, pv_prefix = instrument['name'], instrument['hostName'], instrument['pvPrefix']
-    Settings.set_instrument(name, hostname, pv_prefix)
+    try:
+        Settings.set_instrument(name, hostname, pv_prefix)
+    except Exception:
+        print("Unable to set instrument to {} because {}".format(name, traceback.format_exc()))
+        return False
 
     print("\n\nChecking out git repository for {} ({})...".format(name, hostname))
     return GitUtils(Settings.config_repo_path).update_branch(hostname)
@@ -103,7 +107,19 @@ def run_all_tests(reports_path, instruments):
         else:
             return_values.append(False)
 
+    _print_test_run_end_messages()
+
     return all(value for value in return_values)
+
+
+def _print_test_run_end_messages():
+    """
+    Method used to print any messages that should be printed at the end of the all instruments test run.
+    """
+    print("{} non interesting component block pvs in total across all instruments".format(
+        ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))
+    print("{} non interesting configuration block pvs in total across all instruments".format(
+        ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))
 
 
 def main():

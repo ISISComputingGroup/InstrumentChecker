@@ -23,10 +23,8 @@ class ConfigurationsSingleTests(AbstractSingleTests):
         self.assertGreaterEqual(len(self.utils.get_configurations_as_list()), 1,
                                 "Configurations directory was empty or did not exist")
 
-    def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
+    def update_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
         ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
-        print("{} non interesting configuration block pvs in total across all instruments".format(
-                ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))
 
 
 class ConfigurationsTests(unittest.TestCase):
