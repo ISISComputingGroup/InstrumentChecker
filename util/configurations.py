@@ -66,8 +66,8 @@ class AbstractConfigurationUtils(object):
         Gets a set of all pvs that have a block on them in any configuration or component of the instrument.
         :return: A set of strings representing the names of the pvs.
         """
-        block_pvs_set = set([block_pv for config in self.get_configurations_as_list()
-                             for block_pv in self.get_block_pvs(config)])
+        block_pvs_set = {block_pv for config in self.get_configurations_as_list()
+                             for block_pv in self.get_block_pvs(config)}
 
         return block_pvs_set
 
