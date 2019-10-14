@@ -46,7 +46,6 @@ class AbstractSingleTests(unittest.TestCase):
         :param num_non_interesting_block_pvs: the number of non interesting block pvs for all instruments so far.
         :return: nothing.
         """
-        raise NotImplementedError("You need to implement this abstract method!")
         pass
 
     @abstractmethod
@@ -56,6 +55,5 @@ class AbstractSingleTests(unittest.TestCase):
         configuration/component.
         :return: configuration for ConfigurationSingleTests, component for ComponentsSingleTests
         """
-        raise NotImplementedError("You need to implement this abstract method!")
         pass
 
