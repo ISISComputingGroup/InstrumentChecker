@@ -44,7 +44,6 @@ class AbstractSingleTests(unittest.TestCase):
         This class should monitor the number of non interesting block pvs discovered so far for
         components/configurations and print it to the screen.
         :param num_non_interesting_block_pvs: the number of non interesting block pvs for all instruments so far.
-        :return: nothing.
         """
         pass
 
