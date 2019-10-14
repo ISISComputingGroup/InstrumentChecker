@@ -17,18 +17,11 @@ class ConfigurationsSingleTests(AbstractSingleTests):
 
     def setUp(self):
         self.utils = ConfigurationUtils(Settings.config_repo_path)
+        self.type = "configurations"
 
     def test_GIVEN_an_instrument_THEN_the_configurations_directory_exists_and_contains_at_least_one_configuration(self):
         self.assertGreaterEqual(len(self.utils.get_configurations_as_list()), 1,
                                 "Configurations directory was empty or did not exist")
-
-    def get_config_type(self):
-        """
-        This method is used for printing messages to the screen where the only difference is the word
-        configuration/component.
-        :return: configuration as string.
-        """
-        return "configuration"
 
     def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
         ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs

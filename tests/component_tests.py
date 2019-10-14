@@ -16,18 +16,11 @@ class ComponentsSingleTests(AbstractSingleTests):
 
     def setUp(self):
         self.utils = ComponentUtils(Settings.config_repo_path)
+        self.type = "components"
 
     def test_GIVEN_components_directory_THEN_it_contains_the_base_component(self):
         self.assertIn(ComponentUtils.BASE_COMPONENT, self.utils.get_configurations_as_list(),
                       "Base component was missing (should be called {})".format(ComponentUtils.BASE_COMPONENT))
-
-    def get_config_type(self):
-        """
-        This method is used for printing messages to the screen where the only difference is the word
-        configuration/component.
-        :return: component as string.
-        """
-        return "component"
 
     def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
         ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
