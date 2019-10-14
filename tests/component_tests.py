@@ -30,11 +30,6 @@ class ComponentsSingleTests(AbstractSingleTests):
         return "component"
 
     def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
-        """
-        This class monitors the number of non interesting block pvs discovered so far for
-        components and print it to the screen.
-        :param num_non_interesting_block_pvs: the number of non interesting block pvs for all instruments so far.
-        """
         ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
         print("{} non interesting component block pvs in total across all instruments".format(
                 ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))

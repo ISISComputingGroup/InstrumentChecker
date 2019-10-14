@@ -31,11 +31,6 @@ class ConfigurationsSingleTests(AbstractSingleTests):
         return "configuration"
 
     def print_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
-        """
-        This class monitors the number of non interesting block pvs discovered so far for
-        configurations and print it to the screen.
-        :param num_non_interesting_block_pvs: the number of non interesting block pvs for all instruments so far.
-        """
         ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
         print("{} non interesting configuration block pvs in total across all instruments".format(
                 ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS))
