@@ -18,3 +18,4 @@ if not exist "%gui_dir%" (
 )
 
 call c:\Instrument\Apps\Python\genie_python.bat run_tests.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" --reports_path "%reports_dir%"
+if %errorlevel% neq 0 exit /b %errorlevel%
