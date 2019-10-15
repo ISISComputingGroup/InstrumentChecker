@@ -28,7 +28,7 @@ class AbstractSingleTests(unittest.TestCase):
         if len(interesting_pvs) == 0:
             self.skipTest("Set of interesting PVs is empty, this is probably because the instrument {} is off. Since "
                           "we do not know interesting pvs, {} are not checked for non interesting block pvs test is "
-                          "terminated early.".format(Settings.pv_prefix, self.type))
+                          "terminated early.".format(Settings.name, self.type))
 
         non_interesting_block_pvs = [block_pv for block_pv in self.utils.get_set_of_block_pvs_for_all_configs(
                                         ) if block_pv not in interesting_pvs]
