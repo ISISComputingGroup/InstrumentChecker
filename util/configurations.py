@@ -105,6 +105,7 @@ class AbstractConfigurationUtils(object):
 
         for block in root.iter("{}block".format(self.BLOCK_XML_SCHEMA)):
             pv_name = block.find("{}read_pv".format(self.BLOCK_XML_SCHEMA)).text
+            pv_name = AbstractConfigurationUtils.get_pv_name_without_field(pv_name)
 
             if block.find("{}local".format(self.BLOCK_XML_SCHEMA)).text == "True":
                 pv_name = pv_prefix + pv_name
@@ -112,6 +113,13 @@ class AbstractConfigurationUtils(object):
             pvs_with_blocks.append(pv_name)
 
         return pvs_with_blocks
+
+    @staticmethod
+    def get_pv_name_without_field(pv_name):
+        if '.' in pv_name:
+            return pv_name[:pv_name.index('.')]
+        else:
+            return pv_name
 
     def get_iocs_xml(self, config_name):
         """
