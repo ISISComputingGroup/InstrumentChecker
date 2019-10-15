@@ -1,16 +1,17 @@
 import unittest
-from abc import ABCMeta, abstractmethod
+import six
 
+from abc import ABCMeta, abstractmethod
 from settings import Settings
 from util.channel_access import ChannelAccessUtils
 
 
+@six.add_metaclass(ABCMeta)
 class AbstractSingleTests(unittest.TestCase):
     """
     Abstract class for tests to be run exactly one regardless of how many components/configurations exist. It is meant
     to be extended by classes for configurations and for components.
     """
-    __metaclass__ = ABCMeta
 
     def setUp(self):
         """
