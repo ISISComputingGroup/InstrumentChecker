@@ -115,7 +115,7 @@ class AbstractConfigurationUtils(object):
         return pvs_with_blocks
 
     @staticmethod
-    def get_pv_name_without_field(pv_name):
+    def _get_pv_name_without_field(pv_name):
         """
         Removes any PV field from a name a block is pointing to so it will return the name of the PV of the field the
         block points to.
