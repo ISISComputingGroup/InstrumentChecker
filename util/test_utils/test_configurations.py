@@ -97,6 +97,23 @@ class ConfigurationTests(unittest.TestCase):
 
         self.assertListEqual(self.config_utils.get_block_pvs_from_xml("IN:DEMO", xml), ["MOT:JAWS2:VGAP", "CY", "CX"])
 
+    def test_GIVEN_block_xml_WHEN_block_on_field_THEN_can_extract_one_global_pv_(self):
+        xml = generic_block_xml.format(
+                                """<block>
+                                    <name>S2VG</name>
+                                    <read_pv>MOT:JAWS2:VGAP.RBV</read_pv>
+                                    <local>True</local>
+                                    <visible>True</visible>
+                                    <rc_enabled>False</rc_enabled>
+                                    <rc_lowlimit>0.0</rc_lowlimit>
+                                    <rc_highlimit>0.0</rc_highlimit>
+                                    <log_periodic>True</log_periodic>
+                                    <log_rate>30</log_rate>
+                                    <log_deadband>0.0</log_deadband>
+                                </block>""", "", "")
+
+        self.assertListEqual(self.config_utils.get_block_pvs_from_xml("IN:DEMO:", xml), ["IN:DEMO:MOT:JAWS2:VGAP"])
+
     def test_GIVEN_block_xml_WHEN_parsed_THEN_can_extract_one_local_pv(self):
         xml = generic_block_xml.format(
                                 """<block>
