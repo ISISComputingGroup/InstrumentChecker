@@ -1,4 +1,4 @@
-from util.configurations import ConfigurationUtils
+from util.configurations import ConfigurationUtils, AbstractConfigurationUtils
 import unittest
 
 generic_component_xml = """<?xml version="1.0" ?>
@@ -113,6 +113,14 @@ class ConfigurationTests(unittest.TestCase):
                                 </block>""", "", "")
 
         self.assertListEqual(self.config_utils.get_block_pvs_from_xml("IN:DEMO:", xml), ["IN:DEMO:MOT:JAWS2:VGAP"])
+
+    def test_GIVEN_pv_name_THEN_returns_it_unchanged(self):
+        self.assertEqual(AbstractConfigurationUtils._get_pv_name_without_field('MOT:JAWS2:MTR0123'),
+                         'MOT:JAWS2:MTR0123')
+
+    def test_GIVEN_field_name_THEN_returns_pv_name(self):
+        self.assertEqual(AbstractConfigurationUtils._get_pv_name_without_field('MOT:JAWS2:MTR0123.RBV'),
+                         'MOT:JAWS2:MTR0123')
 
     def test_GIVEN_block_xml_WHEN_parsed_THEN_can_extract_one_local_pv(self):
         xml = generic_block_xml.format(
