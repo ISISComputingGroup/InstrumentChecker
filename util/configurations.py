@@ -116,6 +116,12 @@ class AbstractConfigurationUtils(object):
 
     @staticmethod
     def get_pv_name_without_field(pv_name):
+        """
+        Removes any PV field from a name a block is pointing to so it will return the name of the PV of the field the
+        block points to.
+        :param pv_name: a string representing a name a block is pointing to.
+        :return: The name of the pv of the field, as a string.
+        """
         if '.' in pv_name:
             return pv_name[:pv_name.index('.')]
         else:
