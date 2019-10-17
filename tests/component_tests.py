@@ -14,9 +14,17 @@ class ComponentsSingleTests(AbstractSingleTests):
     """
     TOTAL_NON_INTERESTING_PVS_IN_BLOCKS = 0
 
-    def setUp(self):
-        self.utils = ComponentUtils(Settings.config_repo_path)
-        self.type = "components"
+    def __init__(self, *args, **kwargs):
+        super(ComponentsSingleTests, self).__init__(*args, **kwargs)
+        self._component_utils = ComponentUtils(Settings.config_repo_path)
+
+    @property
+    def utils(self):
+        return self._component_utils
+
+    @property
+    def type(self):
+        return "components"
 
     def test_GIVEN_components_directory_THEN_it_contains_the_base_component(self):
         self.assertIn(ComponentUtils.BASE_COMPONENT, self.utils.get_configurations_as_list(),

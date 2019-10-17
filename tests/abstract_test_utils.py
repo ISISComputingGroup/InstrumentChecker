@@ -1,7 +1,7 @@
 import unittest
 import six
 
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta, abstractmethod, abstractproperty
 from settings import Settings
 from util.channel_access import ChannelAccessUtils
 
@@ -13,14 +13,15 @@ class AbstractSingleTests(unittest.TestCase):
     to be extended by classes for configurations and for components.
     """
 
-    def setUp(self):
-        """
-        This initializes a utils object on which testing will be done. It should be instantiated as ComponentUtils or
-        ConfigurationUtils in a subclass. Also initializes type of the SingleTests class, which should be "components"
-        or "configurations" .
-        """
-        self.utils = None
-        self.type = None
+    # Create an abstract property (utils) than can be get and set and must be implemented by the implementing class
+    @abstractproperty
+    def utils(self):
+        pass
+
+    # Create an abstract property (type) than can be get and set and must be implemented by the implementing class
+    @abstractproperty
+    def type(self):
+        pass
 
     def test_GIVEN_an_instrument_THEN_all_block_pvs_are_interesting(self):
         interesting_pvs = ChannelAccessUtils(Settings.pv_prefix).get_interesting_pvs()

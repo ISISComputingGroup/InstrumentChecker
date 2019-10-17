@@ -15,9 +15,17 @@ class ConfigurationsSingleTests(AbstractSingleTests):
 
     TOTAL_NON_INTERESTING_PVS_IN_BLOCKS = 0
 
-    def setUp(self):
-        self.utils = ConfigurationUtils(Settings.config_repo_path)
-        self.type = "configurations"
+    def __init__(self, *args, **kwargs):
+        super(ConfigurationsSingleTests, self).__init__(*args, **kwargs)
+        self._configuration_utils = ConfigurationUtils(Settings.config_repo_path)
+
+    @property
+    def utils(self):
+        return self._configuration_utils
+
+    @property
+    def type(self):
+        return "configurations"
 
     def test_GIVEN_an_instrument_THEN_the_configurations_directory_exists_and_contains_at_least_one_configuration(self):
         self.assertGreaterEqual(len(self.utils.get_configurations_as_list()), 1,
