@@ -1,7 +1,5 @@
 setlocal
 
-set EPICS_CA_MAX_ARRAY_BYTES=128000
-
 REM Define working directories
 set configs_dir=%~dp0\configs
 set gui_dir=%~dp0\gui
@@ -17,5 +15,5 @@ if not exist "%gui_dir%" (
     git clone https://github.com/ISISComputingGroup/ibex_gui.git "%gui_dir%"
 )
 
-call c:\Instrument\Apps\Python\genie_python.bat run_tests.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" --reports_path "%reports_dir%"
+call c:\Instrument\Apps\Python\genie_python.bat run_tests.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" --reports_path "%reports_dir%" --instruments DETMON
 if %errorlevel% neq 0 exit /b %errorlevel%
