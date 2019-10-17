@@ -13,14 +13,24 @@ class AbstractSingleTests(unittest.TestCase):
     to be extended by classes for configurations and for components.
     """
 
-    # Create an abstract property (utils) than can be get and set and must be implemented by the implementing class
     @abstractproperty
     def utils(self):
+        """
+        Create an abstract property (utils) that must be implemented by the implementing class, and should be implemented
+        as a read only property. The utils property contains an object on which testing will be done, which should 
+        be instantiated as either ComponentUtils or ConfigurationUtils (or any new subclass of 
+        AbstractConfigurationUtils) in the subclass.
+        """
         pass
 
-    # Create an abstract property (type) than can be get and set and must be implemented by the implementing class
     @abstractproperty
     def type(self):
+        """
+        Create an abstract property (type) that must be implemented by the implementing class, and should be implemented
+        as a read only property. The type property contains a string representing the type of the 
+        AbstractConfigurationUtils object used by the subclass, which should be 'components' for ComponentUtils
+        or 'configurations ' for ConfigurationUtils.
+        """
         pass
 
     def test_GIVEN_an_instrument_THEN_all_block_pvs_are_interesting(self):
