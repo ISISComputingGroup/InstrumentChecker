@@ -110,7 +110,8 @@ def main():
 
     # We can't put this in the batch file as it is overwritten by genie_python.bat. Increasing it in genie_python.bat
     # would increase it for all instruments, which may be undesirable.
-    # os.environ["EPICS_CA_MAX_ARRAY_BYTES"] = str(1000000)
+    # The higher limit is required for DETMON as it has a huge number of blocks.
+    os.environ["EPICS_CA_MAX_ARRAY_BYTES"] = str(1000000)
 
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                                      description="""Runs tests against the configuration repositories on instruments.
