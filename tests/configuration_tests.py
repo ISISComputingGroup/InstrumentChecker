@@ -1,22 +1,38 @@
 import unittest
 import os
+import xml.etree.ElementTree as ET
+
 from settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ConfigurationUtils, ComponentUtils
-import xml.etree.ElementTree as ET
+from abstract_test_utils import AbstractSingleTests
 
 
-class ConfigurationsSingleTests(unittest.TestCase):
+class ConfigurationsSingleTests(AbstractSingleTests):
     """
     Tests in this class will be run exactly once regardless of how many configs exist.
     """
 
-    def setUp(self):
-        self.config_utils = ConfigurationUtils(Settings.config_repo_path)
+    TOTAL_NON_INTERESTING_PVS_IN_BLOCKS = 0
+
+    def __init__(self, *args, **kwargs):
+        super(ConfigurationsSingleTests, self).__init__(*args, **kwargs)
+        self._configuration_utils = ConfigurationUtils(Settings.config_repo_path)
+
+    @property
+    def utils(self):
+        return self._configuration_utils
+
+    @property
+    def type(self):
+        return "configurations"
 
     def test_GIVEN_an_instrument_THEN_the_configurations_directory_exists_and_contains_at_least_one_configuration(self):
-        self.assertGreaterEqual(len(self.config_utils.get_configurations_as_list()), 1,
+        self.assertGreaterEqual(len(self.utils.get_configurations_as_list()), 1,
                                 "Configurations directory was empty or did not exist")
+
+    def update_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
+        ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
 
 
 class ConfigurationsTests(unittest.TestCase):
@@ -28,9 +44,9 @@ class ConfigurationsTests(unittest.TestCase):
     The configuration name can be accessed as self.config
     """
 
-    def __init__(self, methodName, config=None):
+    def __init__(self, method_name, config=None):
         # Boilerplate so that unittest knows how to run these tests.
-        super(ConfigurationsTests, self).__init__(methodName)
+        super(ConfigurationsTests, self).__init__(method_name)
 
         self.config_utils = ConfigurationUtils(Settings.config_repo_path)
         self.comp_utils = ComponentUtils(Settings.config_repo_path)
@@ -102,7 +118,7 @@ class ConfigurationsTests(unittest.TestCase):
     def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(self):
         iocs_xml = self.config_utils.get_iocs_xml(self.config)
         for motor_ioc in CommonUtils.MOTOR_IOCS:
-            defined_macros = self.config_utils.get_ioc_macros(iocs_xml, motor_ioc, self.config)
+            defined_macros = self.config_utils.get_ioc_macros(iocs_xml, motor_ioc)
 
             controller_number_defined = "MTRCTRL" in defined_macros
             comms_macro_defined = any(m in defined_macros for m in ["PORT", "GALILADDR"])

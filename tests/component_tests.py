@@ -1,22 +1,37 @@
 import unittest
 import os
+import xml.etree.ElementTree as ET
+
 from settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ComponentUtils
-import xml.etree.ElementTree as ET
+from abstract_test_utils import AbstractSingleTests
 
 
-class ComponentsSingleTests(unittest.TestCase):
+class ComponentsSingleTests(AbstractSingleTests):
     """
     Tests in this class will be run exactly once regardless of how many components exist.
     """
+    TOTAL_NON_INTERESTING_PVS_IN_BLOCKS = 0
 
-    def setUp(self):
-        self.component_utils = ComponentUtils(Settings.config_repo_path)
+    def __init__(self, *args, **kwargs):
+        super(ComponentsSingleTests, self).__init__(*args, **kwargs)
+        self._component_utils = ComponentUtils(Settings.config_repo_path)
+
+    @property
+    def utils(self):
+        return self._component_utils
+
+    @property
+    def type(self):
+        return "components"
 
     def test_GIVEN_components_directory_THEN_it_contains_the_base_component(self):
-        self.assertIn(ComponentUtils.BASE_COMPONENT, self.component_utils.get_configurations_as_list(),
+        self.assertIn(ComponentUtils.BASE_COMPONENT, self.utils.get_configurations_as_list(),
                       "Base component was missing (should be called {})".format(ComponentUtils.BASE_COMPONENT))
+
+    def update_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
+        ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
 
 
 class ComponentsTests(unittest.TestCase):
@@ -86,10 +101,11 @@ class ComponentsTests(unittest.TestCase):
                           .format(filename, self.component, e))
 
     @skip_on_instruments(["DEMO"], "This does not matter on DEMO, and we often demo software in slightly odd configs")
-    def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(self):
+    def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(
+            self):
         iocs_xml = self.component_utils.get_iocs_xml(self.component)
         for motor_ioc in CommonUtils.MOTOR_IOCS:
-            defined_macros = self.component_utils.get_ioc_macros(iocs_xml, motor_ioc, self.component)
+            defined_macros = self.component_utils.get_ioc_macros(iocs_xml, motor_ioc)
 
             controller_number_defined = "MTRCTRL" in defined_macros
             comms_macro_defined = any(m in defined_macros for m in ["PORT", "GALILADDR"])
