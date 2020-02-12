@@ -80,8 +80,8 @@ class SynopticTests(unittest.TestCase):
             self.synoptic_utils.get_type_target_pairs(xml)
 
         # Assert that the exception contains some kind of useful information
-        self.assertIn("Helium Level Meter", cm.exception.message)
-        self.assertIn("HLG", cm.exception.message)
+        self.assertIn("Helium Level Meter", str(cm.exception))
+        self.assertIn("HLG", str(cm.exception))
 
     def test_GIVEN_a_synoptic_xml_with_no_target_name_WHEN_parsed_THEN_it_is_ignored(self):
         xml = """<?xml version="1.0" ?>

@@ -1,6 +1,7 @@
 from builtins import object
 import json
 import zlib
+import binascii
 
 from enum import Enum
 from genie_python.genie_cachannel_wrapper import CaChannelWrapper
@@ -33,7 +34,7 @@ class ChannelAccessUtils(object):
         PV.
         :return: The data of the PV in the form of a decompressed and decoded string.
         """
-        return zlib.decompress(data.decode('hex'))
+        return zlib.decompress(binascii.unhexlify(data))
 
     def get_inst_list(self):
         """

@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import unittest
 import six
 
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import ABCMeta, abstractmethod
 from .settings import Settings
 from util.channel_access import ChannelAccessUtils
 
@@ -15,7 +15,8 @@ class AbstractSingleTests(unittest.TestCase):
     to be extended by classes for configurations and for components.
     """
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def utils(self):
         """
         Create an abstract property (utils) that must be implemented by the implementing class, and should be implemented
@@ -25,7 +26,8 @@ class AbstractSingleTests(unittest.TestCase):
         """
         pass
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def type(self):
         """
         Create an abstract property (type) that must be implemented by the implementing class, and should be implemented
