@@ -3,11 +3,11 @@ from __future__ import absolute_import
 import os
 import argparse
 
-from .run_tests import setup_instrument_tests
-from .tests.settings import Settings
+from run_tests import setup_instrument_tests
+from tests.settings import Settings
 
-from .util.channel_access import ChannelAccessUtils
-from .util.configurations import ConfigurationUtils, ComponentUtils
+from util.channel_access import ChannelAccessUtils
+from util.configurations import ConfigurationUtils, ComponentUtils
 
 
 def calc_iocs_on_intruments(instruments):

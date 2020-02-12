@@ -8,18 +8,18 @@ from xmlrunner import XMLTestRunner
 import argparse
 import traceback
 
-from .tests.configuration_tests import ConfigurationsTests, ConfigurationsSingleTests
-from .tests.component_tests import ComponentsTests, ComponentsSingleTests
-from .tests.globals_tests import GlobalsTests
-from .tests.scripting_directory_tests import ScriptingDirectoryTests
-from .tests.synoptic_tests import SynopticTests
-from .tests.version_tests import VersionTests
-from .tests.settings import Settings
+from tests.configuration_tests import ConfigurationsTests, ConfigurationsSingleTests
+from tests.component_tests import ComponentsTests, ComponentsSingleTests
+from tests.globals_tests import GlobalsTests
+from tests.scripting_directory_tests import ScriptingDirectoryTests
+from tests.synoptic_tests import SynopticTests
+from tests.version_tests import VersionTests
+from tests.settings import Settings
 
-from .util.channel_access import ChannelAccessUtils
-from .util.configurations import ConfigurationUtils, ComponentUtils
-from .util.git_wrapper import GitUtils
-from .util.synoptic import SynopticUtils
+from util.channel_access import ChannelAccessUtils
+from util.configurations import ConfigurationUtils, ComponentUtils
+from util.git_wrapper import GitUtils
+from util.synoptic import SynopticUtils
 
 
 def run_instrument_tests(inst_name, reports_path):
