@@ -1,3 +1,4 @@
+from builtins import object
 from util.channel_access import ChannelAccessUtils
 
 

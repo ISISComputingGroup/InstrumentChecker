@@ -1,8 +1,10 @@
+from __future__ import print_function
+from __future__ import absolute_import
 import unittest
 import six
 
 from abc import ABCMeta, abstractmethod, abstractproperty
-from settings import Settings
+from .settings import Settings
 from util.channel_access import ChannelAccessUtils
 
 

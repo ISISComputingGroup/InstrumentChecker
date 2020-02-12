@@ -1,7 +1,9 @@
+from __future__ import absolute_import
+from builtins import object
 import os
 import xml.etree.ElementTree as ET
 
-from common import CommonUtils
+from .common import CommonUtils
 from tests.settings import Settings
 
 

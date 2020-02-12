@@ -1,3 +1,4 @@
+from builtins import object
 from util.git_wrapper import GitUtils
 import xml.etree.ElementTree as ET
 import os

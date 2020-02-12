@@ -1,6 +1,8 @@
+from __future__ import absolute_import
+from builtins import object
 import xml.etree.ElementTree as ET
 import os
-from common import CommonUtils
+from .common import CommonUtils
 
 
 class SynopticUtils(object):

@@ -1,11 +1,12 @@
+from __future__ import absolute_import
 import unittest
 import os
 import xml.etree.ElementTree as ET
 
-from settings import Settings
+from .settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ConfigurationUtils, ComponentUtils
-from abstract_test_utils import AbstractSingleTests
+from .abstract_test_utils import AbstractSingleTests
 
 
 class ConfigurationsSingleTests(AbstractSingleTests):
