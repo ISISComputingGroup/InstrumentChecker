@@ -3,8 +3,8 @@ setlocal
 REM It only takes two or three minutes to do a full install, so for simplicity we do that.
 REM it is installed using xcopy /d, so if it hasn't changed then it doesn't do anything.
 
-set PYTHON_KITS_PATH=p:\Kits$\CompGroup\ICP\genie_python\
-set PYTHON_INSTALL_DIR=C:\Instrument\Apps\Python
+set PYTHON_KITS_PATH=p:\Kits$\CompGroup\ICP\genie_python_3\
+set PYTHON_INSTALL_DIR=C:\Instrument\Apps\Python3
 
 @echo Updating genie_python
 
