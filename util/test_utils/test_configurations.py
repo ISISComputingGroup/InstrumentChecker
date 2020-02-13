@@ -221,7 +221,7 @@ class ConfigurationTests(unittest.TestCase):
                     </iocs>
                     """
 
-        self.assertEqual(len(list(self.config_utils.get_ioc_macros(xml, "SIMPL").values())), 0)
+        self.assertEqual(len(self.config_utils.get_ioc_macros(xml, "SIMPL").values()), 0)
 
     def test_GIVEN_ioc_xml_WHEN_simlevel_is_not_none_THEN_returns_false(self):
         xml = """<?xml version="1.0" ?>

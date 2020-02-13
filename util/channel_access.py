@@ -83,7 +83,7 @@ class ChannelAccessUtils(object):
         :return: a list of strings representing IOC names.
         """
         pv_value = self.get_value("CS:BLOCKSERVER:IOCS")
-        return None if pv_value is None else list(json.loads(self._dehex_and_decompress(pv_value)).keys())
+        return None if pv_value is None else json.loads(self._dehex_and_decompress(pv_value)).keys()
 
     def get_protected_iocs(self):
         """

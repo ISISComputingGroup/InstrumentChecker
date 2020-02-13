@@ -161,7 +161,7 @@ class GlobalsTests(unittest.TestCase):
         result = self.utils.get_macros(ioc_name)
 
         # Assert
-        self.assertEqual(len(list(result.keys())), 1)
+        self.assertEqual(len(result.keys()), 1)
         self.assertTrue(macro in result)
         self.assertEqual(result[macro], value)
 
@@ -178,7 +178,7 @@ class GlobalsTests(unittest.TestCase):
         result = self.utils.get_macros("not_" + ioc_name)
 
         # Assert
-        self.assertEqual(len(list(result.keys())), 0)
+        self.assertEqual(len(result.keys()), 0)
 
     def test_GIVEN_a_line_WHEN_value_requested_for_correct_macro_name_THEN_key_and_value_matches_input(self):
         # Arrange
@@ -193,7 +193,7 @@ class GlobalsTests(unittest.TestCase):
         result = self.utils.get_values_of_macro(macro)
 
         # Assert
-        self.assertEqual(len(list(result.keys())), 1)
+        self.assertEqual(len(result.keys()), 1)
         self.assertTrue(macro in result)
         self.assertEqual(result[macro], value)
 
@@ -210,7 +210,7 @@ class GlobalsTests(unittest.TestCase):
         result = self.utils.get_values_of_macro("not_" + ioc_name)
 
         # Assert
-        self.assertEqual(len(list(result.keys())), 0)
+        self.assertEqual(len(result.keys()), 0)
 
     def test_GIVEN_a_line_WHEN_sim_flag_is_set_on_THEN_return_true(self):
         #Arrange

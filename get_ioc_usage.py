@@ -41,7 +41,7 @@ def print_iocs_on_instruments(instrument_configs):
     :param instrument_configs: instrument ioc config dictionary
     """
 
-    for instrument, iocs in list(instrument_configs.items()):
+    for instrument, iocs in instrument_configs.items():
         print(instrument)
         print("    - {}\n".format("\n    - ".join(sorted(iocs))))
 
@@ -53,7 +53,7 @@ def print_instruments_with_ioc(instrument_configs, ioc_name):
     :param ioc_name: name of the ioc
     """
     print("All those having the {}".format(ioc_name))
-    for instrument, iocs in list(instrument_configs.items()):
+    for instrument, iocs in instrument_configs.items():
 
         for ioc in iocs:
             if ioc.lower().startswith(ioc_name.lower()):
@@ -87,7 +87,7 @@ def main():
         raise IOError("No instruments found. This is probably because the instrument list PV is unavailable.")
 
     if args.instruments is not None:
-        instruments = list([x for x in instruments if x["name"] in args.instruments])
+        instruments = [x for x in instruments if x["name"] in args.instruments]
         if len(instruments) < len(args.instruments):
             raise ValueError("Some instruments specified could not be found in the instrument list.")
 

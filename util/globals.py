@@ -76,9 +76,9 @@ class GlobalsUtils(object):
         """
         :return: TRUE if any simulation flags are set
         """
-        has_recsim = "1" in list(self.get_values_of_macro("RECSIM").values())
-        has_devsim = "1" in list(self.get_values_of_macro("DEVSIM").values())
-        has_simulate = "1" in list(self.get_values_of_macro("SIMULATE").values())
+        has_recsim = "1" in self.get_values_of_macro("RECSIM").values()
+        has_devsim = "1" in self.get_values_of_macro("DEVSIM").values()
+        has_simulate = "1" in self.get_values_of_macro("SIMULATE").values()
         return has_recsim or has_devsim or has_simulate
 
     @staticmethod
