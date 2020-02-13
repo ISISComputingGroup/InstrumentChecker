@@ -162,7 +162,7 @@ class GlobalsTests(unittest.TestCase):
 
         # Assert
         self.assertEqual(len(result.keys()), 1)
-        self.assertTrue(result.has_key(macro))
+        self.assertTrue(macro in result)
         self.assertEqual(result[macro], value)
 
     def test_GIVEN_a_line_WHEN_macro_requested_for_non_existant_ioc_THEN_no_macros_returned(self):
@@ -194,7 +194,7 @@ class GlobalsTests(unittest.TestCase):
 
         # Assert
         self.assertEqual(len(result.keys()), 1)
-        self.assertTrue(result.has_key(macro))
+        self.assertTrue(macro in result)
         self.assertEqual(result[macro], value)
 
     def test_GIVEN_a_line_WHEN_value_requested_for_incorrect_macro_name_THEN_no_values_returned(self):

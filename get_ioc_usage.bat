@@ -15,5 +15,5 @@ if not exist "%gui_dir%" (
     git clone https://github.com/ISISComputingGroup/ibex_gui.git "%gui_dir%"
 )
 
-call c:\Instrument\Apps\Python\genie_python.bat get_ioc_usage.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" %*
+call c:\Instrument\Apps\Python3\genie_python.bat get_ioc_usage.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" %*
 if %errorlevel% neq 0 exit /b %errorlevel%

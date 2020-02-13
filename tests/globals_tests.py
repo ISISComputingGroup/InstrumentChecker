@@ -1,5 +1,6 @@
+from __future__ import absolute_import
 import unittest
-from settings import Settings
+from .settings import Settings
 from util.globals import GlobalsUtils
 from util.common import CommonUtils, skip_on_instruments
 from six import string_types

@@ -1,8 +1,9 @@
+from __future__ import absolute_import
 import unittest
 import os
 from unittest import skip
 
-from settings import Settings
+from .settings import Settings
 from util.scripting import ScriptingUtils
 
 

@@ -1,3 +1,6 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import str
 import os
 import sys
 import unittest
@@ -153,7 +156,7 @@ def main():
         raise IOError("No instruments found. This is probably because the instrument list PV is unavailable.")
 
     if args.instruments is not None:
-        instruments = list(filter(lambda x: x["name"] in args.instruments, instruments))
+        instruments = [x for x in instruments if x["name"] in args.instruments]
         if len(instruments) < len(args.instruments):
             raise ValueError("Some instruments specified could not be found in the instrument list.")
 
