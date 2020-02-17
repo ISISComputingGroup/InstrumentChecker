@@ -83,6 +83,13 @@ class ConfigurationsTests(unittest.TestCase):
             self.assertNotIn(ioc, Settings.protected_iocs,
                              "Configuration {} contained a protected IOC ({})".format(self.config, ioc))
 
+    def test_GIVEN_a_config_THEN_it_does_not_have_pv_sets(self):
+
+        for ioc in self.config_utils.get_iocs(self.config_utils.get_iocs_xml(self.config)):
+            pv_set = self.config_utils.get_ioc_pv_sets(self.config_utils.get_iocs_xml(self.config), ioc)
+
+            self.assertEqual(False, bool(pv_set))
+
     def test_GIVEN_a_configuration_and_active_components_THEN_does_not_contain_multiple_instances_of_same_ioc(self):
         components = self.config_utils.get_active_components_as_list(self.config)
 

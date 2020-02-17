@@ -171,6 +171,19 @@ class AbstractConfigurationUtils(object):
         else:
             return {m.attrib["name"]: m.attrib["value"] for m in ioc_xml[0].iter("{}macro".format(self.IOC_XML_SCHEMA))}
 
+    def get_ioc_pv_sets(self, xml, ioc_name):
+        # Parse the XML
+        root = ET.fromstring(xml)
+
+        ioc_xml = tuple(ioc for ioc in root.iter("{}ioc".format(self.IOC_XML_SCHEMA)) if ioc.attrib["name"] == ioc_name)
+
+        # Extract the macros
+        if len(ioc_xml) == 0:
+            return dict()
+        else:
+            return {m.attrib["name"]: m.attrib["value"] for m in
+                    ioc_xml[0].iter("{}pvset".format(self.IOC_XML_SCHEMA))}
+
     def get_ioc_in_sim_mode(self, xml, ioc_name):
         """
         Returns true if the given ioc_name is in simulation mode

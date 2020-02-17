@@ -81,6 +81,13 @@ class ComponentsTests(unittest.TestCase):
                 self.assertNotIn(ioc, Settings.protected_iocs,
                                  "Component {} contained a protected IOC ({})".format(self.component, ioc))
 
+    def test_GIVEN_a_config_THEN_it_does_not_have_pv_sets(self):
+
+        for ioc in self.component_utils.get_iocs(self.component_utils.get_iocs_xml(self.component)):
+            pv_set = self.component_utils.get_ioc_pv_sets(self.component_utils.get_iocs_xml(self.component), ioc)
+
+            self.assertEqual(False, bool(pv_set))
+
     def test_GIVEN_a_components_directory_THEN_it_only_contains_the_allowed_files(self):
         for filename in os.listdir(self.component_dir_path):
             self.assertIn(filename, ComponentUtils.ALLOWED_CONFIG_FILES,
