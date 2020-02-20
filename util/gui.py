@@ -17,7 +17,6 @@ class GuiUtils(object):
     def get_gui_repo_at_release(self, version):
         version = VersionUtils.extract_release_numbers_from_string(version)
         branch_name = VersionUtils.convert_release_to_branch_name(*version)
-        print("Checking out GUI version {} on branch {}".format(version, branch_name))
         if not self.git.update_branch(branch_name):
             raise IOError("Couldn't check out GUI branch corresponding to release {}".format(version))
 

@@ -40,26 +40,10 @@ class SynopticTests(unittest.TestCase):
             self.fail("In synoptic {}, XML failed to parse properly. Error text was: {}".format(self.synoptic, e))
 
         for type, target in type_target_pairs:
-
-            if Settings.name == "OSIRIS" \
-                    and self.version_utils.get_version() == "5.1.0" \
-                    and target == "Vertical Jaws":
-                continue  # This is hotfixed on OSIRIS. This condition can be removed at next release.
-
-            if Settings.name == "LOQ" \
-                    and self.version_utils.get_version() == "5.2.0" \
-                    and target == "Water bath valve":
-                continue  # This is hotfixed on LOQ. This condition can be removed at next release.
-
-            if Settings.name == "LET" \
-                    and self.version_utils.get_version() == "5.2.0" \
-                    and target == "Mezei spin flipper":
-                continue  # This is hotfixed on LET. This condition can be removed at next release.
-
-            if Settings.name == "CRISP" \
-                    and self.version_utils.get_version() == "5.2.0" \
-                    and target in ["Knauer Electric Valve Drive K-6", "JASCO PU-4180 Pump"]:
-                continue  # This is hotfixed on CRISP. This condition can be removed at next release.
+            if Settings.name == "ZOOM" \
+                    and self.version_utils.get_version() == "6.0.0" \
+                    and target == "LSI correlator":
+                continue  # This is hotfixed on ZOOM. This condition can be removed at next release.
 
             if not self.synoptic_utils.target_should_be_ignored(target):
                 self.assertIn(target, allowed_targets, "In synoptic {}, component target '{}' was unknown."
