@@ -44,6 +44,10 @@ class SynopticTests(unittest.TestCase):
                     and self.version_utils.get_version() == "6.0.0" \
                     and target == "LSI correlator":
                 continue  # This is hotfixed on ZOOM. This condition can be removed at next release.
+            if Settings.name == "EMU" \
+                    and (self.version_utils.get_version() == "6.0.0" or self.version_utils.get_version() == "6.0.1") \
+                    and target == "Lakeshore 372":
+                continue  # This is hotfixed on ZOOM. This condition can be removed at next release.
 
             if not self.synoptic_utils.target_should_be_ignored(target):
                 self.assertIn(target, allowed_targets, "In synoptic {}, component target '{}' was unknown."

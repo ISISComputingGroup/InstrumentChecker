@@ -5,6 +5,7 @@ from unittest import skip
 
 from .settings import Settings
 from util.scripting import ScriptingUtils
+from util.common import skip_on_instruments
 
 
 class ScriptingDirectoryTests(unittest.TestCase):
@@ -54,6 +55,7 @@ class ScriptingDirectoryTests(unittest.TestCase):
         self.assertFalse(self._directory_contains_compiled_files(self.inst_directory),
                          "Instrument scripts directory contained compiled files")
 
+    @skip_on_instruments(["EMU"], "The master version of importing everything won't work on EMU")
     def test_GIVEN_init_file_in_inst_directory_then_its_contents_is_the_same_as_on_the_master_branch(self):
         if not os.path.isdir(self.inst_directory):
             self.skipTest("Instrument scripts directory missing")
