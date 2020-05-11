@@ -138,3 +138,21 @@ class ConfigurationsTests(unittest.TestCase):
         for ioc in self.config_utils.get_iocs(iocs_xml):
             self.assertFalse(self.config_utils.get_ioc_in_sim_mode(iocs_xml, ioc),
                              "Simulation Mode is Active on {} in configuration {}".format(ioc, self.config))
+
+    def test_GIVEN_a_configuration_and_active_components_THEN_it_does_not_contain_blocks_that_are_the_same_ignoring_case(self):
+        components = self.config_utils.get_active_components_as_list(self.config)
+
+        blocks = self.config_utils.get_blocks(self.config)
+
+        for comp in components:
+            blocks.extend(self.comp_utils.get_blocks(comp))
+
+        duplicates = set([x for x in blocks if blocks.count(x) > 1])
+
+        self.assertTrue(len(duplicates) == 0, "Duplicate blocks found in {}: {}".format(self.config, duplicates))
+
+        upper_blocks = [b.upper() for b in blocks]
+        duplicates = set([x for x in upper_blocks if upper_blocks.count(x) > 1])
+
+        self.assertTrue(len(duplicates) == 0, "Case insensitive duplicate blocks found in {}: {}"
+                        .format(self.config, duplicates))
