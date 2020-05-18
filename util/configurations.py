@@ -116,6 +116,20 @@ class AbstractConfigurationUtils(object):
 
         return pvs_with_blocks
 
+    def get_blocks(self, config_name):
+        """
+        Returns a list of block names.
+        :param config_name: the configuration name
+        :return: The list of block names.
+        """
+        root = ET.fromstring(self.get_blocks_xml(config_name))
+
+        blocks = []
+        for block in root.iter("{}block".format(self.BLOCK_XML_SCHEMA)):
+            blocks.append(block.find("{}name".format(self.BLOCK_XML_SCHEMA)).text)
+
+        return blocks
+
     @staticmethod
     def _get_pv_name_without_field(pv_name):
         """
