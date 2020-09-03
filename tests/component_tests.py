@@ -102,6 +102,7 @@ class ComponentsTests(unittest.TestCase):
                           .format(filename, self.component, e))
 
     @skip_on_instruments(["DEMO"], "This does not matter on DEMO, and we often demo software in slightly odd configs")
+    @skip_on_instruments(["SANS2D"], "Motors not fully configured on SANS2D yet")
     def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(
             self):
         iocs_xml = self.component_utils.get_iocs_xml(self.component)
@@ -116,6 +117,7 @@ class ComponentsTests(unittest.TestCase):
                             .format(motor_ioc, self.component))
 
     @skip_on_instruments(["DEMO"], "Demo is allowed to have IOCs in simulation mode, it is a fake instrument")
+    @skip_on_instruments(["SANS2D"], "Motors not fully configured on SANS2D yet")
     def test_GIVEN_ioc_xml_WHEN_simlevel_is_not_none_THEN_get_ioc_in_sim_mode_returns_false(self):
         if Settings.name == "DEMO":
             self.skipTest("Having IOCs in simulation mode is valid on DEMO")
