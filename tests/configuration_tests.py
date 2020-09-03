@@ -129,6 +129,7 @@ class ConfigurationsTests(unittest.TestCase):
                             .format(motor_ioc, self.config))
 
     @skip_on_instruments(["DEMO"], "Demo is allowed to have IOCs in simulation mode, it is a fake instrument")
+    @skip_on_instruments(["SANS2D"], "Motors not fully configured on SANS2D yet")
     def test_GIVEN_ioc_xml_WHEN_simlevel_is_not_none_THEN_get_ioc_in_sim_mode_returns_false(self):
         if Settings.name == "DEMO":
             self.skipTest("Having IOCs in simulation mode is valid on DEMO")
