@@ -56,9 +56,12 @@ def print_instruments_with_ioc(instrument_configs, ioc_name):
     for instrument, iocs in instrument_configs.items():
 
         for ioc in iocs:
-            if ioc.lower().startswith(ioc_name.lower()):
-                print(instrument)
+            ioc_lower = ioc.lower()
+            if ioc_lower == ioc_name.lower():
+                print(f"{instrument}")
                 break
+            elif ioc_lower.startswith(ioc_name.lower()):
+                print(f"{instrument} has {ioc}")
 
 
 def main():
