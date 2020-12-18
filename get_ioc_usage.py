@@ -52,15 +52,11 @@ def print_instruments_with_ioc(instrument_configs, ioc_name):
     :param instrument_configs: instrument ioc config dictionary
     :param ioc_name: name of the ioc
     """
-    print("All those having the {}".format(ioc_name))
+    print(f"Instruments containing IOCs starting with {ioc_name}")
     for instrument, iocs in instrument_configs.items():
 
         for ioc in iocs:
-            ioc_lower = ioc.lower()
-            if ioc_lower == ioc_name.lower():
-                print(f"{instrument}")
-                break
-            elif ioc_lower.startswith(ioc_name.lower()):
+            if ioc.lower().startswith(ioc_name.lower()):
                 print(f"{instrument} has {ioc}")
 
 
