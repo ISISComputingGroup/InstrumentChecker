@@ -10,7 +10,7 @@ class GitUtils(object):
 
     def __init__(self, path):
         """
-        Defines where this class will look for it's git repository.
+        Defines where this class will look for its git repository.
         :param path: The path of the repository
         """
         self.path = path
