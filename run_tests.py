@@ -19,7 +19,9 @@ from tests.settings import Settings
 from util.channel_access import ChannelAccessUtils
 from util.configurations import ConfigurationUtils, ComponentUtils
 from util.git_wrapper import GitUtils
+from util.gui import GuiUtils
 from util.synoptic import SynopticUtils
+from util.version import VersionUtils
 
 
 def run_instrument_tests(inst_name, reports_path):
@@ -77,7 +79,15 @@ def setup_instrument_tests(instrument):
         return False
 
     print("\n\nChecking out git repository for {} ({})...".format(name, hostname))
-    return GitUtils(Settings.config_repo_path).update_branch(hostname)
+    config_repo_update_successful = GitUtils(Settings.config_repo_path).update_branch(hostname)
+
+    version_utils = VersionUtils(Settings.config_repo_path)
+
+    if version_utils.version_file_exists():
+        GuiUtils(Settings.gui_repo_path).get_gui_repo_at_release(version_utils.get_version())
+    else:
+        print("Warning: could not determine GUI version for instrument {}".format(instrument))
+    return config_repo_update_successful
 
 
 def run_self_tests(reports_path):
