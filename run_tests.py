@@ -19,7 +19,9 @@ from tests.settings import Settings
 from util.channel_access import ChannelAccessUtils
 from util.configurations import ConfigurationUtils, ComponentUtils
 from util.git_wrapper import GitUtils
+from util.gui import GuiUtils
 from util.synoptic import SynopticUtils
+from util.version import VersionUtils
 
 
 def run_instrument_tests(inst_name, reports_path):
@@ -77,7 +79,15 @@ def setup_instrument_tests(instrument):
         return False
 
     print("\n\nChecking out git repository for {} ({})...".format(name, hostname))
-    return GitUtils(Settings.config_repo_path).update_branch(hostname)
+    config_repo_update_successful = GitUtils(Settings.config_repo_path).update_branch(hostname)
+
+    version_utils = VersionUtils(Settings.config_repo_path)
+
+    if version_utils.version_file_exists():
+        GuiUtils(Settings.gui_repo_path).get_gui_repo_at_release(version_utils.get_version())
+    else:
+        print("Warning: could not determine GUI version for instrument {}".format(instrument))
+    return config_repo_update_successful
 
 
 def run_self_tests(reports_path):
@@ -159,6 +169,17 @@ def main():
         instruments = [x for x in instruments if x["name"] in args.instruments]
         if len(instruments) < len(args.instruments):
             raise ValueError("Some instruments specified could not be found in the instrument list.")
+
+## the following will exclude down instruments for testing
+## change instruments -> instruments_up in run_all_tests below
+#    inst_names = [x["name"] for x in instruments]
+#    inst_up = []
+#    for inst in inst_names:
+#        if ChannelAccessUtils("IN:{}:".format(inst)).get_value("CS:BLOCKSERVER:GET_CURR_CONFIG_DETAILS") is not None:
+#            inst_up.append(inst)
+#        else:
+#            print("Skipping {} as instrument down (no blockserver)".format(inst))
+#    instruments_up = [x for x in instruments if x["name"] in inst_up]
 
     reports_path = os.path.abspath(args.reports_path)
     Settings.set_repo_paths(os.path.abspath(args.configs_repo_path), os.path.abspath(args.gui_repo_path))

@@ -46,3 +46,7 @@ class GitUtils(object):
             print("Git command failed. Error was: {}".format(e))
             return False
         return True
+
+    def fetch_all(self):
+        repo = git.Repo(path=self.path)
+        repo.git.fetch(all=True)

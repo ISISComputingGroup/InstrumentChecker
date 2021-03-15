@@ -27,8 +27,6 @@ class SynopticTests(unittest.TestCase):
         if not self.version_utils.version_file_exists():
             self.skipTest("Can't determine which version of the GUI is being used.")
 
-        self.gui_utils.get_gui_repo_at_release(self.version_utils.get_version())
-
     @skip_on_instruments(["DEMO"], "Demo often has a development version installed; this test is not useful")
     def test_GIVEN_synoptic_THEN_targets_that_it_defines_appear_in_opi_info(self):
 
