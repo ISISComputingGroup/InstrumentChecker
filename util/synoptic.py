@@ -66,7 +66,7 @@ class SynopticUtils(object):
             return f.read()
 
     def type_should_be_ignored(self, type):
-        return type in ["UNKNOWN", "DAE"]
+        return type in ["UNKNOWN", "DAE", "BEAMSTOP"]
 
     def target_should_be_ignored(self, target):
         return target == "NONE"
