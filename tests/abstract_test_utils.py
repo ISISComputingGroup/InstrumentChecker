@@ -6,6 +6,7 @@ import six
 from abc import ABCMeta, abstractmethod
 from .settings import Settings
 from util.channel_access import ChannelAccessUtils
+from util.common import skip_on_instruments
 
 
 @six.add_metaclass(ABCMeta)
@@ -37,6 +38,7 @@ class AbstractSingleTests(unittest.TestCase):
         """
         pass
 
+    @skip_on_instruments(["DETMON"], "Blockserver PVs currently not available on DETMON, ticket 6454 to investigate")
     def test_GIVEN_an_instrument_THEN_all_block_pvs_are_interesting(self):
         interesting_pvs = ChannelAccessUtils(Settings.pv_prefix).get_interesting_pvs()
 

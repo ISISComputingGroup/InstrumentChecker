@@ -109,11 +109,13 @@ class ConfigurationsTests(unittest.TestCase):
 
     def test_GIVEN_a_configurations_directory_WHEN_parsing_its_contents_as_xml_THEN_no_errors_generated(self):
         for filename in CommonUtils.get_directory_contents_as_list(self.config_dir_path):
-            try:
-                ET.parse(os.path.join(self.config_dir_path, filename))
-            except Exception as e:
-                self.fail("Exception occurred while parsing file {} in configuration {} as XML. Error was: {}"
-                          .format(filename, self.config, e))
+            # pvlist is not xml
+            if filename != ConfigurationUtils.BLOCK_GW_PVLIST:
+                try:
+                    ET.parse(os.path.join(self.config_dir_path, filename))
+                except Exception as e:
+                    self.fail("Exception occurred while parsing file {} in configuration {} as XML. Error was: {}"
+                            .format(filename, self.config, e))
 
     @skip_on_instruments(["DEMO"], "This does not matter on DEMO, and we often demo software in slightly odd configs")
     def test_GIVEN_a_configuration_WHEN_motors_are_used_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(self):

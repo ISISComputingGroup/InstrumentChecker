@@ -12,7 +12,8 @@ class AbstractConfigurationUtils(object):
     Class containing utility methods common to both configuration and component directories.
     """
     REQUIRED_CONFIG_FILES = ["blocks.xml", "components.xml", "groups.xml", "iocs.xml", "meta.xml"]
-    ALLOWED_CONFIG_FILES = REQUIRED_CONFIG_FILES + ["screens.xml"]
+    BLOCK_GW_PVLIST = "gwblock.pvlist"
+    ALLOWED_CONFIG_FILES = REQUIRED_CONFIG_FILES + ["screens.xml", "block_config.xml", BLOCK_GW_PVLIST]
 
     IOC_XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/iocs/1.0}"
     COMPONENT_XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/components/1.0}"
