@@ -30,8 +30,8 @@ class VersionTests(unittest.TestCase):
         if server_version is None:
             self.skipTest("Couldn't connect to version PV on server")
 
-        if Settings.name == "SURF" and server_version.startswith("5.6.1"):
-            self.skipTest("SURF has a test deployment for reflectometry")
+        if (Settings.name == "POLREF" or Settings.name == "CRISP") and server_version.startswith("7.2.0"):
+            self.skipTest("Reflectometry reverted to 7.2.0 due to #6472")
 
         # Special case for server version 0.0.0 which is a development release - assume it's always up to date.
         if not server_version.startswith("0.0.0"):
