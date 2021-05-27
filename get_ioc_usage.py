@@ -7,7 +7,7 @@ from run_tests import setup_instrument_tests
 from tests.settings import Settings
 
 from util.channel_access import ChannelAccessUtils
-from util.configurations import ConfigurationUtils, ComponentUtils
+from util.configurations import ConfigurationUtils, ComponentUtils, DeviceUtils
 
 
 def calc_iocs_on_intruments(instruments):
@@ -16,6 +16,7 @@ def calc_iocs_on_intruments(instruments):
     """
 
     instrument_configs = {}
+    instrument_device_screens = {}
 
     for instrument in instruments:
         instrument_name = instrument["name"]
@@ -32,7 +33,17 @@ def calc_iocs_on_intruments(instruments):
             iocs_in_component = set(component_utils.get_iocs(component_utils.get_iocs_xml(component)))
             instrument_configs[instrument_name] = instrument_configs[instrument_name].union(iocs_in_component)
 
-    return instrument_configs
+        device_utils = DeviceUtils(Settings.config_repo_path)
+        try:
+            device_screens = device_utils.get_device_screens(device_utils.get_device_screens_from_xml())
+        except Exception:
+            # Instrument does not have device screen directory
+            device_screens = []
+
+        instrument_name = instrument["name"]
+        instrument_device_screens[instrument_name] = set(device_screens)
+
+    return instrument_configs, instrument_device_screens
 
 
 def print_iocs_on_instruments(instrument_configs):
@@ -52,12 +63,22 @@ def print_instruments_with_ioc(instrument_configs, ioc_name):
     :param instrument_configs: instrument ioc config dictionary
     :param ioc_name: name of the ioc
     """
-    print(f"Instruments containing IOCs starting with {ioc_name}")
+    print("Instruments containing IOCs starting with {}".format(ioc_name))
     for instrument, iocs in instrument_configs.items():
 
         for ioc in iocs:
             if ioc.lower().startswith(ioc_name.lower()):
-                print(f"{instrument} has {ioc}")
+                print("{} has {}".format(instrument, ioc))
+
+
+def print_device_screens_on_instrument(instrument_device_screens):
+    """
+    Print device screens that are on each instrument
+    """
+    print("\n Instruments Device Screens: \n")
+    for instrument, devices in instrument_device_screens.items():
+        print(instrument)
+        print("    - {}\n".format("\n    - ".join(sorted(devices))))
 
 
 def main():
@@ -78,6 +99,8 @@ def main():
                              "given instruments. If not defined, tests will be run on all instruments.")
     parser.add_argument("--ioc", type=str, default=None, help="If specified show instruments with IOC starting with"
                                                               "this string, otherwise show all iocs on the instruments")
+    parser.add_argument("--device_screens", help="Show if an instrument is missing an IOC",
+                        action="store_true")
 
     args = parser.parse_args()
 
@@ -92,12 +115,15 @@ def main():
 
     Settings.set_repo_paths(os.path.abspath(args.configs_repo_path), os.path.abspath(args.gui_repo_path))
 
-    instrument_configs = calc_iocs_on_intruments(instruments)
+    instrument_configs, instrument_device_screens = calc_iocs_on_intruments(instruments)
 
     if args.ioc is None:
         print_iocs_on_instruments(instrument_configs)
     else:
         print_instruments_with_ioc(instrument_configs, args.ioc)
+
+    if args.device_screens:
+        print_device_screens_on_instrument(instrument_device_screens)
 
 
 if __name__ == "__main__":
