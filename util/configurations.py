@@ -162,15 +162,11 @@ class AbstractConfigurationUtils(object):
         Args:
             xml: XML input to parse
         Returns:
-            device_screens (list): List of device screens
+            (set): Set of device screens
         """
         root = ET.fromstring(xml)
 
-        device_screens = []
-        for device in root:
-            device_screens.append(device.find(f"{self.DEVICES_XML_SCHEMA}key").text)
-
-        return set(device_screens)
+        return set({device.find(f"{self.DEVICES_XML_SCHEMA}key").text for device in root})
 
     def get_iocs_xml(self, config_name):
         """
