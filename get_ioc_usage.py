@@ -99,7 +99,7 @@ def main():
                              "given instruments. If not defined, tests will be run on all instruments.")
     parser.add_argument("--ioc", type=str, default=None, help="If specified show instruments with IOC starting with"
                                                               "this string, otherwise show all iocs on the instruments")
-    parser.add_argument("--device_screens", help="Show if an instrument is missing an IOC",
+    parser.add_argument("--device_screens", help="Print device screens present on instrument/s",
                         action="store_true")
 
     args = parser.parse_args()
