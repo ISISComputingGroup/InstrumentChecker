@@ -40,7 +40,6 @@ def calc_iocs_on_intruments(instruments):
             # Instrument does not have device screen directory
             device_screens = []
 
-        instrument_name = instrument["name"]
         instrument_device_screens[instrument_name] = set(device_screens)
 
     return instrument_configs, instrument_device_screens
