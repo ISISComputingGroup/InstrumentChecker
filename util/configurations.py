@@ -18,6 +18,7 @@ class AbstractConfigurationUtils(object):
     IOC_XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/iocs/1.0}"
     COMPONENT_XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/components/1.0}"
     BLOCK_XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/blocks/1.0}"
+    DEVICES_XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/screens/1.0/}"
 
     def __init__(self, config_repo_path):
         self.config_repo_path = config_repo_path
@@ -144,6 +145,29 @@ class AbstractConfigurationUtils(object):
         else:
             return pv_name
 
+    def get_devices_directory(self):
+        raise NotImplementedError("This is an abstract class, use a concrete class instead")
+
+    def get_device_screens_from_xml(self):
+        """
+        Gets the XML corresponding to the Device Screens for the instrument
+        Returns: the XML as a string
+        """
+        path = os.path.join(self.get_devices_directory(), "screens.xml")
+        with open(path) as xml_file:
+            return xml_file.read()
+
+    def get_device_screens(self, xml):
+        """
+        Args:
+            xml: XML input to parse
+        Returns:
+            (set): Set of device screens
+        """
+        root = ET.fromstring(xml)
+
+        return set({device.find(f"{self.DEVICES_XML_SCHEMA}key").text for device in root})
+
     def get_iocs_xml(self, config_name):
         """
         Gets the XML corresponding to the IOCs file for a particular configuration.
@@ -218,3 +242,11 @@ class ComponentUtils(AbstractConfigurationUtils):
 
     def get_configurations_directory(self):
         return os.path.join(self.config_repo_path, "configurations", "components")
+
+
+class DeviceUtils(AbstractConfigurationUtils):
+    """
+    Class containing the utility methods of interacting with the devices directory
+    """
+    def get_devices_directory(self):
+        return os.path.join(self.config_repo_path, "configurations", "devices")
