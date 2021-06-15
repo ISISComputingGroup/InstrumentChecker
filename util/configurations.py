@@ -160,7 +160,7 @@ class AbstractConfigurationUtils(object):
     def get_device_screens(self, xml):
         """
         Args:
-            xml: XML inout to parse
+            xml: XML input to parse
         Returns:
             device_screens (list): List of device screens
         """
