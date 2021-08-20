@@ -66,10 +66,10 @@ class VersionTests(unittest.TestCase):
         patch = 1
 
         # Act
-        branchname = VersionUtils.convert_release_to_branch_name(major, minor, patch)
+        branchname = VersionUtils.convert_release_to_tag_name(major, minor, patch)
 
         # Assert
-        self.assertEqual(branchname, "Release_3.2.1")
+        self.assertEqual(branchname, "v3.2.1")
 
     def test_GIVEN_a_2_level_version_WHEN_construct_release_branch_name_THEN_appropriate(self):
         # Arrange
@@ -77,20 +77,20 @@ class VersionTests(unittest.TestCase):
         minor = 2
 
         # Act
-        branchname = VersionUtils.convert_release_to_branch_name(major, minor)
+        branchname = VersionUtils.convert_release_to_tag_name(major, minor)
 
         # Assert
-        self.assertEqual(branchname, "Release_3.2.0")
+        self.assertEqual(branchname, "v3.2.0")
 
     def test_GIVEN_a_1_level_version_WHEN_construct_release_branch_name_THEN_appropriate(self):
         # Arrange
         major = 3
 
         # Act
-        branchname = VersionUtils.convert_release_to_branch_name(major)
+        branchname = VersionUtils.convert_release_to_tag_name(major)
 
         # Assert
-        self.assertEqual(branchname, "Release_3.0.0")
+        self.assertEqual(branchname, "v3.0.0")
 
     def test_GIVEN_a_3_level_version_in_a_string_THEN_arguments_extracted_appropriately(self):
         # Arrange
