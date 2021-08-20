@@ -15,13 +15,14 @@ class GitUtils(object):
         """
         self.path = path
 
-    def force_clean_checkout(self, branch_name):
+    def force_clean_checkout(self, name, is_tag):
         """
         Force cleans an existing git repo and then checks out the given branch.
 
         This is intended to get a copy of the given branch with no local changes.
 
-        :param branch_name: The name of the branch to check out
+        :param name: The name of the branch/tag to check out
+        :param is_tag: if we are checking out to a tag or a branch
         :return: True if successful, False otherwise
         """
         try:
@@ -30,17 +31,20 @@ class GitUtils(object):
             # Ensure the repository is in a clean state.
             repo.git.reset("HEAD", hard=True)
             repo.git.clean(f=True, d=True, x=True)
-            repo.git.checkout("origin/{}".format(branch_name), force=True)
+            if is_tag:
+                repo.git.checkout("tags/{}".format(name), force=True)
+            else:
+                repo.git.checkout("origin/{}".format(name), force=True)
         except (git.GitCommandError, git.InvalidGitRepositoryError) as e:
             print("Git command failed. Error was: {}".format(e))
             return False
         return True
 
-    def update_branch(self, branch):
+    def update_branch(self, branch, is_tag=False):
         try:
             repo = git.Repo(path=self.path)
             repo.git.fetch(all=True)
-            if not self.force_clean_checkout(branch):
+            if not self.force_clean_checkout(branch, is_tag):
                 return False
         except (git.GitCommandError, git.InvalidGitRepositoryError) as e:
             print("Git command failed. Error was: {}".format(e))

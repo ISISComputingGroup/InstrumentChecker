@@ -18,7 +18,7 @@ class GuiUtils(object):
     def get_gui_repo_at_release(self, version):
         version = VersionUtils.extract_release_numbers_from_string(version)
         branch_name = VersionUtils.convert_release_to_tag_name(*version)
-        if not self.git.update_branch(branch_name):
+        if not self.git.update_branch(branch_name, True):
             raise IOError("Couldn't check out GUI branch corresponding to release {}".format(version))
 
     def get_valid_types(self, xml):
