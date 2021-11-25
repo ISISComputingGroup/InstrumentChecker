@@ -116,7 +116,9 @@ def run_all_tests(reports_path, instruments):
     # Now run the configuration tests
     for instrument in instruments:
         if setup_instrument_tests(instrument):
-            return_values.append(run_instrument_tests(instrument['name'], reports_path))
+            if "SANS2D" not in instrument['name']:  # temporarily disable this until next release(current release is
+                # 9.0.0)
+                return_values.append(run_instrument_tests(instrument['name'], reports_path))
         else:
             return_values.append(False)
 
@@ -136,7 +138,6 @@ def _print_test_run_end_messages():
 
 
 def main():
-
     # We can't put this in the batch file as it is overwritten by genie_python.bat. Increasing it in genie_python.bat
     # would increase it for all instruments, which may be undesirable.
     # The higher limit is required for DETMON as it has a huge number of blocks.
@@ -170,16 +171,16 @@ def main():
         if len(instruments) < len(args.instruments):
             raise ValueError("Some instruments specified could not be found in the instrument list.")
 
-## the following will exclude down instruments for testing
-## change instruments -> instruments_up in run_all_tests below
-#    inst_names = [x["name"] for x in instruments]
-#    inst_up = []
-#    for inst in inst_names:
-#        if ChannelAccessUtils("IN:{}:".format(inst)).get_value("CS:BLOCKSERVER:GET_CURR_CONFIG_DETAILS") is not None:
-#            inst_up.append(inst)
-#        else:
-#            print("Skipping {} as instrument down (no blockserver)".format(inst))
-#    instruments_up = [x for x in instruments if x["name"] in inst_up]
+    ## the following will exclude down instruments for testing
+    ## change instruments -> instruments_up in run_all_tests below
+    #    inst_names = [x["name"] for x in instruments]
+    #    inst_up = []
+    #    for inst in inst_names:
+    #        if ChannelAccessUtils("IN:{}:".format(inst)).get_value("CS:BLOCKSERVER:GET_CURR_CONFIG_DETAILS") is not None:
+    #            inst_up.append(inst)
+    #        else:
+    #            print("Skipping {} as instrument down (no blockserver)".format(inst))
+    #    instruments_up = [x for x in instruments if x["name"] in inst_up]
 
     reports_path = os.path.abspath(args.reports_path)
     Settings.set_repo_paths(os.path.abspath(args.configs_repo_path), os.path.abspath(args.gui_repo_path))
