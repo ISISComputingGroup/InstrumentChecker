@@ -44,12 +44,13 @@ def ls_remote(url):
 
 
 remote_head = ls_remote(REMOTE_URL)['HEAD']  # Get the remote master HEAD commit ID
-inst_hostnames = [inst['hostName'] for inst in ChannelAccessUtils().get_inst_list()]
+# inst_hostnames = [inst['hostName'] for inst in ChannelAccessUtils().get_inst_list()]
+inst_hostnames = ["NDXMAPS"]
 different_head, multiple_repos, cannot_connect = [], [], []
 
 
 def check_inst_scripts(hostname):
-    scripts_path = f'\\\\{hostname}\\c$\\Instrument\\scripts'
+    scripts_path = f'\\\\{hostname}\\InstScripts$'
 
     # Connect to the instrument shared network resource
     username = f'{hostname}\\{_get_env_var("USER")}'
