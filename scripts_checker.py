@@ -107,3 +107,8 @@ print(f'Checked {len(connected)} instruments out of {len(inst_hostnames)}.')
 print(f'Not on master HEAD: {different_head}')
 print(f'Multiple repositories: {multiple_repos}')
 print(f'Could not connect to: {cannot_connect}')
+
+if len(different_head) + len(multiple_repos) + len(cannot_connect) > 0:
+    sys.exit(1)
+else:
+    sys.exit(0)
