@@ -2,29 +2,32 @@
 
 pipeline {
 
-  // agent defines where the pipeline will run.
-  agent {  
-    label {
-      label "scriptchecker"
-    }
-  }
-  
-  triggers {
-    cron('H 1 * * *')
-  }
-  
-  stages {  
-
-    stage("Checkout") {
-      steps {
-        checkout scm
-      }
+    agent {  
+        label {
+            label "scriptchecker"
+        }
     }
 
-    // stage("Check Instrument Scripts") {
-    //     steps {
-    //         bat "call script_checker.bat"
-    //     }
-    // }
-  }
+    environment {
+        INSTRUMENT_SCRIPTS_CREDENTIALS = credentials('script_checker')
+    }
+  
+    triggers {
+        cron('H 1 * * *')
+    }
+  
+    stages {  
+
+        stage("Checkout") {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage("Check Instrument Scripts") {
+            steps {
+                bat "call script_checker.bat"
+            }
+        }
+    }
 }

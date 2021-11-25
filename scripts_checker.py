@@ -53,8 +53,10 @@ def check_inst_scripts(hostname):
     scripts_path = f'\\\\{hostname}\\InstScripts$'
 
     # Connect to the instrument shared network resource
-    username = f'{hostname}\\{_get_env_var("USER")}'
-    password = _get_env_var("PASS")
+    username = f'{hostname}\\{_get_env_var("INSTRUMENT_SCRIPTS_CREDENTIALS_USR")}'
+    password = _get_env_var("INSTRUMENT_SCRIPTS_CREDENTIALS_PSW")
+    print(username)
+    print(password)
 
     try:
         # dwType, lpLocalName, lpRemoteName[, lpProviderName, Username, Password, flags]
