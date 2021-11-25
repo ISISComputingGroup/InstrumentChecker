@@ -27,8 +27,7 @@ pipeline {
         stage("Check Instrument Scripts") {
             steps {
                 bat """
-                    dir
-                    call script_checker.bat
+                    call scripts_checker.bat
                 """
             }
         }
