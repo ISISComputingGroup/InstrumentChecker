@@ -1,0 +1,35 @@
+#!groovy
+
+pipeline {
+
+    agent {  
+        label {
+            label "scriptchecker"
+        }
+    }
+
+    environment {
+        INSTRUMENT_SCRIPTS_CREDENTIALS = credentials('script_checker')
+    }
+  
+    triggers {
+        cron('H 1 * * *')
+    }
+  
+    stages {  
+
+        stage("Checkout") {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage("Check Instrument Scripts") {
+            steps {
+                bat """
+                    call scripts_checker.bat
+                """
+            }
+        }
+    }
+}

@@ -44,16 +44,17 @@ def ls_remote(url):
 
 
 remote_head = ls_remote(REMOTE_URL)['HEAD']  # Get the remote master HEAD commit ID
-inst_hostnames = [inst['hostName'] for inst in ChannelAccessUtils().get_inst_list()]
+# inst_hostnames = [inst['hostName'] for inst in ChannelAccessUtils().get_inst_list()]
+inst_hostnames = ["NDXMAPS"]
 different_head, multiple_repos, cannot_connect = [], [], []
 
 
 def check_inst_scripts(hostname):
-    scripts_path = f'\\\\{hostname}\\c$\\Instrument\\scripts'
+    scripts_path = f'\\\\{hostname}\\InstScripts$'
 
     # Connect to the instrument shared network resource
-    username = f'{hostname}\\{_get_env_var("USER")}'
-    password = _get_env_var("PASS")
+    username = f'{hostname}\\{_get_env_var("INSTRUMENT_SCRIPTS_CREDENTIALS_USR")}'
+    password = _get_env_var("INSTRUMENT_SCRIPTS_CREDENTIALS_PSW")
 
     try:
         # dwType, lpLocalName, lpRemoteName[, lpProviderName, Username, Password, flags]
@@ -70,7 +71,7 @@ def check_inst_scripts(hostname):
         print(f'WARNING: {hostname} has multiple remote repositories: \n{repo.git.remote("-v")}\n')
         multiple_repos.append(hostname)
 
-    current_head = repo.head.commit
+    current_head = repo.head.commit.hexsha
     if current_head != remote_head:
         print(f'WARNING: {hostname} HEAD with commit ID "{current_head}" '
               f'is different from remote master HEAD with commit ID "{remote_head}".')
@@ -104,3 +105,8 @@ print(f'Checked {len(connected)} instruments out of {len(inst_hostnames)}.')
 print(f'Not on master HEAD: {different_head}')
 print(f'Multiple repositories: {multiple_repos}')
 print(f'Could not connect to: {cannot_connect}')
+
+if len(different_head) + len(multiple_repos) + len(cannot_connect) > 0:
+    sys.exit(1)
+else:
+    sys.exit(0)

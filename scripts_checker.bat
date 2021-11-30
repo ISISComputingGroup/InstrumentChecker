@@ -1,5 +1,8 @@
 setlocal
 
-call c:\Instrument\Apps\Python3\genie_python.bat scripts_checker.py
+REM Create local python environment from genie python on share
+git clone https://github.com/ISISComputingGroup/ibex_utils.git
+CALL ibex_utils\installation_and_upgrade\define_latest_genie_python.bat
+
+%LATEST_PYTHON% -u scripts_checker.py
 if %errorlevel% neq 0 exit /b %errorlevel%
-pause
