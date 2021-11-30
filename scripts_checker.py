@@ -71,7 +71,7 @@ def check_inst_scripts(hostname):
         print(f'WARNING: {hostname} has multiple remote repositories: \n{repo.git.remote("-v")}\n')
         multiple_repos.append(hostname)
 
-    current_head = repo.head.commit
+    current_head = repo.head.commit.hexsha
     if current_head != remote_head:
         print(f'WARNING: {hostname} HEAD with commit ID "{current_head}" '
               f'is different from remote master HEAD with commit ID "{remote_head}".')
