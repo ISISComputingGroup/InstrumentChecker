@@ -7,6 +7,7 @@ import unittest
 from xmlrunner import XMLTestRunner
 import argparse
 import traceback
+import os
 
 from tests.configuration_tests import ConfigurationsTests, ConfigurationsSingleTests
 from tests.component_tests import ComponentsTests, ComponentsSingleTests
@@ -77,7 +78,12 @@ def setup_instrument_tests(instrument):
     except Exception:
         print("Unable to set instrument to {} because {}".format(name, traceback.format_exc()))
         return False
-
+    
+    excluded_inst = get_excluded_list_of_instrument()
+    if name in excluded_inst:
+        print(f"Skipping instrument {name}")
+        return False
+    
     print("\n\nChecking out git repository for {} ({})...".format(name, hostname))
     config_repo_update_successful = GitUtils(Settings.config_repo_path).update_branch(hostname)
 
@@ -100,6 +106,11 @@ def run_self_tests(reports_path):
     return XMLTestRunner(output=str(reports_path), stream=sys.stdout).run(suite).wasSuccessful()
 
 
+def get_excluded_list_of_instrument():
+    excluded_list = os.environ.get("DISABLE_CHECK_INST")
+    excluded_list = [inst.strip() for inst in excluded_list.split(",")]
+    return excluded_list
+
 def run_all_tests(reports_path, instruments):
     """
     Runs all of the tests (including our own unit tests)
@@ -116,9 +127,7 @@ def run_all_tests(reports_path, instruments):
     # Now run the configuration tests
     for instrument in instruments:
         if setup_instrument_tests(instrument):
-            if "SANS2D" not in instrument['name']:  # temporarily disable this until next release(current release is
-                # 9.0.0)
-                return_values.append(run_instrument_tests(instrument['name'], reports_path))
+            return_values.append(run_instrument_tests(instrument['name'], reports_path))
         else:
             return_values.append(False)
 
@@ -138,6 +147,7 @@ def _print_test_run_end_messages():
 
 
 def main():
+
     # We can't put this in the batch file as it is overwritten by genie_python.bat. Increasing it in genie_python.bat
     # would increase it for all instruments, which may be undesirable.
     # The higher limit is required for DETMON as it has a huge number of blocks.
@@ -171,16 +181,16 @@ def main():
         if len(instruments) < len(args.instruments):
             raise ValueError("Some instruments specified could not be found in the instrument list.")
 
-    ## the following will exclude down instruments for testing
-    ## change instruments -> instruments_up in run_all_tests below
-    #    inst_names = [x["name"] for x in instruments]
-    #    inst_up = []
-    #    for inst in inst_names:
-    #        if ChannelAccessUtils("IN:{}:".format(inst)).get_value("CS:BLOCKSERVER:GET_CURR_CONFIG_DETAILS") is not None:
-    #            inst_up.append(inst)
-    #        else:
-    #            print("Skipping {} as instrument down (no blockserver)".format(inst))
-    #    instruments_up = [x for x in instruments if x["name"] in inst_up]
+## the following will exclude down instruments for testing
+## change instruments -> instruments_up in run_all_tests below
+#    inst_names = [x["name"] for x in instruments]
+#    inst_up = []
+#    for inst in inst_names:
+#        if ChannelAccessUtils("IN:{}:".format(inst)).get_value("CS:BLOCKSERVER:GET_CURR_CONFIG_DETAILS") is not None:
+#            inst_up.append(inst)
+#        else:
+#            print("Skipping {} as instrument down (no blockserver)".format(inst))
+#    instruments_up = [x for x in instruments if x["name"] in inst_up]
 
     reports_path = os.path.abspath(args.reports_path)
     Settings.set_repo_paths(os.path.abspath(args.configs_repo_path), os.path.abspath(args.gui_repo_path))
