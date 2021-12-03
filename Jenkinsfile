@@ -5,7 +5,7 @@ pipeline {
   // agent defines where the pipeline will run.
   agent {  
     label {
-      label "scriptchecker"
+      label "ConfigCheck"
     }
   }
   
