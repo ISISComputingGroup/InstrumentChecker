@@ -108,7 +108,10 @@ def run_self_tests(reports_path):
 
 def get_excluded_list_of_instrument():
     excluded_list = os.environ.get("DISABLE_CHECK_INST")
-    excluded_list = [inst.strip() for inst in excluded_list.split(",")]
+    if excluded_list is not None:
+        excluded_list = [inst.strip() for inst in excluded_list.split(",")]
+    else:
+        excluded_list = []
     return excluded_list
 
 def run_all_tests(reports_path, instruments):
