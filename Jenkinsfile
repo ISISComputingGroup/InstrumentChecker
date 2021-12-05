@@ -20,17 +20,22 @@ pipeline {
       }
     }
     
-    stage("Build") {
+    stage("Dependencies") {
+        steps {
+          echo "Installing local genie python"
+          bat """
+                setlocal
+                call build\\update_genie_python.bat ${env.WORKSPACE}\\Python3
+                if %errorlevel% neq 0 exit /b %errorlevel%
+          """
+        }
+    }    
+
+    stage("Run Tests") {
       steps {
-        
+        echo "Running tests"
         bat """
             setlocal
-            call build\\update_genie_python.bat
-            if %errorlevel% neq 0 (
-                    @echo ERROR: Cannot install clean genie_python
-                    exit /b %errorlevel% 
-            )
-
             call run_tests.bat
             if %errorlevel% neq 0 exit /b %errorlevel%
             """

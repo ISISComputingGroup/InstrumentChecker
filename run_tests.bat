@@ -19,5 +19,5 @@ if exist "%reports_dir%" (
     rd /s /q "%reports_dir%"
 )
 
-call c:\Instrument\Apps\Python3\genie_python.bat run_tests.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" --reports_path "%reports_dir%"
+call %~dp0Python3\genie_python.bat run_tests.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" --reports_path "%reports_dir%"
 if %errorlevel% neq 0 exit /b %errorlevel%
