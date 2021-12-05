@@ -25,6 +25,7 @@ pipeline {
           echo "Installing local genie python"
           bat """
                 setlocal
+                rd /s /q ${env.WORKSPACE}\\Python3
                 call build\\update_genie_python.bat ${env.WORKSPACE}\\Python3
                 if %errorlevel% neq 0 exit /b %errorlevel%
           """
