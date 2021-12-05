@@ -7,6 +7,7 @@ import unittest
 from xmlrunner import XMLTestRunner
 import argparse
 import traceback
+import os
 
 from tests.configuration_tests import ConfigurationsTests, ConfigurationsSingleTests
 from tests.component_tests import ComponentsTests, ComponentsSingleTests
@@ -77,7 +78,12 @@ def setup_instrument_tests(instrument):
     except Exception:
         print("Unable to set instrument to {} because {}".format(name, traceback.format_exc()))
         return False
-
+    
+    excluded_inst = get_excluded_list_of_instrument()
+    if name in excluded_inst:
+        print(f"Skipping instrument {name}")
+        return False
+    
     print("\n\nChecking out git repository for {} ({})...".format(name, hostname))
     config_repo_update_successful = GitUtils(Settings.config_repo_path).update_branch(hostname)
 
@@ -99,6 +105,14 @@ def run_self_tests(reports_path):
     suite = unittest.TestLoader().discover(os.path.join("util", "test_utils"))
     return XMLTestRunner(output=str(reports_path), stream=sys.stdout).run(suite).wasSuccessful()
 
+
+def get_excluded_list_of_instrument():
+    excluded_list = os.environ.get("DISABLE_CHECK_INST")
+    if excluded_list is not None:
+        excluded_list = [inst.strip() for inst in excluded_list.split(",")]
+    else:
+        excluded_list = []
+    return excluded_list
 
 def run_all_tests(reports_path, instruments):
     """

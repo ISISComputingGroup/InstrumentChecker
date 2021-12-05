@@ -20,33 +20,34 @@ pipeline {
       }
     }
     
-    stage("Build") {
-      steps {
-        
-        bat """
-            call build/update_genie_python.bat
-            if %errorlevel% neq 0 (
-                    @echo ERROR: Cannot install clean genie_python
-                    goto ERROR
-            )
+    stage("Dependencies") {
+        steps {
+          echo "Installing local genie python"
+          bat """
+                setlocal
+                call build\\update_genie_python.bat ${env.WORKSPACE}\\Python3
+                if %errorlevel% neq 0 exit /b %errorlevel%
+          """
+        }
+    }    
 
+    stage("Run Tests") {
+      steps {
+        echo "Running tests"
+        bat """
+            setlocal
             call run_tests.bat
             if %errorlevel% neq 0 exit /b %errorlevel%
             """
       }
     }
     
-    stage("Unit Test Results") {
-      steps {
-        junit "test-reports/**/*.xml"
-      }
-   }
   }
   
   post {
-    failure {
-      step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: 'icp-buildserver@lists.isis.rl.ac.uk', sendToIndividuals: true])
-    }    
+    always {
+        junit "test-reports/**/*.xml"
+    } 
   }
   
   // The options directive is for configuration that applies to the whole job.
@@ -54,5 +55,6 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr:'20', daysToKeepStr: '28'))
     timeout(time: 60, unit: 'MINUTES')
     disableConcurrentBuilds()
+    timestamps()
   }
 }
