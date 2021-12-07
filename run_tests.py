@@ -79,11 +79,6 @@ def setup_instrument_tests(instrument):
         print("Unable to set instrument to {} because {}".format(name, traceback.format_exc()))
         return False
     
-    excluded_inst = get_excluded_list_of_instrument()
-    if name in excluded_inst:
-        print(f"Skipping instrument {name}")
-        return False
-    
     print("\n\nChecking out git repository for {} ({})...".format(name, hostname))
     config_repo_update_successful = GitUtils(Settings.config_repo_path).update_branch(hostname)
 
@@ -126,13 +121,16 @@ def run_all_tests(reports_path, instruments):
         return False
 
     return_values = []
-
+    excluded_instruments = get_excluded_list_of_instrument()
     # Now run the configuration tests
     for instrument in instruments:
-        if setup_instrument_tests(instrument):
-            return_values.append(run_instrument_tests(instrument['name'], reports_path))
-        else:
-            return_values.append(False)
+        if instrument not in excluded_instruments:
+            if setup_instrument_tests(instrument):
+                return_values.append(run_instrument_tests(instrument['name'], reports_path))
+            else:
+                return_values.append(False)
+        else: 
+            print(f"Skipping instrument {instrument}")
 
     _print_test_run_end_messages()
 
