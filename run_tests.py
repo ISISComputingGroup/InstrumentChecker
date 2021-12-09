@@ -1,7 +1,9 @@
 from __future__ import print_function
 from __future__ import absolute_import
+import typing
 from builtins import str
 import os
+from json import loads, JSONDecodeError
 import sys
 import unittest
 from xmlrunner import XMLTestRunner
@@ -101,13 +103,19 @@ def run_self_tests(reports_path):
     return XMLTestRunner(output=str(reports_path), stream=sys.stdout).run(suite).wasSuccessful()
 
 
-def get_excluded_list_of_instrument():
-    excluded_list = os.environ.get("DISABLE_CHECK_INST")
-    if excluded_list is not None:
-        excluded_list = [inst.strip() for inst in excluded_list.split(",")]
-    else:
-        excluded_list = []
-    return excluded_list
+def get_excluded_list_of_instruments() -> typing.List[str]:
+    """
+    Gets the excluded list of instruments by getting the value of the environment variable `DISABLE_CHECK_INST`.
+    This needs to be in the format of a JSON list, for example:
+    ["SANS2D", "DEMO"]
+    """
+    excluded_list_env_var = os.environ.get("DISABLE_CHECK_INST")
+    print(f"Excluded instruments: {excluded_list_env_var}")
+    try:
+        return loads(excluded_list_env_var)
+    except (JSONDecodeError, TypeError):
+        return []
+
 
 def run_all_tests(reports_path, instruments):
     """
@@ -121,7 +129,7 @@ def run_all_tests(reports_path, instruments):
         return False
 
     return_values = []
-    excluded_instruments = get_excluded_list_of_instrument()
+    excluded_instruments = get_excluded_list_of_instruments()
     # Now run the configuration tests
     for instrument in instruments:
         if instrument not in excluded_instruments:
