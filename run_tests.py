@@ -132,9 +132,10 @@ def run_all_tests(reports_path, instruments):
     excluded_instruments = get_excluded_list_of_instruments()
     # Now run the configuration tests
     for instrument in instruments:
-        if instrument not in excluded_instruments:
+        instrument_name = instrument['name']
+        if instrument_name not in excluded_instruments:
             if setup_instrument_tests(instrument):
-                return_values.append(run_instrument_tests(instrument['name'], reports_path))
+                return_values.append(run_instrument_tests(instrument_name, reports_path))
             else:
                 return_values.append(False)
         else: 
