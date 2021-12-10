@@ -110,10 +110,10 @@ def get_excluded_list_of_instruments() -> typing.List[str]:
     ["SANS2D", "DEMO"]
     """
     excluded_list_env_var = os.environ.get("DISABLE_CHECK_INST")
-    print(f"Excluded instruments: {excluded_list_env_var}")
     try:
         return loads(excluded_list_env_var)
-    except (JSONDecodeError, TypeError):
+    except (JSONDecodeError, TypeError) as e:
+        print(e)
         return []
 
 
@@ -129,16 +129,12 @@ def run_all_tests(reports_path, instruments):
         return False
 
     return_values = []
-    excluded_instruments = get_excluded_list_of_instruments()
     # Now run the configuration tests
     for instrument in instruments:
-        if instrument not in excluded_instruments:
-            if setup_instrument_tests(instrument):
-                return_values.append(run_instrument_tests(instrument['name'], reports_path))
-            else:
-                return_values.append(False)
-        else: 
-            print(f"Skipping instrument {instrument}")
+        if setup_instrument_tests(instrument):
+            return_values.append(run_instrument_tests(instrument['name'], reports_path))
+        else:
+            return_values.append(False)
 
     _print_test_run_end_messages()
 
@@ -200,6 +196,9 @@ def main():
 #        else:
 #            print("Skipping {} as instrument down (no blockserver)".format(inst))
 #    instruments_up = [x for x in instruments if x["name"] in inst_up]
+    excluded_instruments = get_excluded_list_of_instruments()
+    instruments = [x for x in instruments if x["name"] not in excluded_instruments]
+    print(f"excluded instruments: {excluded_instruments}")
 
     reports_path = os.path.abspath(args.reports_path)
     Settings.set_repo_paths(os.path.abspath(args.configs_repo_path), os.path.abspath(args.gui_repo_path))
