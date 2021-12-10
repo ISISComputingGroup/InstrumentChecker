@@ -111,9 +111,7 @@ def get_excluded_list_of_instruments() -> typing.List[str]:
     """
     excluded_list_env_var = os.environ.get("DISABLE_CHECK_INST")
     try:
-        ret = loads(excluded_list_env_var)
-        print(f"Excluded instruments: {ret}")
-        return ret
+        return loads(excluded_list_env_var)
     except (JSONDecodeError, TypeError) as e:
         print(e)
         return []
@@ -200,7 +198,7 @@ def main():
 #    instruments_up = [x for x in instruments if x["name"] in inst_up]
     excluded_instruments = get_excluded_list_of_instruments()
     instruments = [x for x in instruments if x["name"] not in excluded_instruments]
-    print(f"excluded instruments: {excluded_instruments} \n instruments: {instruments}")
+    print(f"excluded instruments: {excluded_instruments}")
 
     reports_path = os.path.abspath(args.reports_path)
     Settings.set_repo_paths(os.path.abspath(args.configs_repo_path), os.path.abspath(args.gui_repo_path))
