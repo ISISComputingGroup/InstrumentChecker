@@ -168,9 +168,9 @@ class ConfigurationsTests(unittest.TestCase):
         for comp in components:
             blocks.extend(self.comp_utils.get_blocks(comp))
         
-        invalid_names = set([str(block) + " | len " + str(len(block)) for block in blocks if len(block) > 30])
+        invalid_names = set([str(block) + " | len " + str(len(block)) for block in blocks if len(block) > 25])
 
-        self.assertTrue(len(invalid_names) == 0, "Invalid block name length (> 30): {} , in configuration {}".format(invalid_names, self.config))
+        self.assertTrue(len(invalid_names) == 0, "Invalid block name length (> 25): {} , in configuration {}".format(invalid_names, self.config))
             
                         
     """ def test_GIVEN_a_configuration_THEN_it_does_not_contain_a_block_with_run_control_with_invalid_name_length(self):
@@ -181,23 +181,10 @@ class ConfigurationsTests(unittest.TestCase):
         for comp in components:
             blocks.extend(self.comp_utils.get_run_control_blocks(comp))
         
-        invalid_names = set([block for block in blocks if len(block) > 30])
+        invalid_names = set([str(block) + " | len " + str(len(block)) for block in blocks if len(block) > 25])
 
-        self.assertTrue(len(invalid_names) == 0, "Invalid block name(s) {} (longer than 30 characters), in configuration {}".format(invalid_names, self.config))
+        self.assertTrue(len(invalid_names) == 0, "Block with run control has invalid name length (> 25): {} , in configuration {}".format(invalid_names, self.config))
     """
 
-    """  def test_GIVEN_a_configuration_THEN_it_does_not_contain_a_block_with_invalid_name_length(self):
-        components = self.config_utils.get_active_components_as_list(self.config)
 
-        blocks = self.config_utils.get_blocks(self.config)
-
-        for comp in components:
-            blocks.extend(self.comp_utils.get_blocks(comp))
-
-        invalid_names = list([block for block in blocks if len(block) > 5])
-        invalid_lengths = list([len(block) for block in blocks if len(block) > 5])
-
-        self.assertTrue(len(invalid_names) == 0, "Invalid block name(s) {} of length {} (> 5 characters), in configuration {}".format(invalid_names, invalid_lengths, self.config))
-
-    """
      
