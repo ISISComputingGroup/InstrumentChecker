@@ -132,21 +132,6 @@ class AbstractConfigurationUtils(object):
 
         return blocks
 
-    def get_run_control_blocks(self, config_name):
-        """
-        Returns a list of block names from blocks with run control.
-        :param config_name: the configuration name
-        :return: The list of block names.
-        """
-        root = ET.fromstring(self.get_blocks_xml(config_name))
-
-        blocks = []
-        for block in root.iter("{}block".format(self.BLOCK_XML_SCHEMA)):
-            if(block.find("{}rc_enabled".format(self.BLOCK_XML_SCHEMA)).text != "False"):
-                blocks.append(block.find("{}name".format(self.BLOCK_XML_SCHEMA)).text)
-
-        return blocks
-
     @staticmethod
     def _get_pv_name_without_field(pv_name):
         """
