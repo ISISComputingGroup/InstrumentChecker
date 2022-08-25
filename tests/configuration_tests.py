@@ -2,10 +2,12 @@ from __future__ import absolute_import
 import unittest
 import os
 import xml.etree.ElementTree as ET
+import itertools
 
 from .settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ConfigurationUtils, ComponentUtils
+from util.globals import GlobalsUtils
 from .abstract_test_utils import AbstractSingleTests
 
 
@@ -51,6 +53,7 @@ class ConfigurationsTests(unittest.TestCase):
 
         self.config_utils = ConfigurationUtils(Settings.config_repo_path)
         self.comp_utils = ComponentUtils(Settings.config_repo_path)
+        self.global_utils = GlobalsUtils(Settings.config_repo_path)
         self.config = config
 
     def setUp(self):
@@ -171,4 +174,22 @@ class ConfigurationsTests(unittest.TestCase):
         
         invalid_names = set([str(block) + " | len " + str(len(block)) for block in blocks if len(block) > 25])
         self.assertTrue(len(invalid_names) == 0, "Invalid block name length (> 25): {} , in configuration {}".format(invalid_names, self.config))
+    
+    def test_GIVEN_a_config_THEN_for_each_mclen_ioc_present_at_least_one_axis_macro_set(self):
+        input("\nmake changes to globals now: ")
+
+        iocs_xml = self.config_utils.get_iocs_xml(self.config)
+        mclen_iocs = ["{}_{:02d}".format(p, i) for p, i in itertools.product(["MCLEN"], range(1, 11))]
+        
+        for mclen_ioc in mclen_iocs:
+            # if config contains the mclen ioc
+            if mclen_ioc in self.config_utils.get_iocs(iocs_xml):
+                config_macros = self.config_utils.get_ioc_macros(iocs_xml, mclen_ioc)
+                globals_macros = self.global_utils.get_macros(mclen_ioc)
+
+                # get the name of each macro set to 'yes'
+                config_axis_macros = set([macro for macro in config_macros.keys() if "AXIS" in macro and config_macros.get(macro).lower() == "yes"])
+                globals_axis_macros = set([macro for macro in globals_macros.keys() if "AXIS" in macro and globals_macros.get(macro).lower() == "yes"])
+                # Assert that at least one is not empty 
+                self.assertTrue(len(config_axis_macros) or len(globals_axis_macros), "All McLennan axis macros not set in {} in config {}".format(mclen_ioc, self.config))
              
