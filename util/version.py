@@ -35,20 +35,6 @@ class VersionUtils(object):
         return all(v1 == v2 for v1, v2 in zip(version1.split("."), version2.split(".")))
 
     @staticmethod
-    def is_version_older(version, comperand):
-        """
-        Returns the "older" version (e.g the smaller version number)
-        :param version: version to be compared
-        :param comperand: version to be compared against
-        """
-        version = tuple(version.split("."))
-        comperand = tuple(comperand.split("."))
-
-        return (version < comperand)
-
-
-
-    @staticmethod
     def convert_release_to_tag_name(major, minor=0, patch=0):
         return "v{maj}.{min}.{patch}".format(maj=int(major), min=int(minor), patch=int(patch))
 
