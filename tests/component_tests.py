@@ -138,16 +138,12 @@ class ComponentsTests(unittest.TestCase):
             self.assertFalse(self.component_utils.get_ioc_in_sim_mode(iocs_xml, ioc),
                              "Simulation Mode is Active on {} in component {}".format(ioc, self.component))
 
-
-    
     @parameterized.expand(
         [("MCLEN_{:02d}".format(i),"AXIS", "^AXIS[1-8]$", "^yes$") for i in range(1, 4)] +
         [("EUROTHRM_{:02d}".format(i), "ADDRESS", "^ADDR_([1-9]|10)$", "^[0-9]+$") for i in range(1, 7)] +
         [("LINMOT_{:02d}".format(i), "AXIS", "^AXIS[1-8]$", "^yes$") for i in range(1, 4)] +
         [("KHLY2001_01", "CHANNEL ACTIVATED", "^ACTIVATE_CHAN_0[1-9]$", "^1$")] +
-        [("NWPRTXPS_01", "AXIS", "^AXIS[1-4]_ID$", "^.*[.].*$")] +
-        [("MERCURY_{:02d}".format(i), "TEMPERATURE/LEVEL/PRESSURE", "^(TEMP_[1-4]|LEVEL_[1-2]|PRESSURE_[1-2])$", "^.*[.].*$") 
-            for i in range(1, 3)]
+        [("NWPRTXPS_01", "AXIS", "^AXIS[1-4]_ID$", "^.*[.].*$")]
     )
     @skip_on_instruments(["SELAB", "DEMO"], "Allowed invalid iocs, these are fake instruments")
     def test_GIVEN_a_component_THEN_for_each_ioc_present_at_least_one_macro_set(self, ioc, macro_name, macro_regex, value_regex):
@@ -155,32 +151,34 @@ class ComponentsTests(unittest.TestCase):
         iocs = self.component_utils.get_iocs(iocs_xml)
         
         if ioc in iocs:
-            print(f"\nCOMPONENT: {self.component}")
-            print(f"IOC: {ioc} | MACRO_NAME: {macro_regex} | REGEX: {value_regex}")
-            print(f"VERSION: {self.version_utils.get_version()}")
-
             component_macros, globals_macros = self.component_utils.check_ioc_has_macros_with_name(self.component_utils.get_ioc_macros(iocs_xml, ioc), 
                         self.global_utils.get_macros(ioc), macro_regex)
-            
-            print("COMPONENT VALID NAME MACROS: "+str(component_macros))
-            print("GLOBALS VALID NAME MACROS: "+str(globals_macros))
-
-            # Assert that the ioc contains at least one of the specified macro
             self.assertTrue(len(component_macros)!=0 or len(globals_macros)!=0, 
                         "No {} macros found in {} in component {}".format(macro_name, ioc, self.component))
 
             component_macros, globals_macros = self.component_utils.check_ioc_has_macros_with_value(component_macros, 
                         globals_macros, value_regex)
-            
-            print("Set macros from component: "+str(component_macros))
-            print("Set macros from globals: "+str(globals_macros))
-            print(f"Component set?: {len(component_macros) != 0} | globals.txt set? {len(globals_macros) != 0}")
-            
-            # Assert that at least one of component/globals.txt two contains a set macro
             self.assertTrue(len(component_macros) != 0 or len(globals_macros) != 0, 
                         "At least one {} macro in {} not set in component {}".format(macro_name, ioc, self.component))
     
-    """ 
-    @skip_on_instruments(["LET", "OSIRIS", "MAPS", "GEM", "SANDALS", "IRIS", "ZOOM", "LARMOR"], 
-            "Mercury iTC macros on these instruments are out of date")
-    """
+    @parameterized.expand(
+        [("MERCURY_{:02d}".format(i), "TEMPERATURE/LEVEL/PRESSURE", "^(TEMP_[1-4]|LEVEL_[1-2]|PRESSURE_[1-2])$", "^.*[.].*$") 
+            for i in range(1, 3)]
+    )
+    @skip_on_instruments(["SELAB", "DEMO"], "Allowed invalid iocs, these are fake instruments")
+    @skip_on_instruments(["LARMOR", "ZOOM", "IRIS", "SANDALS", "GEM", "MAPS", "OSIRIS", "LET"], "Mercury iTC macros on these instruments are out of date")
+    def test_GIVEN_a_component_THEN_for_each_ioc_present_at_least_one_macro_set(self, ioc, macro_name, macro_regex, value_regex):
+        iocs_xml = self.component_utils.get_iocs_xml(self.component)
+        iocs = self.component_utils.get_iocs(iocs_xml)
+        
+        if ioc in iocs:
+            component_macros, globals_macros = self.component_utils.check_ioc_has_macros_with_name(self.component_utils.get_ioc_macros(iocs_xml, ioc), 
+                        self.global_utils.get_macros(ioc), macro_regex)
+            self.assertTrue(len(component_macros)!=0 or len(globals_macros)!=0, 
+                        "No {} macros found in {} in component {}".format(macro_name, ioc, self.component))
+
+            component_macros, globals_macros = self.component_utils.check_ioc_has_macros_with_value(component_macros, 
+                        globals_macros, value_regex)
+            self.assertTrue(len(component_macros) != 0 or len(globals_macros) != 0, 
+                        "At least one {} macro in {} not set in component {}".format(macro_name, ioc, self.component))
+    
