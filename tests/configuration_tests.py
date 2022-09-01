@@ -9,6 +9,7 @@ from .settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ConfigurationUtils, ComponentUtils
 from util.globals import GlobalsUtils
+from util.version import VersionUtils
 from .abstract_test_utils import AbstractSingleTests
 
 
@@ -55,6 +56,7 @@ class ConfigurationsTests(unittest.TestCase):
         self.config_utils = ConfigurationUtils(Settings.config_repo_path)
         self.comp_utils = ComponentUtils(Settings.config_repo_path)
         self.global_utils = GlobalsUtils(Settings.config_repo_path)
+        self.version_utils = VersionUtils(Settings.config_repo_path)
         self.config = config
 
     def setUp(self):
@@ -176,6 +178,7 @@ class ConfigurationsTests(unittest.TestCase):
         invalid_names = set([str(block) + " | len " + str(len(block)) for block in blocks if len(block) > 25])
         self.assertTrue(len(invalid_names) == 0, "Invalid block name length (> 25): {} , in configuration {}".format(invalid_names, self.config))
     
+    
     @parameterized.expand(
         [("MCLEN_{:02d}".format(i),"AXIS", "^AXIS[1-8]$", "^yes$") for i in range(1, 4)] +
         [("EUROTHRM_{:02d}".format(i), "ADDRESS", "^ADDR_([1-9]|10)$", "^[0-9]+$") for i in range(1, 7)] +
@@ -184,40 +187,39 @@ class ConfigurationsTests(unittest.TestCase):
         [("NWPRTXPS_01", "AXIS", "^AXIS[1-4]_ID$", "^.*[.].*$")] +
         [("MERCURY_{:02d}".format(i), "TEMPERATURE/LEVEL/PRESSURE", "^(TEMP_[1-4]|LEVEL_[1-2]|PRESSURE_[1-2])$", "^.*[.].*$") for i in range(1, 3)]
     )
+    @skip_on_instruments(["SELAB", "DEMO"], "Allowed invalid iocs, these are fake instruments")
     def test_GIVEN_a_config_THEN_for_each_ioc_present_at_least_one_macro_set(self, ioc, macro_name, macro_regex, value_regex):
+        if self.version_utils.is_version_older(self.version_utils.get_version(), "11.0.0"):
+            self.skipTest("Some Mecury iTC macros are outdated on versions older than 11.0.0")
+        
         # get iocs in configuration
         iocs_xml = self.config_utils.get_iocs_xml(self.config)
         iocs = self.config_utils.get_iocs(iocs_xml)
         
         if ioc in iocs:
-            #input("\nmake changes to globals now :) : ")
             print(f"\nCONFIG: {self.config}")
             print(f"IOC: {ioc} | MACRO_NAME: {macro_regex} | REGEX: {value_regex}")
-            macros = dict([(name, value) for name, value in self.config_utils.get_ioc_macros(iocs_xml, ioc).items()])
-            print("MACROS: "+str(macros))
+            print(f"VERSION: {self.version_utils.get_version()}")
             
-            # For each name/value pair from the ioc's macros, get all pairs which pattern match the macro name regex 
+            # For each name/value pair from ioc macros, get all which pattern match the macro NAME regex 
             config_macros = dict([(name, value) for name, value in self.config_utils.get_ioc_macros(iocs_xml, ioc).items() if re.search(macro_regex, name)])
             globals_macros = dict([(name, value) for name, value in self.global_utils.get_macros(ioc).items() if re.search(macro_regex, name)])
 
             print("VALID NAME MACROS: "+str(config_macros))
 
-            # Assert that the ioc contains at least one of the specified macro
+            # Assert that the ioc contains >=1 of the specified macro
             self.assertTrue(len(config_macros)!=0 or len(globals_macros)!=0, "In configuration {}, {} ioc has no {} macros".format(self.config, ioc, macro_name))
 
-            # For each name/value pair from the ioc's macros, get all pairs which pattern match the macro value regex
+            # For each name/value pair from ioc macros, get all which pattern match the macro VALUE regex
             config_macros = dict([(name, value) for name, value in config_macros.items() if re.search(value_regex, value)])
-            globals_macros = dict([(name, value) for name, value in config_macros.items() if re.search(value_regex, value)])
+            globals_macros = dict([(name, value) for name, value in globals_macros.items() if re.search(value_regex, value)])
 
-            print("set macros from config: "+str(config_macros))
-            print("set macros from globals: "+str(globals_macros))
+            print("Set macros from config: "+str(config_macros))
+            print("Set macros from globals: "+str(globals_macros))
 
-            config_macros_not_default = len(config_macros) != 0
-            globals_macros_not_default = len(globals_macros) != 0
-
-            print(f"config set?: {config_macros_not_default} | globals.txt set? {globals_macros_not_default}")
+            print(f"Config set?: {len(config_macros) != 0} | globals.txt set? {len(globals_macros) != 0}")
             
-            # Assert that at least one of the two contains a set macro
-            self.assertTrue(config_macros_not_default or globals_macros_not_default, "At least one {} macro in {} not set in configuration {}"
+            # Assert that at least one of config/globals.txt contains a set macro
+            self.assertTrue(len(config_macros) != 0 or len(globals_macros) != 0, "At least one {} macro in {} not set in component {}"
                         .format(macro_name, ioc, self.config))
              
