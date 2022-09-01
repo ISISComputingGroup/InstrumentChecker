@@ -2,7 +2,6 @@ from __future__ import absolute_import
 import unittest
 import os
 import xml.etree.ElementTree as ET
-import re
 from parameterized import parameterized
 
 from .settings import Settings

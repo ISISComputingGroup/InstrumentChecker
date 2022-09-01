@@ -3,7 +3,6 @@ import unittest
 import os
 import xml.etree.ElementTree as ET
 from parameterized import parameterized
-import re
 
 
 from .settings import Settings
@@ -14,7 +13,6 @@ from .abstract_test_utils import AbstractSingleTests
 
 from util.globals import GlobalsUtils
 from builtins import range
-import itertools
 
 
 class ComponentsSingleTests(AbstractSingleTests):
