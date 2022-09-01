@@ -146,14 +146,11 @@ class ComponentsTests(unittest.TestCase):
         [("LINMOT_{:02d}".format(i), "AXIS", "^AXIS[1-8]$", "^yes$") for i in range(1, 4)] +
         [("KHLY2001_01", "CHANNEL ACTIVATED", "^ACTIVATE_CHAN_0[1-9]$", "^1$")] +
         [("NWPRTXPS_01", "AXIS", "^AXIS[1-4]_ID$", "^.*[.].*$")] +
-        [("MERCURY_{:02d}".format(i), "TEMPERATURE/LEVEL/PRESSURE", "^(TEMP_[1-4]|LEVEL_[1-2]|PRESSURE_[1-2])$", "^.*[.].*$") for i in range(1, 3)]
+        [("MERCURY_{:02d}".format(i), "TEMPERATURE/LEVEL/PRESSURE", "^(TEMP_[1-4]|LEVEL_[1-2]|PRESSURE_[1-2])$", "^.*[.].*$") 
+            for i in range(1, 3)]
     )
     @skip_on_instruments(["SELAB", "DEMO"], "Allowed invalid iocs, these are fake instruments")
     def test_GIVEN_a_component_THEN_for_each_ioc_present_at_least_one_macro_set(self, ioc, macro_name, macro_regex, value_regex):
-        if self.version_utils.is_version_older(self.version_utils.get_version(), "11.0.0"):
-            self.skipTest("Some Mecury iTC macros are outdated on versions older than 11.0.0")
-        
-        # get iocs in component
         iocs_xml = self.component_utils.get_iocs_xml(self.component)
         iocs = self.component_utils.get_iocs(iocs_xml)
         
@@ -162,24 +159,28 @@ class ComponentsTests(unittest.TestCase):
             print(f"IOC: {ioc} | MACRO_NAME: {macro_regex} | REGEX: {value_regex}")
             print(f"VERSION: {self.version_utils.get_version()}")
 
-            # For each name/value pair from ioc macros, get all which match the macro NAME regex 
-            component_macros = dict([(name, value) for name, value in self.component_utils.get_ioc_macros(iocs_xml, ioc).items() if re.search(macro_regex, name)])
-            globals_macros = dict([(name, value) for name, value in self.global_utils.get_macros(ioc).items() if re.search(macro_regex, name)])
-
-            print("VALID NAME MACROS: "+str(component_macros))
+            component_macros, globals_macros = self.component_utils.check_ioc_has_macros_with_name(self.component_utils.get_ioc_macros(iocs_xml, ioc), 
+                        self.global_utils.get_macros(ioc), macro_regex)
+            
+            print("COMPONENT VALID NAME MACROS: "+str(component_macros))
+            print("GLOBALS VALID NAME MACROS: "+str(globals_macros))
 
             # Assert that the ioc contains at least one of the specified macro
-            self.assertTrue(len(component_macros)!=0 or len(globals_macros)!=0, "In component {}, {} ioc has no {} macros".format(self.component, ioc, macro_name))
+            self.assertTrue(len(component_macros)!=0 or len(globals_macros)!=0, 
+                        "No {} macros found in {} in component {}".format(macro_name, ioc, self.component))
 
-            # For each name/value pair from ioc macros, get all which match the macro VALUE regex
-            component_macros = dict([(name, value) for name, value in component_macros.items() if re.search(value_regex, value)])
-            globals_macros = dict([(name, value) for name, value in globals_macros.items() if re.search(value_regex, value)])
-
+            component_macros, globals_macros = self.component_utils.check_ioc_has_macros_with_value(component_macros, 
+                        globals_macros, value_regex)
+            
             print("Set macros from component: "+str(component_macros))
             print("Set macros from globals: "+str(globals_macros))
-
             print(f"Component set?: {len(component_macros) != 0} | globals.txt set? {len(globals_macros) != 0}")
             
             # Assert that at least one of component/globals.txt two contains a set macro
-            self.assertTrue(len(component_macros) != 0 or len(globals_macros) != 0, "At least one {} macro in {} not set in component {}"
-                        .format(macro_name, ioc, self.component))
+            self.assertTrue(len(component_macros) != 0 or len(globals_macros) != 0, 
+                        "At least one {} macro in {} not set in component {}".format(macro_name, ioc, self.component))
+    
+    """ 
+    @skip_on_instruments(["LET", "OSIRIS", "MAPS", "GEM", "SANDALS", "IRIS", "ZOOM", "LARMOR"], 
+            "Mercury iTC macros on these instruments are out of date")
+    """

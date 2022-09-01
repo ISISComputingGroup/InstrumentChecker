@@ -189,37 +189,31 @@ class ConfigurationsTests(unittest.TestCase):
     )
     @skip_on_instruments(["SELAB", "DEMO"], "Allowed invalid iocs, these are fake instruments")
     def test_GIVEN_a_config_THEN_for_each_ioc_present_at_least_one_macro_set(self, ioc, macro_name, macro_regex, value_regex):
-        if self.version_utils.is_version_older(self.version_utils.get_version(), "11.0.0"):
-            self.skipTest("Some Mecury iTC macros are outdated on versions older than 11.0.0")
-        
-        # get iocs in configuration
         iocs_xml = self.config_utils.get_iocs_xml(self.config)
         iocs = self.config_utils.get_iocs(iocs_xml)
         
         if ioc in iocs:
-            print(f"\nCONFIG: {self.config}")
+            print(f"\CONFIGURATION: {self.config}")
             print(f"IOC: {ioc} | MACRO_NAME: {macro_regex} | REGEX: {value_regex}")
             print(f"VERSION: {self.version_utils.get_version()}")
+
+            config_macros, globals_macros = self.config_utils.check_ioc_has_macros_with_name(self.config_utils.get_ioc_macros(iocs_xml, ioc), 
+                        self.global_utils.get_macros(ioc), macro_regex)
             
-            # For each name/value pair from ioc macros, get all which pattern match the macro NAME regex 
-            config_macros = dict([(name, value) for name, value in self.config_utils.get_ioc_macros(iocs_xml, ioc).items() if re.search(macro_regex, name)])
-            globals_macros = dict([(name, value) for name, value in self.global_utils.get_macros(ioc).items() if re.search(macro_regex, name)])
+            print("CONFIG VALID NAME MACROS: "+str(config_macros))
+            print("GLOBALS VALID NAME MACROS: "+str(globals_macros))
 
-            print("VALID NAME MACROS: "+str(config_macros))
+            # Assert that the ioc contains at least one of the specified macro
+            self.assertTrue(len(config_macros)!=0 or len(globals_macros)!=0, 
+                        "No {} macros found in {} in configuration {}".format(macro_name, ioc, self.config))
 
-            # Assert that the ioc contains >=1 of the specified macro
-            self.assertTrue(len(config_macros)!=0 or len(globals_macros)!=0, "In configuration {}, {} ioc has no {} macros".format(self.config, ioc, macro_name))
-
-            # For each name/value pair from ioc macros, get all which pattern match the macro VALUE regex
-            config_macros = dict([(name, value) for name, value in config_macros.items() if re.search(value_regex, value)])
-            globals_macros = dict([(name, value) for name, value in globals_macros.items() if re.search(value_regex, value)])
-
+            config_macros, globals_macros = self.config_utils.check_ioc_has_macros_with_value(config_macros, 
+                        globals_macros, value_regex)
+            
             print("Set macros from config: "+str(config_macros))
             print("Set macros from globals: "+str(globals_macros))
-
-            print(f"Config set?: {len(config_macros) != 0} | globals.txt set? {len(globals_macros) != 0}")
+            print(f"config set?: {len(config_macros) != 0} | globals.txt set? {len(globals_macros) != 0}")
             
-            # Assert that at least one of config/globals.txt contains a set macro
-            self.assertTrue(len(config_macros) != 0 or len(globals_macros) != 0, "At least one {} macro in {} not set in component {}"
-                        .format(macro_name, ioc, self.config))
-             
+            # Assert that at least one of config/globals.txt two contains a set macro
+            self.assertTrue(len(config_macros) != 0 or len(globals_macros) != 0, 
+                        "At least one {} macro in {} not set in config {}".format(macro_name, ioc, self.config))
