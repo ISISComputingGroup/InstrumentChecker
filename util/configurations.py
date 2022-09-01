@@ -2,9 +2,11 @@ from __future__ import absolute_import
 from builtins import object
 import os
 import xml.etree.ElementTree as ET
+import re
 
 from .common import CommonUtils
 from tests.settings import Settings
+
 
 
 class AbstractConfigurationUtils(object):
@@ -225,6 +227,33 @@ class AbstractConfigurationUtils(object):
             if ioc.attrib["name"] == ioc_name:
                 return ioc.attrib["simlevel"] != "none"
 
+    @staticmethod
+    def check_ioc_has_macros_with_name(config_macros, global_macros, macro_name_regex):
+        """
+        Gets all macros from an IOC with specified NAME
+        :param config_macros: Dictionary (name:value) of macros from the current config or component
+        :param global_macros: Dictionary (name:value) of macros from the IOC's globals.txt file
+        :param macro_name_regex: Regex to pattern match strings to the required macro NAME
+        :return: A tuple containing both config/component & globals macros
+        """ 
+        config_macros_with_name = dict([(name, value) for name, value in config_macros.items() if re.search(macro_name_regex, name)])
+        globals_macros_with_name = dict([(name, value) for name, value in global_macros.items() if re.search(macro_name_regex, name)])
+
+        return (config_macros_with_name, globals_macros_with_name)
+        
+    @staticmethod
+    def check_ioc_has_macros_with_value(config_macros, global_macros, macro_value_regex):
+        """
+        Gets all macros from an IOC with specified VALUE
+        :param config_macros: Dictionary (name:value) of macros from the current config or component 
+        :param global_macros: Dictionary (name:value) of macros from the IOC's globals.txt file
+        :param macro_value_regex: Regex to pattern match strings to the required macro VALUE     
+        :return: A tuple containing both config/component & globals macros
+        """
+        config_macros_with_value = dict([(name, value) for name, value in config_macros.items() if re.search(macro_value_regex, value)])
+        globals_macros_with_value = dict([(name, value) for name, value in global_macros.items() if re.search(macro_value_regex, value)])
+    
+        return (config_macros_with_value, globals_macros_with_value)
 
 class ConfigurationUtils(AbstractConfigurationUtils):
     """
