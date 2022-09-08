@@ -7,7 +7,6 @@ from parameterized import parameterized
 from .settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ComponentUtils
-from util.version import VersionUtils
 from util.globals import GlobalsUtils
 from .abstract_test_utils import AbstractSingleTests
 from builtins import range
@@ -53,7 +52,6 @@ class ComponentsTests(unittest.TestCase):
 
         self.component_utils = ComponentUtils(Settings.config_repo_path)
         self.global_utils = GlobalsUtils(Settings.config_repo_path)
-        self.version_utils = VersionUtils(Settings.config_repo_path)
         self.component = component
 
     def setUp(self):
@@ -138,13 +136,19 @@ class ComponentsTests(unittest.TestCase):
         iocs = self.component_utils.get_iocs(iocs_xml)
         
         if ioc in iocs:
-            component_macros, globals_macros = self.component_utils.check_ioc_has_macros_with_name(self.component_utils.get_ioc_macros(iocs_xml, ioc), 
-                        self.global_utils.get_macros(ioc), macro_regex)
+            component_macros = self.component_utils.check_if_macros_match_pattern(self.component_utils.get_ioc_macros(iocs_xml, ioc),  
+                        macro_regex, search_for_value=False)
+            globals_macros = self.component_utils.check_if_macros_match_pattern(self.global_utils.get_macros(ioc), 
+                        macro_regex, search_for_value=False)
+            
             self.assertTrue(len(component_macros)!=0 or len(globals_macros)!=0, 
                         "No {} macros found in {} in component {}".format(macro_name, ioc, self.component))
 
-            component_macros, globals_macros = self.component_utils.check_ioc_has_macros_with_value(component_macros, 
-                        globals_macros, value_regex)
+            component_macros = self.component_utils.check_if_macros_match_pattern(component_macros, value_regex, 
+                        search_for_value=True)
+            globals_macros = self.component_utils.check_if_macros_match_pattern(globals_macros, value_regex, 
+                        search_for_value=True)
+            
             self.assertTrue(len(component_macros) != 0 or len(globals_macros) != 0, 
                         "At least one {} macro in {} not set in component {}".format(macro_name, ioc, self.component))
                 
@@ -161,7 +165,7 @@ class ComponentsTests(unittest.TestCase):
     
     @parameterized.expand(
         [("MERCURY_{:02d}".format(i), "TEMPERATURE/LEVEL/PRESSURE", "^(TEMP_[1-4]|LEVEL_[1-2]|PRESSURE_[1-2])$", "^.*[.].*$") 
-            for i in range(1, 3)]
+        for i in range(1, 3)]
     )
     @skip_on_instruments(ComponentUtils.DUMMY_INSTRUMENTS, "Allowed invalid iocs, these are dummy instruments")
     @skip_on_instruments(["LARMOR", "ZOOM", "IRIS", "SANDALS", "GEM", "MAPS", "OSIRIS", "LET"], "Mercury iTC macros on these instruments are out of date")
