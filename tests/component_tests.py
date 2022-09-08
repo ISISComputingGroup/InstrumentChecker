@@ -2,12 +2,13 @@ from __future__ import absolute_import
 import unittest
 import os
 import xml.etree.ElementTree as ET
+from parameterized import parameterized
 
 from .settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ComponentUtils
+from util.globals import GlobalsUtils
 from .abstract_test_utils import AbstractSingleTests
-
 
 class ComponentsSingleTests(AbstractSingleTests):
     """
@@ -49,6 +50,7 @@ class ComponentsTests(unittest.TestCase):
         super(ComponentsTests, self).__init__(methodName)
 
         self.component_utils = ComponentUtils(Settings.config_repo_path)
+        self.global_utils = GlobalsUtils(Settings.config_repo_path)
         self.component = component
 
     def setUp(self):
@@ -127,3 +129,44 @@ class ComponentsTests(unittest.TestCase):
         for ioc in self.component_utils.get_iocs(iocs_xml):
             self.assertFalse(self.component_utils.get_ioc_in_sim_mode(iocs_xml, ioc),
                              "Simulation Mode is Active on {} in component {}".format(ioc, self.component))
+
+    def _test_for_ioc_present_at_least_one_macro_set(self, ioc, macro_name, macro_regex, value_regex):
+        iocs_xml = self.component_utils.get_iocs_xml(self.component)
+        iocs = self.component_utils.get_iocs(iocs_xml)
+        
+        if ioc in iocs:
+            component_macros = self.component_utils.check_if_macros_match_pattern(self.component_utils.get_ioc_macros(iocs_xml, ioc),  
+                        macro_regex, search_for_value=False)
+            globals_macros = self.component_utils.check_if_macros_match_pattern(self.global_utils.get_macros(ioc), 
+                        macro_regex, search_for_value=False)
+            
+            self.assertTrue(len(component_macros)!=0 or len(globals_macros)!=0, 
+                        "No {} macros found in {} in component {}".format(macro_name, ioc, self.component))
+
+            component_macros = self.component_utils.check_if_macros_match_pattern(component_macros, value_regex, 
+                        search_for_value=True)
+            globals_macros = self.component_utils.check_if_macros_match_pattern(globals_macros, value_regex, 
+                        search_for_value=True)
+            
+            self.assertTrue(len(component_macros) != 0 or len(globals_macros) != 0, 
+                        "At least one {} macro in {} not set in component {}".format(macro_name, ioc, self.component))
+                
+    @parameterized.expand(
+        [("MCLEN_{:02d}".format(i),"AXIS", "^AXIS[1-8]$", "^yes$") for i in range(1, 4)] +
+        [("EUROTHRM_{:02d}".format(i), "ADDRESS", "^ADDR_([1-9]|10)$", "^[0-9]+$") for i in range(1, 7)] +
+        [("LINMOT_{:02d}".format(i), "AXIS", "^AXIS[1-8]$", "^yes$") for i in range(1, 4)] +
+        [("KHLY2001_01", "CHANNEL ACTIVATED", "^ACTIVATE_CHAN_0[1-9]$", "^1$")] +
+        [("NWPRTXPS_01", "AXIS", "^AXIS[1-4]_ID$", "^.*[.].*$")]
+    )
+    @skip_on_instruments(ComponentUtils.DUMMY_INSTRUMENTS, "Allowed invalid iocs, these are dummy instruments")
+    def test_GIVEN_a_component_THEN_for_each_ioc_present_at_least_one_macro_set(self, ioc, macro_name, macro_regex, value_regex):
+        self._test_for_ioc_present_at_least_one_macro_set(ioc, macro_name, macro_regex, value_regex)
+    
+    @parameterized.expand(
+        [("MERCURY_{:02d}".format(i), "TEMPERATURE/LEVEL/PRESSURE", "^(TEMP_[1-4]|LEVEL_[1-2]|PRESSURE_[1-2])$", "^.*[.].*$") 
+        for i in range(1, 3)]
+    )
+    @skip_on_instruments(ComponentUtils.DUMMY_INSTRUMENTS, "Allowed invalid iocs, these are dummy instruments")
+    @skip_on_instruments(["LARMOR", "ZOOM", "IRIS", "SANDALS", "GEM", "MAPS", "OSIRIS", "LET"], "Mercury iTC macros on these instruments are out of date")
+    def test_GIVEN_a_component_THEN_for_each_mercury_present_at_least_one_macro_set(self, ioc, macro_name, macro_regex, value_regex):
+        self._test_for_ioc_present_at_least_one_macro_set(ioc, macro_name, macro_regex, value_regex)

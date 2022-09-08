@@ -2,10 +2,12 @@ from __future__ import absolute_import
 import unittest
 import os
 import xml.etree.ElementTree as ET
+from parameterized import parameterized
 
 from .settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ConfigurationUtils, ComponentUtils
+from util.globals import GlobalsUtils
 from .abstract_test_utils import AbstractSingleTests
 
 
@@ -51,6 +53,7 @@ class ConfigurationsTests(unittest.TestCase):
 
         self.config_utils = ConfigurationUtils(Settings.config_repo_path)
         self.comp_utils = ComponentUtils(Settings.config_repo_path)
+        self.global_utils = GlobalsUtils(Settings.config_repo_path)
         self.config = config
 
     def setUp(self):
@@ -171,4 +174,45 @@ class ConfigurationsTests(unittest.TestCase):
         
         invalid_names = set([str(block) + " | len " + str(len(block)) for block in blocks if len(block) > 25])
         self.assertTrue(len(invalid_names) == 0, "Invalid block name length (> 25): {} , in configuration {}".format(invalid_names, self.config))
-             
+    
+
+    def _test_for_ioc_present_at_least_one_macro_set(self, ioc, macro_name, macro_regex, value_regex):
+        iocs_xml = self.config_utils.get_iocs_xml(self.config)
+        iocs = self.config_utils.get_iocs(iocs_xml)
+        
+        if ioc in iocs:
+            config_macros = self.config_utils.check_if_macros_match_pattern(self.config_utils.get_ioc_macros(iocs_xml, ioc),
+                        macro_regex, search_for_value=False)
+            globals_macros = self.config_utils.check_if_macros_match_pattern(self.global_utils.get_macros(ioc), 
+                        macro_regex, search_for_value=False)            
+            
+            self.assertTrue(len(config_macros)!=0 or len(globals_macros)!=0, 
+                        "No {} macros found in {} in configuration {}".format(macro_name, ioc, self.config))
+
+            config_macros = self.config_utils.check_if_macros_match_pattern(config_macros, value_regex, 
+                        search_for_value=True)
+            globals_macros = self.config_utils.check_if_macros_match_pattern(globals_macros, value_regex, 
+                        search_for_value=True)
+
+            self.assertTrue(len(config_macros) != 0 or len(globals_macros) != 0, 
+                        "At least one {} macro in {} not set in configuration {}".format(macro_name, ioc, self.config))
+    
+    @parameterized.expand(
+        [("MCLEN_{:02d}".format(i),"AXIS", "^AXIS[1-8]$", "^yes$") for i in range(1, 4)] +
+        [("EUROTHRM_{:02d}".format(i), "ADDRESS", "^ADDR_([1-9]|10)$", "^[0-9]+$") for i in range(1, 7)] +
+        [("LINMOT_{:02d}".format(i), "AXIS", "^AXIS[1-8]$", "^yes$") for i in range(1, 4)] +
+        [("KHLY2001_01", "CHANNEL ACTIVATED", "^ACTIVATE_CHAN_0[1-9]$", "^1$")] +
+        [("NWPRTXPS_01", "AXIS", "^AXIS[1-4]_ID$", "^.*[.].*$")]
+    )
+    @skip_on_instruments(ConfigurationUtils.DUMMY_INSTRUMENTS, "Allowed invalid iocs, these are dummy instruments")
+    def test_GIVEN_a_config_THEN_for_each_ioc_present_at_least_one_macro_set(self, ioc, macro_name, macro_regex, value_regex):
+        self._test_for_ioc_present_at_least_one_macro_set(ioc, macro_name, macro_regex, value_regex)
+    
+    @parameterized.expand(
+        [("MERCURY_{:02d}".format(i), "TEMPERATURE/LEVEL/PRESSURE", "^(TEMP_[1-4]|LEVEL_[1-2]|PRESSURE_[1-2])$", "^.*[.].*$") 
+        for i in range(1, 3)]
+    )
+    @skip_on_instruments(ConfigurationUtils.DUMMY_INSTRUMENTS, "Allowed invalid iocs, these are dummy instruments")
+    @skip_on_instruments(["LARMOR", "ZOOM", "IRIS", "SANDALS", "GEM", "MAPS", "OSIRIS", "LET"], "Mercury iTC macros on these instruments are out of date")
+    def test_GIVEN_a_config_THEN_for_each_mercury_present_at_least_one_macro_set(self, ioc, macro_name, macro_regex, value_regex):
+        self._test_for_ioc_present_at_least_one_macro_set(ioc, macro_name, macro_regex, value_regex)
