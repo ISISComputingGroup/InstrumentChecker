@@ -16,6 +16,7 @@ class AbstractConfigurationUtils(object):
     REQUIRED_CONFIG_FILES = ["blocks.xml", "components.xml", "groups.xml", "iocs.xml", "meta.xml"]
     BLOCK_GW_PVLIST = "gwblock.pvlist"
     ALLOWED_CONFIG_FILES = REQUIRED_CONFIG_FILES + ["screens.xml", "block_config.xml", BLOCK_GW_PVLIST]
+    DUMMY_INSTRUMENTS = ["SELAB", "DEMO"]
 
     IOC_XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/iocs/1.0}"
     COMPONENT_XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/components/1.0}"
@@ -228,32 +229,21 @@ class AbstractConfigurationUtils(object):
                 return ioc.attrib["simlevel"] != "none"
 
     @staticmethod
-    def check_ioc_has_macros_with_name(config_macros, global_macros, macro_name_regex):
+    def check_if_macros_match_pattern(macros, regex, search_for_value):
         """
-        Gets all macros from an IOC with specified NAME
-        :param config_macros: Dictionary (name:value) of macros from the current config or component
-        :param global_macros: Dictionary (name:value) of macros from the IOC's globals.txt file
-        :param macro_name_regex: Regex to pattern match strings to the required macro NAME
-        :return: A tuple containing both config/component & globals macros
-        """ 
-        config_macros_with_name = dict([(name, value) for name, value in config_macros.items() if re.search(macro_name_regex, name)])
-        globals_macros_with_name = dict([(name, value) for name, value in global_macros.items() if re.search(macro_name_regex, name)])
+        Returns all macros which match a specific pattern
+        :param macros: Dictionary (name:value) of macros 
+        :param regex: Regex to pattern match against  
+        :param search_for_value: Boolean for whether to check against name or value
+        :return: A dictionary (name:value) of matching macros
+        """
+        matching_macros = {}
 
-        return (config_macros_with_name, globals_macros_with_name)
-        
-    @staticmethod
-    def check_ioc_has_macros_with_value(config_macros, global_macros, macro_value_regex):
-        """
-        Gets all macros from an IOC with specified VALUE
-        :param config_macros: Dictionary (name:value) of macros from the current config or component 
-        :param global_macros: Dictionary (name:value) of macros from the IOC's globals.txt file
-        :param macro_value_regex: Regex to pattern match strings to the required macro VALUE     
-        :return: A tuple containing both config/component & globals macros
-        """
-        config_macros_with_value = dict([(name, value) for name, value in config_macros.items() if re.search(macro_value_regex, value)])
-        globals_macros_with_value = dict([(name, value) for name, value in global_macros.items() if re.search(macro_value_regex, value)])
-    
-        return (config_macros_with_value, globals_macros_with_value)
+        for (name, value) in macros.items():
+            if re.search(regex, value if search_for_value else name):
+                matching_macros.update({name:value})
+
+        return matching_macros
 
 class ConfigurationUtils(AbstractConfigurationUtils):
     """
