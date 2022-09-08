@@ -1,4 +1,5 @@
 from util.configurations import ConfigurationUtils
+from util.globals import GlobalsUtils
 import unittest
 
 generic_component_xml = """<?xml version="1.0" ?>
@@ -23,6 +24,7 @@ class ConfigurationTests(unittest.TestCase):
 
     def setUp(self):
         self.config_utils = ConfigurationUtils("")
+        self.globals_utils = GlobalsUtils("")
 
     def test_GIVEN_component_xml_WHEN_parsed_THEN_can_extract_a_single_component(self):
         xml = generic_component_xml.format("")
@@ -258,3 +260,39 @@ class ConfigurationTests(unittest.TestCase):
                     </iocs>
                     """
         self.assertTrue(self.config_utils.get_ioc_in_sim_mode(xml, "SIMPLE_01"))
+
+    def test_GIVEN_macros_and_a_name_pattern_THEN_returns_matching_macros(self):
+        name_regex = "^AXIS[1-2]$"
+
+        config_macros = {"AXIS1":"yes", "AXIS3":"yes"}
+        globals_macros = {"AXIS1":"no", "AXIS3":"yes"}
+
+        valid_config_macros = self.config_utils.check_if_macros_match_pattern(config_macros, name_regex, search_for_value=False)
+        valid_globals_macros = self.config_utils.check_if_macros_match_pattern(globals_macros, name_regex, search_for_value=False)
+
+        self.assertEqual({"AXIS1":"yes"}, valid_config_macros)
+        self.assertEqual({"AXIS1":"no"}, valid_globals_macros)
+
+    def test_GIVEN_macros_and_a_value_pattern_THEN_returns_matching_macros(self):
+        value_regex = "^yes$"
+
+        config_macros = {"AXIS1":"yes", "AXIS6":"yes", "AXIS2":" yes"}
+        globals_macros = {"AXIS4":"no", "AXIS3":"yes", "AXIS1":"Yes"}
+
+        valid_config_macros = self.config_utils.check_if_macros_match_pattern(config_macros, value_regex, search_for_value=True)
+        valid_globals_macros = self.config_utils.check_if_macros_match_pattern(globals_macros, value_regex, search_for_value=True)
+
+        self.assertEqual({"AXIS1":"yes", "AXIS6":"yes"}, valid_config_macros)
+        self.assertEqual({"AXIS3":"yes"}, valid_globals_macros)
+
+    def test_GIVEN_macros_and_a_pattern_IF_no_matches_THEN_returns_no_data(self):
+        name_regex = "^AXIS[1-2]$"
+
+        config_macros = {"AXIS3":"yes", "AXIS5":"no"}
+        globals_macros = {"AXIS4":"yes", "AXIS1":""}
+
+        valid_config_macros = self.config_utils.check_if_macros_match_pattern(config_macros, name_regex, search_for_value=False)
+        valid_globals_macros = self.config_utils.check_if_macros_match_pattern(globals_macros, name_regex, search_for_value=False)
+
+        self.assertTrue(len(valid_config_macros)==0, len(valid_globals_macros)==0)   
+    
