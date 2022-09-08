@@ -9,7 +9,6 @@ from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ComponentUtils
 from util.globals import GlobalsUtils
 from .abstract_test_utils import AbstractSingleTests
-from builtins import range
 
 class ComponentsSingleTests(AbstractSingleTests):
     """
