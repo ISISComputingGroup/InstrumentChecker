@@ -134,11 +134,7 @@ class ConfigurationsTests(unittest.TestCase):
                             .format(motor_ioc, self.config))
 
     @skip_on_instruments(["DEMO"], "Demo is allowed to have IOCs in simulation mode, it is a fake instrument")
-    @skip_on_instruments(["SANS2D"], "Motors not fully configured on SANS2D yet")
     def test_GIVEN_ioc_xml_WHEN_simlevel_is_not_none_THEN_get_ioc_in_sim_mode_returns_false(self):
-        if Settings.name == "DEMO":
-            self.skipTest("Having IOCs in simulation mode is valid on DEMO")
-
         iocs_xml = self.config_utils.get_iocs_xml(self.config)
 
         for ioc in self.config_utils.get_iocs(iocs_xml):
@@ -163,7 +159,7 @@ class ConfigurationsTests(unittest.TestCase):
         self.assertTrue(len(duplicates) == 0, "Case insensitive duplicate blocks found in {}: {}"
                         .format(self.config, duplicates))
 
-    @skip_on_instruments(["MERLIN", "LOQ", "EMU"], "Skip for now, legacy block.")
+    @skip_on_instruments(["MERLIN", "LOQ"], "Skip for now, legacy block.")
     def test_GIVEN_a_configuration_THEN_it_does_not_contain_a_block_with_invalid_name_length(self):
         components = self.config_utils.get_active_components_as_list(self.config)
 
