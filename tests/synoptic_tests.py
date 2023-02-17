@@ -40,7 +40,7 @@ class SynopticTests(unittest.TestCase):
         for type, target in type_target_pairs:
             if Settings.name == "RIKENFE" \
                     and self.version_utils.get_version() == "12.0.1" \
-                    and (target == "RIKEN Vacuum " or target == "Riken Kicker and Separator HV settings"):
+                    and (target == "RIKEN Vacuum" or target == "Riken Kicker and Separator HV settings"):
                 continue  # This is hotfixed on RIKENFE. This condition can be removed at next release.
 
             if not self.synoptic_utils.target_should_be_ignored(target):
