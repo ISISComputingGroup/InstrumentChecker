@@ -137,7 +137,14 @@ class ConfigurationsTests(unittest.TestCase):
     def test_GIVEN_ioc_xml_WHEN_simlevel_is_not_none_THEN_get_ioc_in_sim_mode_returns_false(self):
         iocs_xml = self.config_utils.get_iocs_xml(self.config)
 
+        
         for ioc in self.config_utils.get_iocs(iocs_xml):
+            if Settings.name == "RIKENFE" and ioc in ["TECHNIX_01", "TECHNIX_02", "TRANTECH_01"]:
+                # Skip on RIKENFE whilst Separator 1 isn't fitted and XFD1(TRANTECH_01), SEP1 +/-ve (TECHNIX_01/TECHNIX_02) 
+                # intentionally running in RECSIM.
+                print(f"Ignoring sim mode check for {ioc} in {self.config} (on RIKENFE)")
+                continue
+
             self.assertFalse(self.config_utils.get_ioc_in_sim_mode(iocs_xml, ioc),
                              "Simulation Mode is Active on {} in configuration {}".format(ioc, self.config))
 
