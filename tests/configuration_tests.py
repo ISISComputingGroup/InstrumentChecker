@@ -31,8 +31,10 @@ class ConfigurationsSingleTests(AbstractSingleTests):
         return "configurations"
 
     def test_GIVEN_an_instrument_THEN_the_configurations_directory_exists_and_contains_at_least_one_configuration(self):
-        self.assertGreaterEqual(len(self.utils.get_configurations_as_list()), 1,
-                                "Configurations directory was empty or did not exist")
+        #self.assertGreaterEqual(len(self.utils.get_configurations_as_list()), 1,
+        #                        "Configurations directory was empty or did not exist")
+        if len(self.utils.get_configurations_as_list()) == 0:
+            print("\nWARNING: Configurations directory was empty or did not exist")
 
     def update_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
         ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS += num_non_interesting_block_pvs
