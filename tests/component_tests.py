@@ -128,12 +128,6 @@ class ComponentsTests(unittest.TestCase):
                 print("Ignoring sim mode check for KEPCO_04 in EMU_base (on EMU)")
                 continue
 
-            if Settings.name == "RIKENFE" and ioc in ["TECHNIX_01", "TECHNIX_02", "TRANTECH_01"]:
-                # Skip on RIKENFE whilst Separator 1 isn't fitted and XFD1(TRANTECH_01), SEP1 +/-ve (TECHNIX_01/TECHNIX_02) 
-                # intentionally running in RECSIM.
-                print(f"Ignoring sim mode check for {ioc} in {self.component} (on RIKENFE)")
-                continue
-
             self.assertFalse(self.component_utils.get_ioc_in_sim_mode(iocs_xml, ioc),
                              "Simulation Mode is Active on {} in component {}".format(ioc, self.component))
 
