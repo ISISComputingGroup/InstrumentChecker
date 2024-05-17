@@ -3,7 +3,6 @@ import unittest
 from .settings import Settings
 from util.globals import GlobalsUtils
 from util.common import CommonUtils, skip_on_instruments
-from six import string_types
 
 
 class GlobalsTests(unittest.TestCase):
@@ -20,7 +19,7 @@ class GlobalsTests(unittest.TestCase):
             self.skipTest("Globals file did not exist.")
 
         for linenumber, line in enumerate(self.globals_utils.get_lines(), 1):
-            self.assertIsInstance(line, string_types)
+            self.assertIsInstance(line, str)
             self.assertTrue(self.globals_utils.check_syntax(line),
                             "Invalid syntax on line {linenumber}. Line contents was: {contents}"
                             .format(linenumber=linenumber, contents=line))

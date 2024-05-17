@@ -1,7 +1,6 @@
 from __future__ import print_function
 from __future__ import absolute_import
 import unittest
-import six
 
 from abc import ABCMeta, abstractmethod
 from .settings import Settings
@@ -9,8 +8,7 @@ from util.channel_access import ChannelAccessUtils
 from util.common import skip_on_instruments
 
 
-@six.add_metaclass(ABCMeta)
-class AbstractSingleTests(unittest.TestCase):
+class AbstractSingleTests(unittest.TestCase, metaclass=ABCMeta):
     """
     Abstract class for tests to be run exactly one regardless of how many components/configurations exist. It is meant
     to be extended by classes for configurations and for components.
