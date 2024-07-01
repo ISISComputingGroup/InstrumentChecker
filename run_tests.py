@@ -18,6 +18,7 @@ from tests.scripting_directory_tests import ScriptingDirectoryTests
 from tests.synoptic_tests import SynopticTests
 from tests.version_tests import VersionTests
 from tests.settings import Settings
+from tests.motor_tests import MotorTests
 
 from util.channel_access import ChannelAccessUtils
 from util.configurations import ConfigurationUtils, ComponentUtils
@@ -38,7 +39,7 @@ def run_instrument_tests(inst_name, reports_path):
     suite = unittest.TestSuite()
     loader = unittest.TestLoader()
 
-    for case in [ScriptingDirectoryTests, GlobalsTests, VersionTests, ConfigurationsSingleTests, ComponentsSingleTests]:
+    for case in [ScriptingDirectoryTests, GlobalsTests, VersionTests, ConfigurationsSingleTests, ComponentsSingleTests, MotorTests]:
         suite.addTests(loader.loadTestsFromTestCase(case))
 
     # Add configs test suite a dynamic number of times with an argument of the config name.
