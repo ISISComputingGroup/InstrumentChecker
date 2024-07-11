@@ -15,8 +15,8 @@ class MotorTests(unittest.TestCase):
         """
         Beckhoff axes must have a non-zero motor record delay set in order to reliably perform retargeted moves.
 
-        Generally .DLY must be set to something around 0.5s for reliable moves on virtual axes, for real axes
-        0.2s may be sufficient.
+        Generally an appropriate .DLY is 0.25 seconds, which is just a little bit longer than one beckhoff poll period
+        which is 0.2s.
 
         This test ensures that .DLY is not set to zero (the motor record default) for any beckhoff axes.
         """
