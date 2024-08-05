@@ -4,7 +4,6 @@ from util.synoptic import SynopticUtils
 
 
 class SynopticTests(unittest.TestCase):
-
     def setUp(self):
         self.synoptic_utils = SynopticUtils("")
 
@@ -26,7 +25,9 @@ class SynopticTests(unittest.TestCase):
                     </instrument>
                     """
 
-        self.assertListEqual(self.synoptic_utils.get_type_target_pairs(xml), [("HE_LEVEL_GAUGE", "HLG")])
+        self.assertListEqual(
+            self.synoptic_utils.get_type_target_pairs(xml), [("HE_LEVEL_GAUGE", "HLG")]
+        )
 
     def test_GIVEN_a_valid_synoptic_xml_WHEN_parsed_THEN_can_extract_nested_components(self):
         xml = """<?xml version="1.0" ?>
@@ -56,8 +57,10 @@ class SynopticTests(unittest.TestCase):
                     </instrument>
                     """
 
-        self.assertListEqual(self.synoptic_utils.get_type_target_pairs(xml),
-                             [("HE_LEVEL_GAUGE", "HLG"), ("CHOPPER", "Mk3 Chopper")])
+        self.assertListEqual(
+            self.synoptic_utils.get_type_target_pairs(xml),
+            [("HE_LEVEL_GAUGE", "HLG"), ("CHOPPER", "Mk3 Chopper")],
+        )
 
     def test_GIVEN_a_synoptic_xml_with_no_component_type_WHEN_parsed_THEN_raises_value_error(self):
         xml = """<?xml version="1.0" ?>
@@ -101,7 +104,9 @@ class SynopticTests(unittest.TestCase):
 
         self.assertListEqual(self.synoptic_utils.get_type_target_pairs(xml), [])
 
-    def test_GIVEN_a_synoptic_xml_with_pv_address_WHEN_parsed_THEN_name_and_address_identified_as_in_XML(self):
+    def test_GIVEN_a_synoptic_xml_with_pv_address_WHEN_parsed_THEN_name_and_address_identified_as_in_XML(
+        self,
+    ):
         name = "Test PV"
         address = "TE:PV:1"
         xml = """<?xml version="1.0" ?>
@@ -128,7 +133,9 @@ class SynopticTests(unittest.TestCase):
         expected_pvs = {name: address}
         self.assertEqual(expected_pvs, self.synoptic_utils.get_pv_addresses(xml))
 
-    def test_GIVEN_a_synoptic_xml_with_empty_pv_address_WHEN_parsed_THEN_name_matches_xml_address_is_none(self):
+    def test_GIVEN_a_synoptic_xml_with_empty_pv_address_WHEN_parsed_THEN_name_matches_xml_address_is_none(
+        self,
+    ):
         name = "Test PV"
         xml = """<?xml version="1.0" ?>
                     <instrument xmlns="http://www.isis.stfc.ac.uk//instrument">
@@ -154,8 +161,9 @@ class SynopticTests(unittest.TestCase):
         expected_pvs = {name: None}
         self.assertEqual(expected_pvs, self.synoptic_utils.get_pv_addresses(xml))
 
-    def test_GIVEN_a_synoptic_xml_with_a_mix_of_undefined_and_defined_pv_addresses_WHEN_parsed_THEN_extracted_names_and_addresses_match_XML_input(self):
-
+    def test_GIVEN_a_synoptic_xml_with_a_mix_of_undefined_and_defined_pv_addresses_WHEN_parsed_THEN_extracted_names_and_addresses_match_XML_input(
+        self,
+    ):
         name_1 = "Test PV 1"
         address_1 = "TE:PV:1"
         name_2 = "Test PV 2"
@@ -189,7 +197,9 @@ class SynopticTests(unittest.TestCase):
                             </component>
                         </components>
                     </instrument>
-                    """.format(name_1=name_1, address_1=address_1, name_2=name_2, address_2=address_2, name_3=name_3)
+                    """.format(
+            name_1=name_1, address_1=address_1, name_2=name_2, address_2=address_2, name_3=name_3
+        )
 
         expected_pvs = {name_1: address_1, name_2: address_2, name_3: None}
         self.assertEqual(expected_pvs, self.synoptic_utils.get_pv_addresses(xml))

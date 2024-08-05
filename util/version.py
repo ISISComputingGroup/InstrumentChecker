@@ -13,7 +13,9 @@ class VersionUtils(object):
 
     def __init__(self, config_repo_path):
         self.config_repo_path = config_repo_path
-        self.version_file_path = os.path.join(self.config_repo_path, "configurations", VersionUtils.VERSION_FILE)
+        self.version_file_path = os.path.join(
+            self.config_repo_path, "configurations", VersionUtils.VERSION_FILE
+        )
 
     def version_file_exists(self):
         return os.path.isfile(self.version_file_path)

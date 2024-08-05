@@ -10,7 +10,6 @@ from .settings import Settings
 
 
 class ScriptingDirectoryTests(unittest.TestCase):
-
     def setUp(self):
         self.script_utils = ScriptingUtils(Settings.config_repo_path)
         self.python_dir = self.script_utils.get_scripting_directory()
@@ -24,9 +23,11 @@ class ScriptingDirectoryTests(unittest.TestCase):
             self.skipTest("Python directory not present")
 
     def test_GIVEN_a_python_directory_exists_THEN_it_contains_a_correctly_named_init_file(self):
-
-        init_files = [file for file in os.listdir(self.python_dir)
-                             if file.endswith(".py") and file.startswith("init_")]
+        init_files = [
+            file
+            for file in os.listdir(self.python_dir)
+            if file.endswith(".py") and file.startswith("init_")
+        ]
 
         expected_init_file = "init_{}.py".format(self.name.lower().replace("-", "_"))
 
@@ -39,8 +40,10 @@ class ScriptingDirectoryTests(unittest.TestCase):
 
     @skip("This currently doesn't pass on any instruments but we should consider enforcing this.")
     def test_GIVEN_python_directory_exists_THEN_compiled_python_files_are_not_in_git(self):
-        self.assertFalse(self._directory_contains_compiled_files(self.python_dir),
-                         "Python directory contained compiled files")
+        self.assertFalse(
+            self._directory_contains_compiled_files(self.python_dir),
+            "Python directory contained compiled files",
+        )
 
     def test_GIVEN_that_python_directory_exists_THEN_inst_directory_exists(self):
         inst_is_dir = os.path.isdir(self.inst_directory)
@@ -48,10 +51,13 @@ class ScriptingDirectoryTests(unittest.TestCase):
         self.assertTrue(inst_is_dir or inst_is_file, "Instrument scripts directory/file is missing")
 
     @skip("This currently doesn't pass on any instruments but we should consider enforcing this.")
-    def test_GIVEN_that_instrument_scripts_directory_exists_THEN_it_does_not_contain_compiled_python_files(self):
-
+    def test_GIVEN_that_instrument_scripts_directory_exists_THEN_it_does_not_contain_compiled_python_files(
+        self,
+    ):
         if not os.path.isdir(self.inst_directory):
             self.skipTest("Instrument scripts directory missing")
 
-        self.assertFalse(self._directory_contains_compiled_files(self.inst_directory),
-                         "Instrument scripts directory contained compiled files")
+        self.assertFalse(
+            self._directory_contains_compiled_files(self.inst_directory),
+            "Instrument scripts directory contained compiled files",
+        )

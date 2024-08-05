@@ -11,8 +11,11 @@ class CommonUtils(object):
     """
     Class containing utility methods common to several other utilities
     """
-    MOTOR_IOCS = ["{}_{:02d}".format(p, i) for p, i in
-                  itertools.product(["GALIL", "MCLENNAN", "LINMOT", "SM300"], range(1, 11))]
+
+    MOTOR_IOCS = [
+        "{}_{:02d}".format(p, i)
+        for p, i in itertools.product(["GALIL", "MCLENNAN", "LINMOT", "SM300"], range(1, 11))
+    ]
 
     @staticmethod
     def get_directory_contents_as_list(path):
@@ -49,6 +52,7 @@ def skip_on_instruments(instruments_to_skip, skip_reason):
     def test_xyz(self):
         ...
     """
+
     def _decorator(func):
         @functools.wraps(func)
         def _wrapper(*args, **kwargs):
@@ -56,5 +60,7 @@ def skip_on_instruments(instruments_to_skip, skip_reason):
                 raise unittest.SkipTest(skip_reason)
             else:
                 return func(*args, **kwargs)
+
         return _wrapper
+
     return _decorator

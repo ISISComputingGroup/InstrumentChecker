@@ -8,7 +8,6 @@ from util.version import VersionUtils
 
 
 class SynopticTests(unittest.TestCase):
-
     def __init__(self, methodName, synoptic=None):
         # Boilerplate so that unittest knows how to run these tests.
         super(SynopticTests, self).__init__(methodName)
@@ -27,53 +26,88 @@ class SynopticTests(unittest.TestCase):
         if not self.version_utils.version_file_exists():
             self.skipTest("Can't determine which version of the GUI is being used.")
 
-    @skip_on_instruments(["DEMO"], "Demo often has a development version installed; this test is not useful")
+    @skip_on_instruments(
+        ["DEMO"], "Demo often has a development version installed; this test is not useful"
+    )
     def test_GIVEN_synoptic_THEN_targets_that_it_defines_appear_in_opi_info(self):
-
         allowed_targets = self.gui_utils.get_valid_targets(self.gui_utils.get_opi_info_xml())
 
         try:
-            type_target_pairs = self.synoptic_utils.get_type_target_pairs(self.synoptic_utils.get_xml(self.synoptic))
+            type_target_pairs = self.synoptic_utils.get_type_target_pairs(
+                self.synoptic_utils.get_xml(self.synoptic)
+            )
         except Exception as e:
-            self.fail("In synoptic {}, XML failed to parse properly. Error text was: {}".format(self.synoptic, e))
+            self.fail(
+                "In synoptic {}, XML failed to parse properly. Error text was: {}".format(
+                    self.synoptic, e
+                )
+            )
 
         for type, target in type_target_pairs:
-            if Settings.name == "RIKENFE" \
-                    and self.version_utils.get_version() == "12.0.1" \
-                    and (target == "RIKEN Vacuum" or target == "RIKEN Kicker and Separator HV settings"
-                         or target == "RIKEN Magnet PSU" or target == "RIKEN PSU Status Summary"):
+            if (
+                Settings.name == "RIKENFE"
+                and self.version_utils.get_version() == "12.0.1"
+                and (
+                    target == "RIKEN Vacuum"
+                    or target == "RIKEN Kicker and Separator HV settings"
+                    or target == "RIKEN Magnet PSU"
+                    or target == "RIKEN PSU Status Summary"
+                )
+            ):
                 continue  # This is hotfixed on RIKENFE. This condition can be removed at next release.
-            if Settings.name == "WISH" and self.version_utils.get_version() == "12.0.1" \
-                    and (target == "Keysight E4980AL" or target == "Razorbill RP100 Strain Cell PSU"):
+            if (
+                Settings.name == "WISH"
+                and self.version_utils.get_version() == "12.0.1"
+                and (target == "Keysight E4980AL" or target == "Razorbill RP100 Strain Cell PSU")
+            ):
                 continue  # This is hotfixed on WISH. This condition can be removed at next release.
 
             if not self.synoptic_utils.target_should_be_ignored(target):
-                self.assertIn(target, allowed_targets, "In synoptic {}, component target '{}' was unknown."
-                              .format(self.synoptic, target))
+                self.assertIn(
+                    target,
+                    allowed_targets,
+                    "In synoptic {}, component target '{}' was unknown.".format(
+                        self.synoptic, target
+                    ),
+                )
 
-    @skip_on_instruments(["DEMO"], "Demo often has a development version installed; this test is not useful")
+    @skip_on_instruments(
+        ["DEMO"], "Demo often has a development version installed; this test is not useful"
+    )
     def test_GIVEN_synoptic_THEN_types_that_it_defines_appear_in_opi_info(self):
-
         allowed_types = self.gui_utils.get_valid_types(self.gui_utils.get_opi_info_xml())
 
         try:
-            type_target_pairs = self.synoptic_utils.get_type_target_pairs(self.synoptic_utils.get_xml(self.synoptic))
+            type_target_pairs = self.synoptic_utils.get_type_target_pairs(
+                self.synoptic_utils.get_xml(self.synoptic)
+            )
         except Exception as e:
-            self.fail("In synoptic {}, XML failed to parse properly. Error text was: {}".format(self.synoptic, e))
+            self.fail(
+                "In synoptic {}, XML failed to parse properly. Error text was: {}".format(
+                    self.synoptic, e
+                )
+            )
 
         for type, target in type_target_pairs:
-
             if not self.synoptic_utils.type_should_be_ignored(type):
-                self.assertIn(type, allowed_types, "In synoptic {}, component type '{}' was unknown."
-                              .format(self.synoptic, type))
+                self.assertIn(
+                    type,
+                    allowed_types,
+                    "In synoptic {}, component type '{}' was unknown.".format(self.synoptic, type),
+                )
 
     def test_GIVEN_synoptic_THEN_pv_addresses_are_not_empty(self):
         try:
             pvs = self.synoptic_utils.get_pv_addresses(self.synoptic_utils.get_xml(self.synoptic))
         except Exception as e:
-            self.fail("In synoptic {}, XML failed to parse properly. Error text was: {}".format(self.synoptic, e))
+            self.fail(
+                "In synoptic {}, XML failed to parse properly. Error text was: {}".format(
+                    self.synoptic, e
+                )
+            )
         else:
             invalid_names = [name for name in pvs.keys() if pvs[name] is None]
             error_msg = "Synoptic {} contains the following PV names with no associated address:\n    {}".format(
-                self.synoptic, "\n    ".join(invalid_names))
+                self.synoptic, "\n    ".join(invalid_names)
+            )
             self.assertEqual(len(invalid_names), 0, error_msg)

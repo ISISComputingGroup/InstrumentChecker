@@ -14,9 +14,14 @@ class AbstractConfigurationUtils(object):
     """
     Class containing utility methods common to both configuration and component directories.
     """
+
     REQUIRED_CONFIG_FILES = ["blocks.xml", "components.xml", "groups.xml", "iocs.xml", "meta.xml"]
     BLOCK_GW_PVLIST = "gwblock.pvlist"
-    ALLOWED_CONFIG_FILES = REQUIRED_CONFIG_FILES + ["screens.xml", "block_config.xml", BLOCK_GW_PVLIST]
+    ALLOWED_CONFIG_FILES = REQUIRED_CONFIG_FILES + [
+        "screens.xml",
+        "block_config.xml",
+        BLOCK_GW_PVLIST,
+    ]
     DUMMY_INSTRUMENTS = ["SELAB", "DEMO"]
 
     IOC_XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/iocs/1.0}"
@@ -74,8 +79,11 @@ class AbstractConfigurationUtils(object):
         Gets a set of all pvs that have a block on them in any configuration or component of the instrument.
         :return: A set of strings representing the names of the pvs.
         """
-        block_pvs_set = {block_pv for config in self.get_configurations_as_list() for block_pv in
-                         self.get_block_pvs(config)}
+        block_pvs_set = {
+            block_pv
+            for config in self.get_configurations_as_list()
+            for block_pv in self.get_block_pvs(config)
+        }
 
         return block_pvs_set
 
@@ -144,8 +152,8 @@ class AbstractConfigurationUtils(object):
         :param pv_name: a string representing a name a block is pointing to.
         :return: The name of the pv of the field, as a string.
         """
-        if '.' in pv_name:
-            return pv_name[:pv_name.index('.')]
+        if "." in pv_name:
+            return pv_name[: pv_name.index(".")]
         else:
             return pv_name
 
@@ -206,13 +214,20 @@ class AbstractConfigurationUtils(object):
         # Parse the XML
         root = ET.fromstring(xml)
 
-        ioc_xml = tuple(ioc for ioc in root.iter("{}ioc".format(self.IOC_XML_SCHEMA)) if ioc.attrib["name"] == ioc_name)
+        ioc_xml = tuple(
+            ioc
+            for ioc in root.iter("{}ioc".format(self.IOC_XML_SCHEMA))
+            if ioc.attrib["name"] == ioc_name
+        )
 
         # Extract the macros
         if len(ioc_xml) == 0:
             return dict()
         else:
-            return {m.attrib["name"]: m.attrib["value"] for m in ioc_xml[0].iter("{}macro".format(self.IOC_XML_SCHEMA))}
+            return {
+                m.attrib["name"]: m.attrib["value"]
+                for m in ioc_xml[0].iter("{}macro".format(self.IOC_XML_SCHEMA))
+            }
 
     def get_ioc_in_sim_mode(self, xml, ioc_name):
         """
@@ -233,23 +248,25 @@ class AbstractConfigurationUtils(object):
     def check_if_macros_match_pattern(macros, regex, search_for_value):
         """
         Returns all macros which match a specific pattern
-        :param macros: Dictionary (name:value) of macros 
-        :param regex: Regex to pattern match against  
+        :param macros: Dictionary (name:value) of macros
+        :param regex: Regex to pattern match against
         :param search_for_value: Boolean for whether to check against name or value
         :return: A dictionary (name:value) of matching macros
         """
         matching_macros = {}
 
-        for (name, value) in macros.items():
+        for name, value in macros.items():
             if re.search(regex, value if search_for_value else name):
-                matching_macros.update({name:value})
+                matching_macros.update({name: value})
 
         return matching_macros
+
 
 class ConfigurationUtils(AbstractConfigurationUtils):
     """
     Class containing utility methods for interacting with the configurations directory
     """
+
     def get_configurations_directory(self):
         return os.path.join(self.config_repo_path, "configurations", "configurations")
 
@@ -258,6 +275,7 @@ class ComponentUtils(AbstractConfigurationUtils):
     """
     Class containing utility methods for interacting with components
     """
+
     BASE_COMPONENT = "_base"
 
     def get_configurations_directory(self):
@@ -268,5 +286,6 @@ class DeviceUtils(AbstractConfigurationUtils):
     """
     Class containing the utility methods of interacting with the devices directory
     """
+
     def get_devices_directory(self):
         return os.path.join(self.config_repo_path, "configurations", "devices")

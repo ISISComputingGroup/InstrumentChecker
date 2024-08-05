@@ -21,6 +21,7 @@ class MotorTests(unittest.TestCase):
 
         This test ensures that .DLY is not set to zero (the motor record default) for any beckhoff axes.
         """
+
         def check_nonzero_delay(controller, motor) -> str | None:
             prefix = f"MOT:MTR{controller:02d}{motor:02d}"
             controller_type = self.ca.get_value(f"{prefix}_IOCNAME")
@@ -32,10 +33,12 @@ class MotorTests(unittest.TestCase):
 
             return None
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_MOTOR * MAX_CONTROLLER) as executor:
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=MAX_MOTOR * MAX_CONTROLLER
+        ) as executor:
             futures = []
-            for controller in range(1, MAX_CONTROLLER+1):
-                for motor in range(1, MAX_MOTOR+1):
+            for controller in range(1, MAX_CONTROLLER + 1):
+                for motor in range(1, MAX_MOTOR + 1):
                     futures.append(executor.submit(check_nonzero_delay, controller, motor))
 
             for fut in concurrent.futures.as_completed(futures):
