@@ -1,11 +1,11 @@
-from builtins import object
+import binascii
 import json
 import zlib
-import binascii
-
+from builtins import object
 from enum import Enum
+
+from genie_python.channel_access_exceptions import ReadAccessException, UnableToConnectToPVException
 from genie_python.genie_cachannel_wrapper import CaChannelWrapper
-from genie_python.channel_access_exceptions import UnableToConnectToPVException, ReadAccessException
 
 # Some instruments may not be available. If this is the case, we don't want to wait too long for the response which
 # will never come (which would slow down the tests)
@@ -26,8 +26,13 @@ class ChannelAccessUtils(object):
         :return: The PV value as a string, or None if there was an error
         """
         try:
-            return CaChannelWrapper.get_pv_value("{}{}".format(self.pv_prefix, pv, to_string=True),
-                                                 timeout=CHANNEL_ACCESS_TIMEOUT)
+            return CaChannelWrapper.get_pv_value(
+                "{}{}".format(
+                    self.pv_prefix,
+                    pv,
+                ),
+                timeout=CHANNEL_ACCESS_TIMEOUT,
+            )
         except (UnableToConnectToPVException, ReadAccessException):
             return None
 
@@ -56,10 +61,12 @@ class ChannelAccessUtils(object):
         format IN:NAME_OF_INSTRUMENT.
         :return: A python set with the names of all the PVs with a high or medium interest status.
         """
-        all_interesting_pvs = self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH) + \
-                              self._get_pvs_by_interesting_level(PvInterestingLevel.MEDIUM) + \
-                              self._get_pvs_by_interesting_level(PvInterestingLevel.LOW) + \
-                              self._get_pvs_by_interesting_level(PvInterestingLevel.FACILITY)
+        all_interesting_pvs = (
+            self._get_pvs_by_interesting_level(PvInterestingLevel.HIGH)
+            + self._get_pvs_by_interesting_level(PvInterestingLevel.MEDIUM)
+            + self._get_pvs_by_interesting_level(PvInterestingLevel.LOW)
+            + self._get_pvs_by_interesting_level(PvInterestingLevel.FACILITY)
+        )
         interesting_pvs = {pv for pv in all_interesting_pvs}
 
         return interesting_pvs
@@ -73,7 +80,7 @@ class ChannelAccessUtils(object):
         :return: A python list with the names of all the PVs with the specified interesting level.
         """
 
-        pv_value = self.get_value('CS:BLOCKSERVER:PVS:INTEREST:' + interesting_level.value)
+        pv_value = self.get_value("CS:BLOCKSERVER:PVS:INTEREST:" + interesting_level.value)
         if pv_value is None:
             return []
         else:
@@ -111,6 +118,7 @@ class PvInterestingLevel(Enum):
     """
     Enumerated type representing the possible interesting levels a PV can have.
     """
+
     HIGH = "HIGH"
     MEDIUM = "MEDIUM"
     LOW = "LOW"

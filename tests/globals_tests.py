@@ -1,8 +1,11 @@
 from __future__ import absolute_import
+
 import unittest
-from .settings import Settings
-from util.globals import GlobalsUtils
+
 from util.common import CommonUtils, skip_on_instruments
+from util.globals import GlobalsUtils
+
+from .settings import Settings
 
 
 class GlobalsTests(unittest.TestCase):
@@ -14,23 +17,32 @@ class GlobalsTests(unittest.TestCase):
         self.globals_utils = GlobalsUtils(Settings.config_repo_path)
 
     def test_GIVEN_a_globals_file_exists_THEN_it_passes_a_syntax_check(self):
-
         if not self.globals_utils.file_exists():
             self.skipTest("Globals file did not exist.")
 
         for linenumber, line in enumerate(self.globals_utils.get_lines(), 1):
             self.assertIsInstance(line, str)
-            self.assertTrue(self.globals_utils.check_syntax(line),
-                            "Invalid syntax on line {linenumber}. Line contents was: {contents}"
-                            .format(linenumber=linenumber, contents=line))
+            self.assertTrue(
+                self.globals_utils.check_syntax(line),
+                "Invalid syntax on line {linenumber}. Line contents was: {contents}".format(
+                    linenumber=linenumber, contents=line
+                ),
+            )
 
     def test_WHEN_checking_the_configs_directory_THEN_there_are_no_extra_files_called_globals(self):
-        self.assertEqual(self.globals_utils.get_number_of_globals_files(), 1 if self.globals_utils.file_exists() else 0,
-                         "Extra globals files ({}) files in repository.".format(self.globals_utils.GLOBALS_FILE))
+        self.assertEqual(
+            self.globals_utils.get_number_of_globals_files(),
+            1 if self.globals_utils.file_exists() else 0,
+            "Extra globals files ({}) files in repository.".format(self.globals_utils.GLOBALS_FILE),
+        )
 
-    @skip_on_instruments(["DEMO"], "This is allowable for DEMO, we often demo motors in odd configs")
+    @skip_on_instruments(
+        ["DEMO"], "This is allowable for DEMO, we often demo motors in odd configs"
+    )
     @skip_on_instruments(["SANS2D"], "Motors not fully configured on SANS2D yet")
-    def test_WHEN_macros_are_defined_in_globals_for_a_motor_ioc_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(self):
+    def test_WHEN_macros_are_defined_in_globals_for_a_motor_ioc_THEN_both_or_neither_of_com_setting_and_motor_control_number_are_defined(
+        self,
+    ):
         for motor_ioc in CommonUtils.MOTOR_IOCS:
             defined_macros = self.globals_utils.get_macros(motor_ioc)
 
@@ -39,7 +51,9 @@ class GlobalsTests(unittest.TestCase):
 
             self.assertTrue(controller_number_defined == comms_macro_defined)  # Both or neither
 
-    @skip_on_instruments(["DEMO"], "Demo is allowed to have IOCs in simulation mode, it is a fake instrument")
+    @skip_on_instruments(
+        ["DEMO"], "Demo is allowed to have IOCs in simulation mode, it is a fake instrument"
+    )
     @skip_on_instruments(["SANS2D"], "Motors not fully configured on SANS2D yet")
     def test_GIVEN_macros_in_globals_file_WHEN_checking_sim_mode_THEN_it_is_not_enabled(self):
         self.assertFalse(self.globals_utils.is_any_ioc_in_sim_mode(), "Simulation Mode is Enabled")

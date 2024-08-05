@@ -1,7 +1,9 @@
 from __future__ import absolute_import
-from builtins import object
-import xml.etree.ElementTree as ET
+
 import os
+import xml.etree.ElementTree as ET
+from builtins import object
+
 from .common import CommonUtils
 
 
@@ -19,7 +21,11 @@ class SynopticUtils(object):
         return "{schema}{tag}".format(schema=SynopticUtils.SCHEMA, tag=tag)
 
     def get_synoptics_filenames(self):
-        return [f for f in CommonUtils.get_directory_contents_as_list(self.synoptics_path) if f.endswith(".xml")]
+        return [
+            f
+            for f in CommonUtils.get_directory_contents_as_list(self.synoptics_path)
+            if f.endswith(".xml")
+        ]
 
     def get_type_target_pairs(self, synoptic_xml):
         """
@@ -32,7 +38,9 @@ class SynopticUtils(object):
 
         for component in root.iter(self._prefix_schema("component")):
             type = component.find("./{}".format(self._prefix_schema("type")))
-            target = component.find("./{}/{}".format(self._prefix_schema("target"), self._prefix_schema("name")))
+            target = component.find(
+                "./{}/{}".format(self._prefix_schema("target"), self._prefix_schema("name"))
+            )
 
             if target is None and type is not None:
                 # This is allowed but should be ignored

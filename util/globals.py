@@ -1,12 +1,12 @@
-from builtins import object
 import os
 import re
+from builtins import object
 
 from util.common import CommonUtils
 
 
 def strip_comments(line):
-    line = line.split('#')[0]
+    line = line.split("#")[0]
     return line.strip()
 
 
@@ -63,7 +63,7 @@ class GlobalsUtils(object):
         lines = self.get_lines()
         macros = dict()
         for line in lines:
-            if not line.startswith('#'):
+            if not line.startswith("#"):
                 if macro_name in line:
                     line = strip_comments(line)
                     if "__" in line:
@@ -91,7 +91,9 @@ class GlobalsUtils(object):
         macro_regex = iocname_regex
         value_regex = r".*"
 
-        regexp = r"^({ioc}__)?{macro}={value}$".format(ioc=iocname_regex, macro=macro_regex, value=value_regex)
+        regexp = r"^({ioc}__)?{macro}={value}$".format(
+            ioc=iocname_regex, macro=macro_regex, value=value_regex
+        )
 
         if line == "" or re.match(regexp, line):
             return True

@@ -1,6 +1,7 @@
+import unittest
+
 from util.configurations import ConfigurationUtils
 from util.globals import GlobalsUtils
-import unittest
 
 generic_component_xml = """<?xml version="1.0" ?>
              <components xmlns="http://epics.isis.rl.ac.uk/schema/components/1.0"
@@ -21,7 +22,6 @@ generic_block_xml = """<?xml version="1.0" ?>
 
 
 class ConfigurationTests(unittest.TestCase):
-
     def setUp(self):
         self.config_utils = ConfigurationUtils("")
         self.globals_utils = GlobalsUtils("")
@@ -34,33 +34,18 @@ class ConfigurationTests(unittest.TestCase):
     def test_GIVEN_component_xml_WHEN_parsed_THEN_can_extract_multiple_components(self):
         xml = generic_component_xml.format('<component name="COMPONENT_2"/>')
 
-        self.assertListEqual(self.config_utils.get_active_components_from_xml(xml), ["COMPONENT_1", "COMPONENT_2"])
+        self.assertListEqual(
+            self.config_utils.get_active_components_from_xml(xml), ["COMPONENT_1", "COMPONENT_2"]
+        )
 
     def test_GIVEN_block_xml_WHEN_parsed_and_no_blocks_THEN_return_no_data(self):
-        xml = generic_block_xml.format('', '', '')
+        xml = generic_block_xml.format("", "", "")
 
         self.assertListEqual(self.config_utils.get_block_pvs_from_xml("", xml), [])
 
     def test_GIVEN_block_xml_WHEN_parsed_THEN_can_extract_one_global_pv(self):
         xml = generic_block_xml.format(
-                                """<block>
-                                    <name>S2VG</name>
-                                    <read_pv>MOT:JAWS2:VGAP</read_pv>
-                                    <local>False</local>
-                                    <visible>True</visible>
-                                    <rc_enabled>False</rc_enabled>
-                                    <rc_lowlimit>0.0</rc_lowlimit>
-                                    <rc_highlimit>0.0</rc_highlimit>
-                                    <log_periodic>True</log_periodic>
-                                    <log_rate>30</log_rate>
-                                    <log_deadband>0.0</log_deadband>
-                                </block>""", "", "")
-
-        self.assertListEqual(self.config_utils.get_block_pvs_from_xml("IN:DEMO", xml), ["MOT:JAWS2:VGAP"])
-
-    def test_GIVEN_block_xml_WHEN_parsed_THEN_can_extract_multiple_global_pvs(self):
-        xml = generic_block_xml.format(
-                                """<block>
+            """<block>
                                     <name>S2VG</name>
                                     <read_pv>MOT:JAWS2:VGAP</read_pv>
                                     <local>False</local>
@@ -72,7 +57,29 @@ class ConfigurationTests(unittest.TestCase):
                                     <log_rate>30</log_rate>
                                     <log_deadband>0.0</log_deadband>
                                 </block>""",
-                                """<block>
+            "",
+            "",
+        )
+
+        self.assertListEqual(
+            self.config_utils.get_block_pvs_from_xml("IN:DEMO", xml), ["MOT:JAWS2:VGAP"]
+        )
+
+    def test_GIVEN_block_xml_WHEN_parsed_THEN_can_extract_multiple_global_pvs(self):
+        xml = generic_block_xml.format(
+            """<block>
+                                    <name>S2VG</name>
+                                    <read_pv>MOT:JAWS2:VGAP</read_pv>
+                                    <local>False</local>
+                                    <visible>True</visible>
+                                    <rc_enabled>False</rc_enabled>
+                                    <rc_lowlimit>0.0</rc_lowlimit>
+                                    <rc_highlimit>0.0</rc_highlimit>
+                                    <log_periodic>True</log_periodic>
+                                    <log_rate>30</log_rate>
+                                    <log_deadband>0.0</log_deadband>
+                                </block>""",
+            """<block>
                                     <name>Cy</name>
                                     <read_pv>CY</read_pv>
                                     <local>False</local>
@@ -84,7 +91,7 @@ class ConfigurationTests(unittest.TestCase):
                                         <log_rate>30</log_rate>
                                         <log_deadband>0.0</log_deadband>
                                     </block>""",
-                                """<block>
+            """<block>
                                     <name>Cx</name>
                                     <read_pv>CX</read_pv>
                                     <local>False</local>
@@ -95,13 +102,16 @@ class ConfigurationTests(unittest.TestCase):
                                     <log_periodic>True</log_periodic>
                                     <log_rate>30</log_rate>
                                     <log_deadband>0.0</log_deadband>
-                                </block>""")
+                                </block>""",
+        )
 
-        self.assertListEqual(self.config_utils.get_block_pvs_from_xml("IN:DEMO", xml), ["MOT:JAWS2:VGAP", "CY", "CX"])
+        self.assertListEqual(
+            self.config_utils.get_block_pvs_from_xml("IN:DEMO", xml), ["MOT:JAWS2:VGAP", "CY", "CX"]
+        )
 
     def test_GIVEN_block_xml_WHEN_block_on_field_THEN_can_extract_one_global_pv_(self):
         xml = generic_block_xml.format(
-                                """<block>
+            """<block>
                                     <name>S2VG</name>
                                     <read_pv>MOT:JAWS2:VGAP.RBV</read_pv>
                                     <local>True</local>
@@ -112,21 +122,29 @@ class ConfigurationTests(unittest.TestCase):
                                     <log_periodic>True</log_periodic>
                                     <log_rate>30</log_rate>
                                     <log_deadband>0.0</log_deadband>
-                                </block>""", "", "")
+                                </block>""",
+            "",
+            "",
+        )
 
-        self.assertListEqual(self.config_utils.get_block_pvs_from_xml("IN:DEMO:", xml), ["IN:DEMO:MOT:JAWS2:VGAP"])
+        self.assertListEqual(
+            self.config_utils.get_block_pvs_from_xml("IN:DEMO:", xml), ["IN:DEMO:MOT:JAWS2:VGAP"]
+        )
 
     def test_GIVEN_pv_name_THEN_returns_it_unchanged(self):
-        self.assertEqual(self.config_utils._get_pv_name_without_field('MOT:JAWS2:MTR0123'),
-                         'MOT:JAWS2:MTR0123')
+        self.assertEqual(
+            self.config_utils._get_pv_name_without_field("MOT:JAWS2:MTR0123"), "MOT:JAWS2:MTR0123"
+        )
 
     def test_GIVEN_field_name_THEN_returns_pv_name(self):
-        self.assertEqual(self.config_utils._get_pv_name_without_field('MOT:JAWS2:MTR0123.RBV'),
-                         'MOT:JAWS2:MTR0123')
+        self.assertEqual(
+            self.config_utils._get_pv_name_without_field("MOT:JAWS2:MTR0123.RBV"),
+            "MOT:JAWS2:MTR0123",
+        )
 
     def test_GIVEN_block_xml_WHEN_parsed_THEN_can_extract_one_local_pv(self):
         xml = generic_block_xml.format(
-                                """<block>
+            """<block>
                                     <name>S2VG</name>
                                     <read_pv>MOT:JAWS2:VGAP</read_pv>
                                     <local>True</local>
@@ -137,9 +155,14 @@ class ConfigurationTests(unittest.TestCase):
                                     <log_periodic>True</log_periodic>
                                     <log_rate>30</log_rate>
                                     <log_deadband>0.0</log_deadband>
-                                </block>""", "", "")
+                                </block>""",
+            "",
+            "",
+        )
 
-        self.assertListEqual(self.config_utils.get_block_pvs_from_xml("IN:DEMO:", xml), ["IN:DEMO:MOT:JAWS2:VGAP"])
+        self.assertListEqual(
+            self.config_utils.get_block_pvs_from_xml("IN:DEMO:", xml), ["IN:DEMO:MOT:JAWS2:VGAP"]
+        )
 
     def test_GIVEN_ioc_xml_WHEN_parsed_THEN_can_extract_a_single_ioc(self):
         xml = """<?xml version="1.0" ?>
@@ -174,7 +197,9 @@ class ConfigurationTests(unittest.TestCase):
 
         self.assertListEqual(self.config_utils.get_iocs(xml), ["SIMPLE_01", "SIMPLE_02"])
 
-    def test_GIVEN_ioc_xml_WHEN_macros_requested_for_ioc_that_exists_THEN_macro_information_matches_xml(self):
+    def test_GIVEN_ioc_xml_WHEN_macros_requested_for_ioc_that_exists_THEN_macro_information_matches_xml(
+        self,
+    ):
         name_1 = "macro1"
         value_1_01 = "1"
         value_1_02 = "Hello, world!"
@@ -203,9 +228,14 @@ class ConfigurationTests(unittest.TestCase):
                             <pvsets/>
                         </ioc>
                     </iocs>
-                    """.format(name_1=name_1, name_2=name_2,
-                               value_1_01=value_1_01, value_1_02=value_1_02,
-                               value_2_01=value_2_01, value_2_02=value_2_02)
+                    """.format(
+            name_1=name_1,
+            name_2=name_2,
+            value_1_01=value_1_01,
+            value_1_02=value_1_02,
+            value_2_01=value_2_01,
+            value_2_02=value_2_02,
+        )
 
         macros_1 = self.config_utils.get_ioc_macros(xml, "SIMPLE_01")
         self.assertEqual(macros_1[name_1], value_1_01)
@@ -215,7 +245,9 @@ class ConfigurationTests(unittest.TestCase):
         self.assertEqual(macros_2[name_1], value_1_02)
         self.assertEqual(macros_2[name_2], value_2_02)
 
-    def test_GIVEN_ioc_xml_WHEN_macros_requested_for_ioc_that_does_not_exist_THEN_returns_no_data(self):
+    def test_GIVEN_ioc_xml_WHEN_macros_requested_for_ioc_that_does_not_exist_THEN_returns_no_data(
+        self,
+    ):
         xml = """<?xml version="1.0" ?>
                     <iocs xmlns="http://epics.isis.rl.ac.uk/schema/iocs/1.0" 
                     xmlns:ioc="http://epics.isis.rl.ac.uk/schema/iocs/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
@@ -264,35 +296,46 @@ class ConfigurationTests(unittest.TestCase):
     def test_GIVEN_macros_and_a_name_pattern_THEN_returns_matching_macros(self):
         name_regex = "^AXIS[1-2]$"
 
-        config_macros = {"AXIS1":"yes", "AXIS3":"yes"}
-        globals_macros = {"AXIS1":"no", "AXIS3":"yes"}
+        config_macros = {"AXIS1": "yes", "AXIS3": "yes"}
+        globals_macros = {"AXIS1": "no", "AXIS3": "yes"}
 
-        valid_config_macros = self.config_utils.check_if_macros_match_pattern(config_macros, name_regex, search_for_value=False)
-        valid_globals_macros = self.config_utils.check_if_macros_match_pattern(globals_macros, name_regex, search_for_value=False)
+        valid_config_macros = self.config_utils.check_if_macros_match_pattern(
+            config_macros, name_regex, search_for_value=False
+        )
+        valid_globals_macros = self.config_utils.check_if_macros_match_pattern(
+            globals_macros, name_regex, search_for_value=False
+        )
 
-        self.assertEqual({"AXIS1":"yes"}, valid_config_macros)
-        self.assertEqual({"AXIS1":"no"}, valid_globals_macros)
+        self.assertEqual({"AXIS1": "yes"}, valid_config_macros)
+        self.assertEqual({"AXIS1": "no"}, valid_globals_macros)
 
     def test_GIVEN_macros_and_a_value_pattern_THEN_returns_matching_macros(self):
         value_regex = "^yes$"
 
-        config_macros = {"AXIS1":"yes", "AXIS6":"yes", "AXIS2":" yes"}
-        globals_macros = {"AXIS4":"no", "AXIS3":"yes", "AXIS1":"Yes"}
+        config_macros = {"AXIS1": "yes", "AXIS6": "yes", "AXIS2": " yes"}
+        globals_macros = {"AXIS4": "no", "AXIS3": "yes", "AXIS1": "Yes"}
 
-        valid_config_macros = self.config_utils.check_if_macros_match_pattern(config_macros, value_regex, search_for_value=True)
-        valid_globals_macros = self.config_utils.check_if_macros_match_pattern(globals_macros, value_regex, search_for_value=True)
+        valid_config_macros = self.config_utils.check_if_macros_match_pattern(
+            config_macros, value_regex, search_for_value=True
+        )
+        valid_globals_macros = self.config_utils.check_if_macros_match_pattern(
+            globals_macros, value_regex, search_for_value=True
+        )
 
-        self.assertEqual({"AXIS1":"yes", "AXIS6":"yes"}, valid_config_macros)
-        self.assertEqual({"AXIS3":"yes"}, valid_globals_macros)
+        self.assertEqual({"AXIS1": "yes", "AXIS6": "yes"}, valid_config_macros)
+        self.assertEqual({"AXIS3": "yes"}, valid_globals_macros)
 
     def test_GIVEN_macros_and_a_pattern_IF_no_matches_THEN_returns_no_data(self):
         name_regex = "^AXIS[1-2]$"
 
-        config_macros = {"AXIS3":"yes", "AXIS5":"no"}
-        globals_macros = {"AXIS4":"yes", "AXIS1":""}
+        config_macros = {"AXIS3": "yes", "AXIS5": "no"}
+        globals_macros = {"AXIS4": "yes", "AXIS1": ""}
 
-        valid_config_macros = self.config_utils.check_if_macros_match_pattern(config_macros, name_regex, search_for_value=False)
-        valid_globals_macros = self.config_utils.check_if_macros_match_pattern(globals_macros, name_regex, search_for_value=False)
+        valid_config_macros = self.config_utils.check_if_macros_match_pattern(
+            config_macros, name_regex, search_for_value=False
+        )
+        valid_globals_macros = self.config_utils.check_if_macros_match_pattern(
+            globals_macros, name_regex, search_for_value=False
+        )
 
-        self.assertTrue(len(valid_config_macros)==0, len(valid_globals_macros)==0)   
-    
+        self.assertTrue(len(valid_config_macros) == 0, len(valid_globals_macros) == 0)

@@ -1,8 +1,8 @@
-from builtins import object
-from util.git_wrapper import GitUtils
-import xml.etree.ElementTree as ET
 import os
+import xml.etree.ElementTree as ET
+from builtins import object
 
+from util.git_wrapper import GitUtils
 from util.version import VersionUtils
 
 
@@ -19,7 +19,9 @@ class GuiUtils(object):
         version = VersionUtils.extract_release_numbers_from_string(version)
         branch_name = VersionUtils.convert_release_to_tag_name(*version)
         if not self.git.update_branch(branch_name, True):
-            raise IOError("Couldn't check out GUI branch corresponding to release {}".format(version))
+            raise IOError(
+                "Couldn't check out GUI branch corresponding to release {}".format(version)
+            )
 
     def get_valid_types(self, xml):
         root = ET.fromstring(xml)
@@ -46,5 +48,9 @@ class GuiUtils(object):
         return result
 
     def get_opi_info_xml(self):
-        with open(os.path.join(self.path, "base", "uk.ac.stfc.isis.ibex.opis", "resources", "opi_info.xml")) as f:
+        with open(
+            os.path.join(
+                self.path, "base", "uk.ac.stfc.isis.ibex.opis", "resources", "opi_info.xml"
+            )
+        ) as f:
             return f.read()

@@ -1,5 +1,6 @@
-from builtins import object
 import os
+from builtins import object
+
 import git
 
 
