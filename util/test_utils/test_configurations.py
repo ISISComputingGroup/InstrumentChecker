@@ -1,6 +1,7 @@
+import unittest
+
 from util.configurations import ConfigurationUtils
 from util.globals import GlobalsUtils
-import unittest
 
 generic_component_xml = """<?xml version="1.0" ?>
              <components xmlns="http://epics.isis.rl.ac.uk/schema/components/1.0"

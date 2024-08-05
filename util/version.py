@@ -1,6 +1,5 @@
-from builtins import zip
-from builtins import object
 import os
+from builtins import object, zip
 
 from util.common import CommonUtils
 

@@ -1,7 +1,8 @@
-import unittest
 import concurrent.futures
-from util.channel_access import ChannelAccessUtils
+import unittest
+
 from tests.settings import Settings
+from util.channel_access import ChannelAccessUtils
 
 MAX_CONTROLLER = 16
 MAX_MOTOR = 8

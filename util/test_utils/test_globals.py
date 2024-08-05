@@ -1,6 +1,8 @@
 import unittest
-from util.globals import GlobalsUtils
+
 from mock import Mock
+
+from util.globals import GlobalsUtils
 
 
 class GlobalsTests(unittest.TestCase):

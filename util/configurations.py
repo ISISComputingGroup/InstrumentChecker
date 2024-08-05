@@ -1,12 +1,13 @@
 from __future__ import absolute_import
-from builtins import object
-import os
-import xml.etree.ElementTree as ET
-import re
 
-from .common import CommonUtils
+import os
+import re
+import xml.etree.ElementTree as ET
+from builtins import object
+
 from tests.settings import Settings
 
+from .common import CommonUtils
 
 
 class AbstractConfigurationUtils(object):

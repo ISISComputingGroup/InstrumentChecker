@@ -1,10 +1,12 @@
 from __future__ import absolute_import
-import unittest
+
 import os
+import unittest
 from unittest import skip
 
-from .settings import Settings
 from util.scripting import ScriptingUtils
+
+from .settings import Settings
 
 
 class ScriptingDirectoryTests(unittest.TestCase):

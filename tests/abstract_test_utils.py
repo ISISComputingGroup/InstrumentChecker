@@ -1,11 +1,12 @@
-from __future__ import print_function
-from __future__ import absolute_import
-import unittest
+from __future__ import absolute_import, print_function
 
+import unittest
 from abc import ABCMeta, abstractmethod
-from .settings import Settings
+
 from util.channel_access import ChannelAccessUtils
 from util.common import skip_on_instruments
+
+from .settings import Settings
 
 
 class AbstractSingleTests(unittest.TestCase, metaclass=ABCMeta):

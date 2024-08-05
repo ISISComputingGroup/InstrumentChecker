@@ -1,14 +1,18 @@
 from __future__ import absolute_import
-import unittest
+
 import os
+import unittest
 import xml.etree.ElementTree as ET
+
 from parameterized import parameterized
 
-from .settings import Settings
 from util.common import CommonUtils, skip_on_instruments
 from util.configurations import ComponentUtils
 from util.globals import GlobalsUtils
+
 from .abstract_test_utils import AbstractSingleTests
+from .settings import Settings
+
 
 class ComponentsSingleTests(AbstractSingleTests):
     """

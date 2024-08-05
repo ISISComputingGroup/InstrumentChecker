@@ -1,12 +1,11 @@
-from __future__ import print_function
-from __future__ import absolute_import
-import os
+from __future__ import absolute_import, print_function
+
 import argparse
 import glob
+import os
 
 from run_tests import setup_instrument_tests
 from tests.settings import Settings
-
 from util.channel_access import ChannelAccessUtils
 
 

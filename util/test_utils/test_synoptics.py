@@ -1,5 +1,6 @@
-from util.synoptic import SynopticUtils
 import unittest
+
+from util.synoptic import SynopticUtils
 
 
 class SynopticTests(unittest.TestCase):

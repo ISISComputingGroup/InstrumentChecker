@@ -1,10 +1,8 @@
-from builtins import range
-from builtins import object
+import functools
 import itertools
 import os
 import unittest
-
-import functools
+from builtins import object, range
 
 from tests.settings import Settings
 

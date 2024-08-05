@@ -1,27 +1,26 @@
-from __future__ import print_function
-from __future__ import absolute_import
-import typing
-from builtins import str
-import os
-from json import loads, JSONDecodeError
-import sys
-import unittest
-from xmlrunner import XMLTestRunner
-import argparse
-import traceback
-import os
+from __future__ import absolute_import, print_function
 
-from tests.configuration_tests import ConfigurationsTests, ConfigurationsSingleTests
-from tests.component_tests import ComponentsTests, ComponentsSingleTests
+import argparse
+import os
+import sys
+import traceback
+import typing
+import unittest
+from builtins import str
+from json import JSONDecodeError, loads
+
+from xmlrunner import XMLTestRunner
+
+from tests.component_tests import ComponentsSingleTests, ComponentsTests
+from tests.configuration_tests import ConfigurationsSingleTests, ConfigurationsTests
 from tests.globals_tests import GlobalsTests
+from tests.motor_tests import MotorTests
 from tests.scripting_directory_tests import ScriptingDirectoryTests
+from tests.settings import Settings
 from tests.synoptic_tests import SynopticTests
 from tests.version_tests import VersionTests
-from tests.settings import Settings
-from tests.motor_tests import MotorTests
-
 from util.channel_access import ChannelAccessUtils
-from util.configurations import ConfigurationUtils, ComponentUtils
+from util.configurations import ComponentUtils, ConfigurationUtils
 from util.git_wrapper import GitUtils
 from util.gui import GuiUtils
 from util.synoptic import SynopticUtils

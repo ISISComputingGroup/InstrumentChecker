@@ -1,6 +1,6 @@
 import unittest
 
-from util.channel_access import PvInterestingLevel, ChannelAccessUtils
+from util.channel_access import ChannelAccessUtils, PvInterestingLevel
 
 
 class ChannelAccessTests(unittest.TestCase):

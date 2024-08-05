@@ -1,6 +1,6 @@
-from builtins import object
 import os
 import re
+from builtins import object
 
 from util.common import CommonUtils
 

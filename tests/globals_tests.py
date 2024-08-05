@@ -1,8 +1,11 @@
 from __future__ import absolute_import
+
 import unittest
-from .settings import Settings
-from util.globals import GlobalsUtils
+
 from util.common import CommonUtils, skip_on_instruments
+from util.globals import GlobalsUtils
+
+from .settings import Settings
 
 
 class GlobalsTests(unittest.TestCase):

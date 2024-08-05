@@ -1,8 +1,8 @@
-from builtins import object
-from util.git_wrapper import GitUtils
-import xml.etree.ElementTree as ET
 import os
+import xml.etree.ElementTree as ET
+from builtins import object
 
+from util.git_wrapper import GitUtils
 from util.version import VersionUtils
 
 

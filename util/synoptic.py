@@ -1,7 +1,9 @@
 from __future__ import absolute_import
-from builtins import object
-import xml.etree.ElementTree as ET
+
 import os
+import xml.etree.ElementTree as ET
+from builtins import object
+
 from .common import CommonUtils
 
 

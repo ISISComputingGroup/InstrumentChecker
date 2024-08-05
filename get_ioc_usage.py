@@ -1,13 +1,12 @@
-from __future__ import print_function
-from __future__ import absolute_import
-import os
+from __future__ import absolute_import, print_function
+
 import argparse
+import os
 
 from run_tests import setup_instrument_tests
 from tests.settings import Settings
-
 from util.channel_access import ChannelAccessUtils
-from util.configurations import ConfigurationUtils, ComponentUtils, DeviceUtils
+from util.configurations import ComponentUtils, ConfigurationUtils, DeviceUtils
 
 
 def calc_iocs_on_intruments(instruments):

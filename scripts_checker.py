@@ -1,14 +1,14 @@
-import win32wnet
+import concurrent.futures
 import os
 import sys
-import git
-import concurrent.futures
+
 # noinspection PyUnresolvedReferences
 # Workaround for AttributeError when concurrent.futures.thread._threads_queues.clear()
-from concurrent.futures import thread
+import git
+import win32wnet
+
 # noinspection PyUnresolvedReferences
 from win32wnet import error as PywintypesError
-from util.channel_access import ChannelAccessUtils
 
 REMOTE_URL = 'https://github.com/ISISNeutronMuon/InstrumentScripts'
 
