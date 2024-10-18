@@ -29,20 +29,20 @@ class AbstractConfigurationUtils(object):
     BLOCK_XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/blocks/1.0}"
     DEVICES_XML_SCHEMA = "{http://epics.isis.rl.ac.uk/schema/screens/1.0/}"
 
-    def __init__(self, config_repo_path):
+    def __init__(self, config_repo_path: str) -> None:
         self.config_repo_path = config_repo_path
 
-    def get_configurations_directory(self):
+    def get_configurations_directory(self) -> None:
         raise NotImplementedError("This is an abstract class, use a concrete class instead")
 
-    def get_configurations_as_list(self):
+    def get_configurations_as_list(self) -> list[str]:
         """
         Gets a list of all configurations/components of the current instrument.
         :return: a list of strings.
         """
         return CommonUtils.get_folders_in_directory_as_list(self.get_configurations_directory())
 
-    def get_active_components_as_list(self, config_name):
+    def get_active_components_as_list(self, config_name: str) -> list[str]:
         """
         Gets a list of active components for a particular configuration.
         :param config_name: the configuration name
@@ -50,7 +50,7 @@ class AbstractConfigurationUtils(object):
         """
         return self.get_active_components_from_xml(self.get_components_xml(config_name))
 
-    def get_components_xml(self, config_name):
+    def get_components_xml(self, config_name: str) -> str:
         """
         Gets the XML corresponding to the components file for a particular configuration.
         :param config_name: the configuration name
@@ -60,7 +60,7 @@ class AbstractConfigurationUtils(object):
         with open(path) as xml_file:
             return xml_file.read()
 
-    def get_active_components_from_xml(self, xml):
+    def get_active_components_from_xml(self, xml: str) -> list[str]:
         """
         Gets a list of active components from a component XML.
         :param xml: a components XML as a string
@@ -74,9 +74,10 @@ class AbstractConfigurationUtils(object):
 
         return components
 
-    def get_set_of_block_pvs_for_all_configs(self):
+    def get_set_of_block_pvs_for_all_configs(self) -> set[str]:
         """
-        Gets a set of all pvs that have a block on them in any configuration or component of the instrument.
+        Gets a set of all pvs that have a block on them in any configuration or component
+        of the instrument.
         :return: A set of strings representing the names of the pvs.
         """
         block_pvs_set = {
@@ -87,7 +88,7 @@ class AbstractConfigurationUtils(object):
 
         return block_pvs_set
 
-    def get_block_pvs(self, config_name):
+    def get_block_pvs(self, config_name: str) -> list[str]:
         """
         Gets list of PVs that have a block on them for a particular configuration or component.
         :param config_name: Name of configuration or component.
@@ -96,7 +97,7 @@ class AbstractConfigurationUtils(object):
 
         return self.get_block_pvs_from_xml(Settings.pv_prefix, self.get_blocks_xml(config_name))
 
-    def get_blocks_xml(self, config_name):
+    def get_blocks_xml(self, config_name: str) -> str:
         """
         Gets the XML corresponding to the blocks file for a particular configuration.
         :param config_name: the configuration name
@@ -107,30 +108,34 @@ class AbstractConfigurationUtils(object):
         with open(path) as xml_file:
             return xml_file.read()
 
-    def get_block_pvs_from_xml(self, pv_prefix, block_xml):
+    def get_block_pvs_from_xml(self, pv_prefix: str, block_xml: str) -> list[str]:
         """
         Gets a list of all PVs which a have block on them in a certain component or configuration.
-        :param pv_prefix: A string representing the instrument prefix of the PV. If the PV is local, then this prefix
-        will be ignored.
+        :param pv_prefix: A string representing the instrument prefix of the PV. If the PV is local,
+        then this prefix will be ignored.
         :param block_xml: A string representing the XML block data of a component or configuration.
-        :return: A list of the names of all PVs which have a block on them. The names of the PV include the instrument
-        prefix.
+        :return: A list of the names of all PVs which have a block on them.
+        The names of the PV include the instrument prefix.
         """
         root = ET.fromstring(block_xml)
         pvs_with_blocks = []
 
         for block in root.iter("{}block".format(self.BLOCK_XML_SCHEMA)):
-            pv_name = block.find("{}read_pv".format(self.BLOCK_XML_SCHEMA)).text
+            pv_name_block = block.find("{}read_pv".format(self.BLOCK_XML_SCHEMA))
+            assert pv_name_block is not None
+            pv_name = pv_name_block.text
             pv_name = AbstractConfigurationUtils._get_pv_name_without_field(pv_name)
 
-            if block.find("{}local".format(self.BLOCK_XML_SCHEMA)).text == "True":
+            local_block = block.find("{}local".format(self.BLOCK_XML_SCHEMA))
+            assert local_block is not None
+            if local_block.text == "True":
                 pv_name = pv_prefix + pv_name
 
             pvs_with_blocks.append(pv_name)
 
         return pvs_with_blocks
 
-    def get_blocks(self, config_name):
+    def get_blocks(self, config_name: str) -> list[str]:
         """
         Returns a list of block names.
         :param config_name: the configuration name
@@ -140,15 +145,17 @@ class AbstractConfigurationUtils(object):
 
         blocks = []
         for block in root.iter("{}block".format(self.BLOCK_XML_SCHEMA)):
-            blocks.append(block.find("{}name".format(self.BLOCK_XML_SCHEMA)).text)
+            blocks_raw = block.find("{}name".format(self.BLOCK_XML_SCHEMA))
+            assert blocks_raw is not None
+            blocks.append(blocks_raw.text)
 
         return blocks
 
     @staticmethod
-    def _get_pv_name_without_field(pv_name):
+    def _get_pv_name_without_field(pv_name: str) -> str:
         """
-        Removes any PV field from a name a block is pointing to so it will return the name of the PV of the field the
-        block points to.
+        Removes any PV field from a name a block is pointing to
+        so it will return the name of the PV of the field the block points to.
         :param pv_name: a string representing a name a block is pointing to.
         :return: The name of the pv of the field, as a string.
         """
@@ -157,10 +164,10 @@ class AbstractConfigurationUtils(object):
         else:
             return pv_name
 
-    def get_devices_directory(self):
+    def get_devices_directory(self) -> None:
         raise NotImplementedError("This is an abstract class, use a concrete class instead")
 
-    def get_device_screens_from_xml(self):
+    def get_device_screens_from_xml(self) -> str:
         """
         Gets the XML corresponding to the Device Screens for the instrument
         Returns: the XML as a string
@@ -169,7 +176,7 @@ class AbstractConfigurationUtils(object):
         with open(path) as xml_file:
             return xml_file.read()
 
-    def get_device_screens(self, xml):
+    def get_device_screens(self, xml: str) -> set[str]:
         """
         Args:
             xml: XML input to parse
@@ -177,10 +184,10 @@ class AbstractConfigurationUtils(object):
             (set): Set of device screens
         """
         root = ET.fromstring(xml)
-
+        
         return set({device.find(f"{self.DEVICES_XML_SCHEMA}key").text for device in root})
 
-    def get_iocs_xml(self, config_name):
+    def get_iocs_xml(self, config_name: str) -> str:
         """
         Gets the XML corresponding to the IOCs file for a particular configuration.
         :param config_name: the configuration or component name
@@ -190,7 +197,7 @@ class AbstractConfigurationUtils(object):
         with open(path) as xml_file:
             return xml_file.read()
 
-    def get_iocs(self, xml):
+    def get_iocs(self, xml: str) -> list[str]:
         """
         Returns a list of iocs in the xml provided.
         :return:
@@ -203,13 +210,14 @@ class AbstractConfigurationUtils(object):
 
         return iocs
 
-    def get_ioc_macros(self, xml, ioc_name):
+    def get_ioc_macros(self, xml: str, ioc_name: str) -> dict[str, str]:
         """
         Returns a dictionary of macro information for a given ioc_name in the given xml.
 
         :param xml: The IOC xml.
         :param ioc_name: The name of the ioc.
-        :return: A dictionary of macro information. Keys are the macro name, values are the macro value
+        :return: A dictionary of macro information.
+        Keys are the macro name, values are the macro value
         """
         # Parse the XML
         root = ET.fromstring(xml)
@@ -229,7 +237,7 @@ class AbstractConfigurationUtils(object):
                 for m in ioc_xml[0].iter("{}macro".format(self.IOC_XML_SCHEMA))
             }
 
-    def get_ioc_in_sim_mode(self, xml, ioc_name):
+    def get_ioc_in_sim_mode(self, xml: str, ioc_name: str) -> bool:
         """
         Returns true if the given ioc_name is in simulation mode
         :param xml: The IOC xml.
@@ -245,7 +253,9 @@ class AbstractConfigurationUtils(object):
                 return ioc.attrib["simlevel"] != "none"
 
     @staticmethod
-    def check_if_macros_match_pattern(macros, regex, search_for_value):
+    def check_if_macros_match_pattern(
+        macros: dict[str, str], regex: str, search_for_value: bool
+    ) -> dict[str, str]:
         """
         Returns all macros which match a specific pattern
         :param macros: Dictionary (name:value) of macros
@@ -267,7 +277,7 @@ class ConfigurationUtils(AbstractConfigurationUtils):
     Class containing utility methods for interacting with the configurations directory
     """
 
-    def get_configurations_directory(self):
+    def get_configurations_directory(self) -> str:
         return os.path.join(self.config_repo_path, "configurations", "configurations")
 
 
@@ -278,7 +288,7 @@ class ComponentUtils(AbstractConfigurationUtils):
 
     BASE_COMPONENT = "_base"
 
-    def get_configurations_directory(self):
+    def get_configurations_directory(self) -> str:
         return os.path.join(self.config_repo_path, "configurations", "components")
 
 
@@ -287,5 +297,5 @@ class DeviceUtils(AbstractConfigurationUtils):
     Class containing the utility methods of interacting with the devices directory
     """
 
-    def get_devices_directory(self):
+    def get_devices_directory(self) -> str:
         return os.path.join(self.config_repo_path, "configurations", "devices")
