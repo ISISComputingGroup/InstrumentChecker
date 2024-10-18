@@ -5,7 +5,7 @@ from builtins import object
 from util.common import CommonUtils
 
 
-def strip_comments(line):
+def strip_comments(line: str) -> str:
     line = line.split("#")[0]
     return line.strip()
 
@@ -17,30 +17,31 @@ class GlobalsUtils(object):
 
     GLOBALS_FILE = "globals.txt"
 
-    def __init__(self, config_repo_dir):
+    def __init__(self, config_repo_dir: str) -> None:
         self.config_repo_dir = config_repo_dir
 
-    def _get_file_path(self):
+    def _get_file_path(self) -> str:
         return os.path.join(self.config_repo_dir, "configurations", GlobalsUtils.GLOBALS_FILE)
 
-    def file_exists(self):
+    def file_exists(self) -> bool:
         return os.path.isfile(self._get_file_path())
 
-    def get_number_of_globals_files(self):
+    def get_number_of_globals_files(self) -> int:
         """
-        Scans the entire config repo for files named (GLOBALS_FILE). Returns the number of these files that were found.
+        Scans the entire config repo for files named (GLOBALS_FILE).
+        Returns the number of these files that were found.
         :return: the number of files named (GLOBALS_FILE)
         """
         return CommonUtils.count_files_with_name(self.config_repo_dir, GlobalsUtils.GLOBALS_FILE)
 
-    def get_lines(self):
+    def get_lines(self) -> list[str]:
         try:
             globals_file = open(self._get_file_path(), "r")
             return [i for i in globals_file.read().splitlines()]
         except IOError:
             return []
 
-    def get_macros(self, ioc_name):
+    def get_macros(self, ioc_name: str) -> dict:
         """
         Get the macros associated with an ioc of the given name
         :param ioc_name: Name of the IOC to search for
@@ -54,7 +55,7 @@ class GlobalsUtils(object):
                 macros[key] = value
         return macros
 
-    def get_values_of_macro(self, macro_name):
+    def get_values_of_macro(self, macro_name: str) -> dict:
         """
         Get the values of all macros of a given name.
         :param macro_name: The name of the macro to search for
@@ -72,7 +73,7 @@ class GlobalsUtils(object):
                     macros[key] = value
         return macros
 
-    def is_any_ioc_in_sim_mode(self):
+    def is_any_ioc_in_sim_mode(self) -> bool:
         """
         :return: TRUE if any simulation flags are set
         """
@@ -82,7 +83,7 @@ class GlobalsUtils(object):
         return has_recsim or has_devsim or has_simulate
 
     @staticmethod
-    def check_syntax(line):
+    def check_syntax(line: str) -> bool:
         line = strip_comments(line)
 
         alphanumeric = r"[a-zA-Z0-9]+"
