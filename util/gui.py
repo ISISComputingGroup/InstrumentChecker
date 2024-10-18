@@ -15,7 +15,7 @@ class GuiUtils(object):
         self.git = GitUtils(path)
         self.path = path
 
-    def get_gui_repo_at_release(self, version_str: str) -> str | None:
+    def get_gui_repo_at_release(self, version_str: str) -> None:
         version: list[int] = VersionUtils.extract_release_numbers_from_string(version_str)
         branch_name: str = VersionUtils.convert_release_to_tag_name(*version)
         if not self.git.update_branch(branch_name, True):
