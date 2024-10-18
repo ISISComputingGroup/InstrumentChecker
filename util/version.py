@@ -41,5 +41,6 @@ class VersionUtils(object):
         return "v{maj}.{min}.{patch}".format(maj=int(major), min=int(minor), patch=int(patch))
 
     @staticmethod
-    def extract_release_numbers_from_string(version: str) -> list[str]:
-        return version.split(".")[0:3]
+    def extract_release_numbers_from_string(version: str) -> list[int]:
+        version_split = version.split(".")
+        return [int(_x) for _x in version_split]

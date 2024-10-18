@@ -15,9 +15,9 @@ class GuiUtils(object):
         self.git = GitUtils(path)
         self.path = path
 
-    def get_gui_repo_at_release(self, version: list[str]) -> str:
-        version = VersionUtils.extract_release_numbers_from_string(version)
-        branch_name = VersionUtils.convert_release_to_tag_name(*version)
+    def get_gui_repo_at_release(self, version_str: str) -> str | None:
+        version: list[int] = VersionUtils.extract_release_numbers_from_string(version_str)
+        branch_name: str = VersionUtils.convert_release_to_tag_name(*version)
         if not self.git.update_branch(branch_name, True):
             raise IOError(
                 "Couldn't check out GUI branch corresponding to release {}".format(version)
@@ -28,7 +28,9 @@ class GuiUtils(object):
         result = []
 
         for component in root.iter("entry"):
-            type = component.find("./value/type").text
+            type_element: ET.Element | None = component.find("./value/type")
+            assert type_element is not None
+            type = type_element.text
 
             if type is not None:
                 result.append(type)
@@ -40,7 +42,9 @@ class GuiUtils(object):
         result = []
 
         for component in root.iter("entry"):
-            target = component.find("./key").text
+            target_element: ET.Element | None = component.find("./key")
+            assert target_element is not None
+            target = target_element.text
 
             if target is not None:
                 result.append(target)
