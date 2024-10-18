@@ -37,7 +37,7 @@ class VersionUtils(object):
         return all(v1 == v2 for v1, v2 in zip(version1.split("."), version2.split(".")))
 
     @staticmethod
-    def convert_release_to_tag_name(major: int, minor: int=0, patch: int=0) -> str:
+    def convert_release_to_tag_name(major: int, minor: int = 0, patch: int = 0) -> str:
         return "v{maj}.{min}.{patch}".format(maj=int(major), min=int(minor), patch=int(patch))
 
     @staticmethod

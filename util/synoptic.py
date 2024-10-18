@@ -27,7 +27,7 @@ class SynopticUtils(object):
             if f.endswith(".xml")
         ]
 
-    def get_type_target_pairs(self, synoptic_xml: str) -> list[str]:
+    def get_type_target_pairs(self, synoptic_xml: str) -> list[tuple[str, str]]:
         """
         Returns a set of type, target pairs used in this synoptic
         :param synoptic_xml: the string version of the xml
@@ -80,7 +80,7 @@ class SynopticUtils(object):
     def target_should_be_ignored(self, target: str) -> bool:
         return target == "NONE"
 
-    def get_pv_addresses(self, synoptic_xml: str) -> dict[str,str]:
+    def get_pv_addresses(self, synoptic_xml: str) -> dict[str, str]:
         pv_addresses = dict()
 
         for pv in ET.fromstring(synoptic_xml).iter(self._prefix_schema("pv")):

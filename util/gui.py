@@ -11,11 +11,11 @@ class GuiUtils(object):
     Class containing utility methods for interacting with the gui repository.
     """
 
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         self.git = GitUtils(path)
         self.path = path
 
-    def get_gui_repo_at_release(self, version):
+    def get_gui_repo_at_release(self, version: list[str]) -> str:
         version = VersionUtils.extract_release_numbers_from_string(version)
         branch_name = VersionUtils.convert_release_to_tag_name(*version)
         if not self.git.update_branch(branch_name, True):
@@ -23,7 +23,7 @@ class GuiUtils(object):
                 "Couldn't check out GUI branch corresponding to release {}".format(version)
             )
 
-    def get_valid_types(self, xml):
+    def get_valid_types(self, xml: str) -> list[str]:
         root = ET.fromstring(xml)
         result = []
 
@@ -35,7 +35,7 @@ class GuiUtils(object):
 
         return result
 
-    def get_valid_targets(self, xml):
+    def get_valid_targets(self, xml: str) -> list[str]:
         root = ET.fromstring(xml)
         result = []
 
@@ -47,7 +47,7 @@ class GuiUtils(object):
 
         return result
 
-    def get_opi_info_xml(self):
+    def get_opi_info_xml(self) -> str:
         with open(
             os.path.join(
                 self.path, "base", "uk.ac.stfc.isis.ibex.opis", "resources", "opi_info.xml"
