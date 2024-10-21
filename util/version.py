@@ -42,5 +42,5 @@ class VersionUtils(object):
 
     @staticmethod
     def extract_release_numbers_from_string(version: str) -> list[int]:
-        version_split = version.split(".")
+        version_split = version.split(".", maxsplit=3)[0:3]
         return [int(_x) for _x in version_split]
