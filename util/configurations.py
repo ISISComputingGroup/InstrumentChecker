@@ -32,7 +32,7 @@ class AbstractConfigurationUtils(object):
     def __init__(self, config_repo_path: str) -> None:
         self.config_repo_path = config_repo_path
 
-    def get_configurations_directory(self) -> None:
+    def get_configurations_directory(self) -> str:
         raise NotImplementedError("This is an abstract class, use a concrete class instead")
 
     def get_configurations_as_list(self) -> list[str]:
@@ -124,6 +124,7 @@ class AbstractConfigurationUtils(object):
             pv_name_block = block.find("{}read_pv".format(self.BLOCK_XML_SCHEMA))
             assert pv_name_block is not None
             pv_name = pv_name_block.text
+            assert pv_name is not None
             pv_name = AbstractConfigurationUtils._get_pv_name_without_field(pv_name)
 
             local_block = block.find("{}local".format(self.BLOCK_XML_SCHEMA))
@@ -164,7 +165,7 @@ class AbstractConfigurationUtils(object):
         else:
             return pv_name
 
-    def get_devices_directory(self) -> None:
+    def get_devices_directory(self) -> str:
         raise NotImplementedError("This is an abstract class, use a concrete class instead")
 
     def get_device_screens_from_xml(self) -> str:
@@ -184,8 +185,14 @@ class AbstractConfigurationUtils(object):
             (set): Set of device screens
         """
         root = ET.fromstring(xml)
-        
-        return set({device.find(f"{self.DEVICES_XML_SCHEMA}key").text for device in root})
+
+        devices = set()
+        for device in root:
+            devices_raw = device.find(f"{self.DEVICES_XML_SCHEMA}key")
+            assert devices_raw is not None
+            devices.add(devices_raw.text)
+
+        return devices
 
     def get_iocs_xml(self, config_name: str) -> str:
         """
@@ -249,8 +256,10 @@ class AbstractConfigurationUtils(object):
 
         # check the simulation mode for the given ioc
         for ioc in root.iter("{}ioc".format(self.IOC_XML_SCHEMA)):
+            assert ioc is not None
             if ioc.attrib["name"] == ioc_name:
                 return ioc.attrib["simlevel"] != "none"
+        raise ValueError(f"Can't get simulation level of ioc {ioc_name}")
 
     @staticmethod
     def check_if_macros_match_pattern(
