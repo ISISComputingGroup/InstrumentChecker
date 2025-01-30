@@ -12,11 +12,22 @@ pipeline {
   triggers {
     cron('H 1 * * *')
   }
-  
+
+  options {
+    disableConcurrentBuilds()
+    timestamps()
+    // as we "checkout scm" as a stage, we do not need to do it here too
+    skipDefaultCheckout(true)
+  }
+
   stages {  
     stage("Checkout") {
       steps {
-        checkout scm
+       timeout(time: 2, unit: 'HOURS') {
+          retry(5) {
+             checkout scm
+          }
+       }
       }
     }
     
