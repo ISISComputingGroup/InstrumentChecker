@@ -16,7 +16,11 @@ pipeline {
   stages {  
     stage("Checkout") {
       steps {
-        checkout scm
+        timeout(time: 2, unit: 'HOURS') {
+          retry(5) {
+            checkout scm
+          }
+        }
       }
     }
     
@@ -65,5 +69,6 @@ pipeline {
     timeout(time: 180, unit: 'MINUTES')
     disableConcurrentBuilds()
     timestamps()
+    skipDefaultCheckout(true)
   }
 }
