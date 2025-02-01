@@ -11,6 +11,12 @@ pipeline {
     environment {
         INSTRUMENT_SCRIPTS_CREDENTIALS = credentials('script_checker')
     }
+
+    options {
+       skipDefaultCheckout(true)
+       disableConcurrentBuilds()
+      timestamps()
+    }
   
     triggers {
         cron('H 1 * * *')
@@ -20,7 +26,11 @@ pipeline {
 
         stage("Checkout") {
             steps {
-                checkout scm
+               timeout(time: 2, unit: 'HOURS') {
+                 retry(5) {                
+                    checkout scm
+                 }
+              }
             }
         }
 
