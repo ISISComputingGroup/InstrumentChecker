@@ -33,9 +33,7 @@ class MotorTests(unittest.TestCase):
 
             return None
 
-        with concurrent.futures.ThreadPoolExecutor(
-            max_workers=MAX_MOTOR * MAX_CONTROLLER
-        ) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             futures = []
             for controller in range(1, MAX_CONTROLLER + 1):
                 for motor in range(1, MAX_MOTOR + 1):
