@@ -20,7 +20,7 @@ class ChannelAccessUtils(object):
     def __init__(self, pv_prefix=""):
         self.pv_prefix = pv_prefix
 
-    def get_value(self, pv):
+    def get_value(self, pv, timeout=None):
         """
         Gets the value of the PV. Returns None if PV is unavailable.
         :return: The PV value as a string, or None if there was an error
@@ -31,7 +31,7 @@ class ChannelAccessUtils(object):
                     self.pv_prefix,
                     pv,
                 ),
-                timeout=CHANNEL_ACCESS_TIMEOUT,
+                timeout=timeout or CHANNEL_ACCESS_TIMEOUT,
             )
         except (UnableToConnectToPVException, ReadAccessException):
             return None
