@@ -13,13 +13,6 @@ pipeline {
     cron('H 1 * * *')
   }
 
-  options {
-    disableConcurrentBuilds()
-    timestamps()
-    // as we "checkout scm" as a stage, we do not need to do it here too
-    skipDefaultCheckout(true)
-  }
-
   stages {  
     stage("Checkout") {
       steps {
@@ -72,6 +65,7 @@ pipeline {
   
   // The options directive is for configuration that applies to the whole job.
   options {
+    // as we "checkout scm" as a stage, we do not need to do it here too
     buildDiscarder(logRotator(numToKeepStr:'20', daysToKeepStr: '28'))
     timeout(time: 180, unit: 'MINUTES')
     disableConcurrentBuilds()
