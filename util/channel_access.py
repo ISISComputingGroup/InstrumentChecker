@@ -5,7 +5,8 @@ from builtins import object
 from enum import Enum
 
 from genie_python.channel_access_exceptions import ReadAccessException, UnableToConnectToPVException
-from genie_python.genie_cachannel_wrapper import CaChannelWrapper, PVValue
+from genie_python.genie_cachannel_wrapper import CaChannelWrapper
+from genie_python.genie import PVValue
 
 # Some instruments may not be available. If this is the case, we don't want to wait too long
 # for the response which will never come (which would slow down the tests)
