@@ -61,3 +61,18 @@ class ScriptingDirectoryTests(unittest.TestCase):
             self._directory_contains_compiled_files(self.inst_directory),
             "Instrument scripts directory contained compiled files",
         )
+
+    def test_GIVEN_inst_scripts_dir_exists_THEN_it_doesnt_contain_old_style_importer(self):
+        init = os.path.join(self.inst_directory, "__init__.py")
+        if not os.path.exists(init):
+            self.skipTest("No inst\\__init__.py found")
+
+        with open(init) as f:
+            text = f.read()
+
+        if "import pkgutil" in text:
+            self.fail(
+                "Instrument scripts directory contained old-style 'from * import *' code. "
+                "This doesn't work with Python 3.12, or with pyright. "
+                "It should be migrated to standard python imports."
+            )
