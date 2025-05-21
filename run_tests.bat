@@ -20,7 +20,11 @@ if exist "%reports_dir%" (
     rd /s /q "%reports_dir%"
 )
 
+REM this is a hack to enable a CA context per thread
+set "EPICS_CAS_INTF_ADDR_LIST=127.0.0.1"
+
 call %python_dir%\genie_python3.bat -u run_tests.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" --reports_path "%reports_dir%"
+
 if %errorlevel% neq 0 (
     @echo ERROR: genie_python3.bat exited with code %errorlevel%
     exit /b %errorlevel%

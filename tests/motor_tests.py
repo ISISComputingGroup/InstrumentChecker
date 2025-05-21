@@ -24,10 +24,10 @@ class MotorTests(unittest.TestCase):
 
         def check_nonzero_delay(controller, motor) -> str | None:
             prefix = f"MOT:MTR{controller:02d}{motor:02d}"
-            controller_type = self.ca.get_value(f"{prefix}_IOCNAME")
+            controller_type = self.ca.get_value(f"{prefix}_IOCNAME", timeout=30)
 
             if controller_type is not None and controller_type.startswith("TC_"):
-                delay = self.ca.get_value(f"{prefix}.DLY")
+                delay = self.ca.get_value(f"{prefix}.DLY", timeout=30)
                 if delay == 0:
                     return f"Delay is zero on Beckhoff axis {self.ca.pv_prefix}{prefix}"
 
