@@ -25,6 +25,7 @@ class DaeTests(unittest.TestCase):
 
         with self.subTest():
             self.assertGreater(
-                failure_threshold_percent/100*(10**len(current_run_number)),
+                failure_threshold_percent / 100 * (10 ** len(current_run_number)),
                 int(current_run_number),
-                f"The current run number is within {failure_threshold_percent}% ({100*int(current_run_number)/(10**len(current_run_number)):.1f}%)of the maximum run number")
+                f"The current run number is within {failure_threshold_percent}% ({100*int(current_run_number)/(10**len(current_run_number)):.1f}%)of the maximum run number",
+            )
