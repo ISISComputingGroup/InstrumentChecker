@@ -1,4 +1,3 @@
-import concurrent.futures
 import unittest
 
 from tests.settings import Settings
