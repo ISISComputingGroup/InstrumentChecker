@@ -18,11 +18,10 @@ class DaeTests(unittest.TestCase):
         """
         failure_threshold_percent = 90
         current_run_number = self.ca.get_value("DAE:RUNNUMBER")
-        assert isinstance(current_run_number, str)
-
         # current_run_number will be none if instrument off
         if current_run_number is None:
             self.skipTest("No run number, likely instrument is off")
+        assert isinstance(current_run_number, str)
 
         self.assertGreater(
             failure_threshold_percent / 100 * (10 ** len(current_run_number)),
