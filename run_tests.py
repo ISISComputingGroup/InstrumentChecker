@@ -13,6 +13,7 @@ from xmlrunner import XMLTestRunner
 
 from tests.component_tests import ComponentsSingleTests, ComponentsTests
 from tests.configuration_tests import ConfigurationsSingleTests, ConfigurationsTests
+from tests.dae_tests import DaeTests
 from tests.globals_tests import GlobalsTests
 from tests.motor_tests import MotorTests
 from tests.scripting_directory_tests import ScriptingDirectoryTests
@@ -45,6 +46,7 @@ def run_instrument_tests(inst_name, reports_path):
         ConfigurationsSingleTests,
         ComponentsSingleTests,
         MotorTests,
+        DaeTests,
     ]:
         suite.addTests(loader.loadTestsFromTestCase(case))
 
