@@ -24,9 +24,8 @@ class DaeTests(unittest.TestCase):
         if current_run_number is None:
             self.skipTest("No run number, likely instrument is off")
 
-        with self.subTest():
-            self.assertGreater(
-                failure_threshold_percent / 100 * (10 ** len(current_run_number)),
-                int(current_run_number),
-                f"The current run number is within {failure_threshold_percent}% ({100 * int(current_run_number) / (10 ** len(current_run_number)):.1f}%)of the maximum run number",
-            )
+        self.assertGreater(
+            failure_threshold_percent / 100 * (10 ** len(current_run_number)),
+            int(current_run_number),
+            f"The current run number is within {failure_threshold_percent}% ({100 * int(current_run_number) / (10 ** len(current_run_number)):.1f}%)of the maximum run number",
+        )
