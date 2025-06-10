@@ -8,7 +8,7 @@ class DaeTests(unittest.TestCase):
     def setUp(self) -> None:
         self.ca = ChannelAccessUtils(Settings.pv_prefix)
 
-    def test_dae_run_number_digits_suffecient(self) -> None:
+    def test_dae_run_number_digits_sufficient(self) -> None:
         """
         Check if the current run number is close to exceeding the available number of digits.
 
