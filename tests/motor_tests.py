@@ -63,7 +63,7 @@ class MotorTests(unittest.TestCase):
             prefix = f"MOT:MTR{controller:02d}{motor:02d}"
             controller_type = self.ca.get_value(f"{prefix}_IOCNAME", timeout=30)
 
-            if controller_type is not None and controller_type.startswith("GALIL_"):
+            if isinstance(controller_type, str) and controller_type.startswith("GALIL_"):
                 mot_enc_sync_tol = self.ca.get_value(f"{prefix}_MOT_ENC_SYNC_TOL_SP", timeout=30)
                 ueip = self.ca.get_value(f"{prefix}.UEIP", timeout=30)
                 if ueip and mot_enc_sync_tol == 0:
