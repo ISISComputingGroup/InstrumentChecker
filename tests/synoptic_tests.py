@@ -8,7 +8,7 @@ from util.version import VersionUtils
 
 
 class SynopticTests(unittest.TestCase):
-    def __init__(self, methodName, synoptic=None):
+    def __init__(self, methodName, synoptic=None):  # noqa: N803
         # Boilerplate so that unittest knows how to run these tests.
         super(SynopticTests, self).__init__(methodName)
 
@@ -27,9 +27,9 @@ class SynopticTests(unittest.TestCase):
             self.skipTest("Can't determine which version of the GUI is being used.")
 
     @skip_on_instruments(
-        ["DEMO"], "Demo often has a development version installed; this test is not useful"
-        ["CHIPIR"], "Filter set OPI patched on after migration. Remove this skip if CHIPIR on > V15.0.0"
-
+        ["DEMO"],
+        "Demo often has a development version installed; this test is not useful"["CHIPIR"],
+        "Filter set OPI patched on after migration. Remove this skip if CHIPIR on > V15.0.0",
     )
     def test_GIVEN_synoptic_THEN_targets_that_it_defines_appear_in_opi_info(self):
         allowed_targets = self.gui_utils.get_valid_targets(self.gui_utils.get_opi_info_xml())
