@@ -1,3 +1,4 @@
+# type: ignore
 import unittest
 
 from tests.settings import Settings
