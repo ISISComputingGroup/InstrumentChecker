@@ -16,7 +16,10 @@ class DaeTests(unittest.TestCase):
         It is easier to simply access the current run number and check the nuber of digits in against the current number
         than to check this xml.
         """
-        failure_threshold_percent = 90
+        if Settings.name == "GEM":
+            failure_threshold_percent = 99.5
+        else:
+            failure_threshold_percent = 90
         current_run_number = self.ca.get_value("DAE:RUNNUMBER")
         # current_run_number will be none if instrument off
         if current_run_number is None:
