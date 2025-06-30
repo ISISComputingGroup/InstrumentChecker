@@ -8,7 +8,7 @@ from util.version import VersionUtils
 
 
 class SynopticTests(unittest.TestCase):
-    def __init__(self, methodName, synoptic=None):
+    def __init__(self, methodName, synoptic=None):  # noqa: N803
         # Boilerplate so that unittest knows how to run these tests.
         super(SynopticTests, self).__init__(methodName)
 
@@ -27,14 +27,19 @@ class SynopticTests(unittest.TestCase):
             self.skipTest("Can't determine which version of the GUI is being used.")
 
     @skip_on_instruments(
-        ["DEMO"], "Demo often has a development version installed; this test is not useful"
+        ["DEMO"],
+        "Demo often has a development version installed; this test is not useful",
+    )
+    @skip_on_instruments(
+        ["CHIPIR"],
+        "Filter set OPI patched on after migration. Remove this skip if CHIPIR on > V15.0.0",
     )
     def test_GIVEN_synoptic_THEN_targets_that_it_defines_appear_in_opi_info(self):
         allowed_targets = self.gui_utils.get_valid_targets(self.gui_utils.get_opi_info_xml())
 
         try:
             type_target_pairs = self.synoptic_utils.get_type_target_pairs(
-                self.synoptic_utils.get_xml(self.synoptic)
+                self.synoptic_utils.get_xml(self.synoptic)  # type: ignore
             )
         except Exception as e:
             self.fail(
@@ -44,24 +49,6 @@ class SynopticTests(unittest.TestCase):
             )
 
         for type, target in type_target_pairs:
-            if (
-                Settings.name == "RIKENFE"
-                and self.version_utils.get_version() == "12.0.1"
-                and (
-                    target == "RIKEN Vacuum"
-                    or target == "RIKEN Kicker and Separator HV settings"
-                    or target == "RIKEN Magnet PSU"
-                    or target == "RIKEN PSU Status Summary"
-                )
-            ):
-                continue  # This is hotfixed on RIKENFE. This condition can be removed at next release.
-            if (
-                Settings.name == "WISH"
-                and self.version_utils.get_version() == "12.0.1"
-                and (target == "Keysight E4980AL" or target == "Razorbill RP100 Strain Cell PSU")
-            ):
-                continue  # This is hotfixed on WISH. This condition can be removed at next release.
-
             if not self.synoptic_utils.target_should_be_ignored(target):
                 self.assertIn(
                     target,
@@ -79,7 +66,7 @@ class SynopticTests(unittest.TestCase):
 
         try:
             type_target_pairs = self.synoptic_utils.get_type_target_pairs(
-                self.synoptic_utils.get_xml(self.synoptic)
+                self.synoptic_utils.get_xml(self.synoptic)  # type: ignore
             )
         except Exception as e:
             self.fail(
@@ -98,7 +85,7 @@ class SynopticTests(unittest.TestCase):
 
     def test_GIVEN_synoptic_THEN_pv_addresses_are_not_empty(self):
         try:
-            pvs = self.synoptic_utils.get_pv_addresses(self.synoptic_utils.get_xml(self.synoptic))
+            pvs = self.synoptic_utils.get_pv_addresses(self.synoptic_utils.get_xml(self.synoptic))  # type: ignore
         except Exception as e:
             self.fail(
                 "In synoptic {}, XML failed to parse properly. Error text was: {}".format(
