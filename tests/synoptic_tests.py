@@ -1,4 +1,3 @@
-# type: ignore
 import unittest
 
 from tests.settings import Settings
@@ -29,7 +28,10 @@ class SynopticTests(unittest.TestCase):
 
     @skip_on_instruments(
         ["DEMO"],
-        "Demo often has a development version installed; this test is not useful"["CHIPIR"],
+        "Demo often has a development version installed; this test is not useful",
+    )
+    @skip_on_instruments(
+        ["CHIPIR"],
         "Filter set OPI patched on after migration. Remove this skip if CHIPIR on > V15.0.0",
     )
     def test_GIVEN_synoptic_THEN_targets_that_it_defines_appear_in_opi_info(self):
@@ -37,7 +39,7 @@ class SynopticTests(unittest.TestCase):
 
         try:
             type_target_pairs = self.synoptic_utils.get_type_target_pairs(
-                self.synoptic_utils.get_xml(self.synoptic)
+                self.synoptic_utils.get_xml(self.synoptic)  # type: ignore
             )
         except Exception as e:
             self.fail(
@@ -82,7 +84,7 @@ class SynopticTests(unittest.TestCase):
 
         try:
             type_target_pairs = self.synoptic_utils.get_type_target_pairs(
-                self.synoptic_utils.get_xml(self.synoptic)
+                self.synoptic_utils.get_xml(self.synoptic)  # type: ignore
             )
         except Exception as e:
             self.fail(
@@ -101,7 +103,7 @@ class SynopticTests(unittest.TestCase):
 
     def test_GIVEN_synoptic_THEN_pv_addresses_are_not_empty(self):
         try:
-            pvs = self.synoptic_utils.get_pv_addresses(self.synoptic_utils.get_xml(self.synoptic))
+            pvs = self.synoptic_utils.get_pv_addresses(self.synoptic_utils.get_xml(self.synoptic))  # type: ignore
         except Exception as e:
             self.fail(
                 "In synoptic {}, XML failed to parse properly. Error text was: {}".format(
