@@ -49,24 +49,6 @@ class SynopticTests(unittest.TestCase):
             )
 
         for type, target in type_target_pairs:
-            if (
-                Settings.name == "RIKENFE"
-                and self.version_utils.get_version() == "12.0.1"
-                and (
-                    target == "RIKEN Vacuum"
-                    or target == "RIKEN Kicker and Separator HV settings"
-                    or target == "RIKEN Magnet PSU"
-                    or target == "RIKEN PSU Status Summary"
-                )
-            ):
-                continue  # This is hotfixed on RIKENFE. This condition can be removed at next release.
-            if (
-                Settings.name == "WISH"
-                and self.version_utils.get_version() == "12.0.1"
-                and (target == "Keysight E4980AL" or target == "Razorbill RP100 Strain Cell PSU")
-            ):
-                continue  # This is hotfixed on WISH. This condition can be removed at next release.
-
             if not self.synoptic_utils.target_should_be_ignored(target):
                 self.assertIn(
                     target,
