@@ -1,15 +1,11 @@
 setlocal
 
-REM Create local python environment from genie python on share
-git clone https://github.com/ISISComputingGroup/ibex_utils.git
-CALL ibex_utils\installation_and_upgrade\define_latest_genie_python.bat
+powershell -ExecutionPolicy Bypass -c "irm https://raw.githubusercontent.com/ISISComputingGroup/ibex_utils/refs/heads/try_uv/installation_and_upgrade/set_epics_ca_addr_list.bat " > "%TEMP%/set_epics_ca_addr_list.bat"
+call "%TEMP%/set_epics_ca_addr_list.bat"
 
-%LATEST_PYTHON% -u scripts_checker.py
+powershell -ExecutionPolicy Bypass -c "irm https://raw.githubusercontent.com/ISISComputingGroup/ibex_utils/refs/heads/try_uv/installation_and_upgrade/install_or_update_uv.bat | cmd "
 
-if %errorlevel% neq 0 (
-    set errcode = %ERRORLEVEL%
-    call ibex_utils\installation_and_upgrade\remove_genie_python.bat %LATEST_PYTHON_DIR%
-    EXIT /b !errcode!
-)
+uv sync --python 3.12
+call .venv\scripts\activate
 
-call ibex_utils\installation_and_upgrade\remove_genie_python.bat %LATEST_PYTHON_DIR%
+python -u scripts_checker.py
