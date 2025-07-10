@@ -19,11 +19,18 @@ if exist "%reports_dir%" (
     rd /s /q "%reports_dir%"
 )
 
+powershell -ExecutionPolicy Bypass -c "irm https://raw.githubusercontent.com/ISISComputingGroup/ibex_utils/refs/heads/master/installation_and_upgrade/set_epics_ca_addr_list.bat " > "%TEMP%/set_epics_ca_addr_list.bat"
+call "%TEMP%/set_epics_ca_addr_list.bat"
+
+powershell -ExecutionPolicy Bypass -c "irm https://raw.githubusercontent.com/ISISComputingGroup/ibex_utils/refs/heads/master/installation_and_upgrade/install_or_update_uv.bat | cmd "
+
+uv sync --python 3.12
+call .venv\scripts\activate
+
 REM this is a hack to enable a CA context per thread
 set "EPICS_CAS_INTF_ADDR_LIST=127.0.0.1"
-
-call %~dp0Python3\genie_python3.bat -u run_tests.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" --reports_path "%reports_dir%"
+python run_tests.py --configs_repo_path "%configs_dir%" --gui_repo_path "%gui_dir%" --reports_path "%reports_dir%"
 if %errorlevel% neq 0 (
-    @echo ERROR: genie_python3.bat exited with code %errorlevel%
+    @echo ERROR: python exited with code %errorlevel%
     exit /b %errorlevel%
 )

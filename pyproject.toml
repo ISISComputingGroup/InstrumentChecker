@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "InstrumentChecker"  # REQUIRED, is the only field that cannot be marked as dynamic.
+dynamic = ["version"]
+description = "Instrument configuration checker."
+readme = "README.md"
+requires-python = ">=3.11"
+license-files = ["LICENSE"]
+
+authors = [
+  {name = "ISIS Experiment Controls", email = "ISISExperimentControls@stfc.ac.uk" }
+]
+maintainers = [
+  {name = "ISIS Experiment Controls", email = "ISISExperimentControls@stfc.ac.uk" }
+]
+
+dependencies = [
+  "genie_python",
+  "unittest-xml-reporting",
+  "parameterized",
+  "CaChannel@git+https://github.com/ISISComputingGroup/CaChannel",
+  "gitpython"
+]
+
+[project.optional-dependencies]
+dev = []
+
+[tool.setuptools.packages.find]
+include = ["tests", "utils"]
+namespaces = false
+
+[project.urls]
+"Homepage" = "https://github.com/isiscomputinggroup/InstrumentChecker"
+"Bug Reports" = "https://github.com/isiscomputinggroup/InstrumentChecker/issues"
+"Source" = "https://github.com/isiscomputinggroup/InstrumentChecker"
+
+[tool.setuptools_scm]
