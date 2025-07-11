@@ -24,7 +24,7 @@ call "%TEMP%/set_epics_ca_addr_list.bat"
 
 powershell -ExecutionPolicy Bypass -c "irm https://raw.githubusercontent.com/ISISComputingGroup/ibex_utils/refs/heads/master/installation_and_upgrade/install_or_update_uv.bat | cmd "
 
-uv sync --python 3.12
+c:\Instrument\Apps\uv\uv.exe sync --python 3.12
 call .venv\scripts\activate
 
 REM this is a hack to enable a CA context per thread
