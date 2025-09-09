@@ -66,7 +66,7 @@ class MotorTests(unittest.TestCase):
             if isinstance(controller_type, str) and controller_type.startswith("GALIL_"):
                 mot_enc_sync_tol = self.ca.get_value(f"{prefix}_MOT_ENC_SYNC_TOL_SP", timeout=30)
                 ueip = self.ca.get_value(f"{prefix}.UEIP", timeout=30)
-                if ueip and mot_enc_sync_tol == 0:
+                if ueip == "Yes" and mot_enc_sync_tol == 0:
                     return f"Motor-encoder sync tolerance is zero on closed-loop axis {self.ca.pv_prefix}{prefix}"
 
             return None
