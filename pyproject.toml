@@ -24,7 +24,7 @@ dependencies = [
   "parameterized",
   "CaChannel@git+https://github.com/ISISComputingGroup/CaChannel",
   "gitpython",
-  "mysql-connector-python != 9.6.0",  # 9.6.0 release is broken - missing wheels on pypi
+  "mysql-connector-python < 9.6.0",  # 9.6.0+ release is broken - missing wheels on pypi
 ]
 
 [project.optional-dependencies]
