@@ -1,6 +1,3 @@
-# allow for [timestamp]
-error /(?i)^(\[[^]]*\] )?error:/
-error /(?i)^(\[[^]]*\] )?fatal:/
 error /FAILED \(errors=/
 error /FAILED \(failures=/
 warning /(?i)^(\[[^]]*\] )?warning:?/
