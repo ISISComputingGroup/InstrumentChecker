@@ -58,13 +58,7 @@ class AbstractSingleTests(unittest.TestCase, metaclass=ABCMeta):
         num_non_interesting_block_pvs = len(non_interesting_block_pvs)
 
         if num_non_interesting_block_pvs != 0:
-            print(
-                "\nWARNING! The instrument {} has {} non-interesting pvs that have a block on them in {}".format(
-                    Settings.pv_prefix, len(non_interesting_block_pvs), self.type
-                )
-            )
             self.update_total_non_interesting_block_pvs(num_non_interesting_block_pvs)
-            print(non_interesting_block_pvs)
 
     @abstractmethod
     def update_total_non_interesting_block_pvs(self, num_non_interesting_block_pvs):
