@@ -1,12 +1,8 @@
-from __future__ import absolute_import, print_function
-
 import argparse
 import os
 import sys
 import traceback
-import typing
 import unittest
-from builtins import str
 from json import JSONDecodeError, loads
 
 from xmlrunner import XMLTestRunner
@@ -60,11 +56,9 @@ def run_instrument_tests(inst_name, reports_path):
         configs = ConfigurationUtils(Settings.config_repo_path).get_configurations_as_list()
         components = ComponentUtils(Settings.config_repo_path).get_configurations_as_list()
         synoptics = SynopticUtils(Settings.config_repo_path).get_synoptics_filenames()
-    except IOError as e:
+    except OSError as e:
         print(
-            "Failed to build tests for instrument {}: exception occured while generating tests.".format(
-                inst_name
-            )
+            f"Failed to build tests for instrument {inst_name}: exception occured while generating tests."
         )
         traceback.print_exc(e)
         return False
@@ -101,11 +95,11 @@ def setup_instrument_tests(instrument):
     name, hostname, pv_prefix = instrument["name"], instrument["hostName"], instrument["pvPrefix"]
     try:
         Settings.set_instrument(name, hostname, pv_prefix)
-    except Exception:
-        print("Unable to set instrument to {} because {}".format(name, traceback.format_exc()))
+    except Exception:  # ruff: ignore[BLE001]
+        print(f"Unable to set instrument to {name} because {traceback.format_exc()}")
         return False
 
-    print("\n\nChecking out git repository for {} ({})...".format(name, hostname))
+    print(f"\n\nChecking out git repository for {name} ({hostname})...")
     config_repo_update_successful = GitUtils(Settings.config_repo_path).update_branch(hostname)
 
     version_utils = VersionUtils(Settings.config_repo_path)
@@ -113,7 +107,7 @@ def setup_instrument_tests(instrument):
     if version_utils.version_file_exists():
         GuiUtils(Settings.gui_repo_path).get_gui_repo_at_release(version_utils.get_version())
     else:
-        print("Warning: could not determine GUI version for instrument {}".format(instrument))
+        print(f"Warning: could not determine GUI version for instrument {instrument}")
     return config_repo_update_successful
 
 
@@ -127,7 +121,7 @@ def run_self_tests(reports_path):
     return XMLTestRunner(output=str(reports_path), stream=sys.stdout).run(suite).wasSuccessful()
 
 
-def get_excluded_list_of_instruments() -> typing.List[str]:
+def get_excluded_list_of_instruments() -> list[str]:
     """
     Gets the excluded list of instruments by getting the value of the environment variable `DISABLE_CHECK_INST`.
     This needs to be in the format of a JSON list, for example:
@@ -170,14 +164,10 @@ def _print_test_run_end_messages():
     Method used to print any messages that should be printed at the end of the all instruments test run.
     """
     print(
-        "{} non interesting component block pvs in total across all instruments".format(
-            ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS
-        )
+        f"{ComponentsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS} non interesting component block pvs in total across all instruments"
     )
     print(
-        "{} non interesting configuration block pvs in total across all instruments".format(
-            ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS
-        )
+        f"{ConfigurationsSingleTests.TOTAL_NON_INTERESTING_PVS_IN_BLOCKS} non interesting configuration block pvs in total across all instruments"
     )
 
 
@@ -224,7 +214,7 @@ def main():
 
     instruments = ChannelAccessUtils().get_inst_list()
     if len(instruments) == 0:
-        raise IOError(
+        raise OSError(
             "No instruments found. This is probably because the instrument list PV is unavailable."
         )
 

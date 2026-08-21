@@ -1,14 +1,7 @@
-
 import binascii
 import json
-import sys
-import zlib
-
-sys.path.append(".")
-sys.path.append("..")
-sys.path.append("../..")
-
 import unittest
+import zlib
 
 from tests.settings import Settings
 from util.channel_access import ChannelAccessUtils
@@ -44,6 +37,7 @@ class GuiTests(unittest.TestCase):
         self,
     ):
         raw_value = self.ca.get_value("CS:PERSP:SETTINGS")
+        assert isinstance(raw_value, str | None)
         if raw_value is None or raw_value == "":
             self.skipTest("Instrument is unavailable")
 
