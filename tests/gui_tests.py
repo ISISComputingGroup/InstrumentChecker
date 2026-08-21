@@ -9,10 +9,6 @@ from util.common import skip_on_instruments
 
 
 class GuiTests(unittest.TestCase):
-    """
-    Tests in this class relate to the contents or existence of the globals.txt configuration file.
-    """
-
     def setUp(self):
         self.ca = ChannelAccessUtils(Settings.pv_prefix)
 
