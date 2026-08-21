@@ -15,6 +15,7 @@ from tests.component_tests import ComponentsSingleTests, ComponentsTests
 from tests.configuration_tests import ConfigurationsSingleTests, ConfigurationsTests
 from tests.dae_tests import DaeTests
 from tests.globals_tests import GlobalsTests
+from tests.gui_tests import GuiTests
 from tests.motor_tests import MotorTests
 from tests.scripting_directory_tests import ScriptingDirectoryTests
 from tests.settings import Settings
@@ -42,6 +43,7 @@ def run_instrument_tests(inst_name, reports_path):
     for case in [
         ScriptingDirectoryTests,
         GlobalsTests,
+        GuiTests,
         VersionTests,
         ConfigurationsSingleTests,
         ComponentsSingleTests,
