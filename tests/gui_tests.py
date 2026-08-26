@@ -38,6 +38,8 @@ class GuiTests(unittest.TestCase):
             self.skipTest("Instrument is unavailable")
 
         version = self.ca.get_version_string()
+        if version is None or version == "":
+            self.skipTest("Instrument is unavailable")
 
         version_major = int(version.split(".")[0])
         version_minor = int(version.split(".")[1])
